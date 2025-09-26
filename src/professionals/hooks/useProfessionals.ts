@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchProfessionals } from "../services/professionalsService";
-
-export interface Professional {
-  id: number;
-  name: string;
-  profession: string;
-}
+import type { Professional } from "../components/ProfessionalCard";
 
 export function useProfessionals() {
   const [professionals, setProfessionals] = useState<Professional[]>([]);

@@ -1,15 +1,17 @@
 import React from "react";
 
+export interface Professional {
+  name: string;
+  email: string;
+  phone: string;
+  city: string;
+  specialty: string;
+  rating?: number;
+  appointmentDuration: number;
+}
+
 export interface ProfessionalCardProps {
-  professional: {
-    name: string;
-    email: string;
-    phone: string;
-    city: string;
-    specialty: string;
-    rating?: number;
-    appointmentDuration: number;
-  };
+  professional: Professional;
 }
 
 const cardStyle: React.CSSProperties = {
@@ -69,46 +71,6 @@ const ProfessionalCard: React.FC<ProfessionalCardProps> = ({
       <strong>Duración de turno:</strong>{" "}
       <span style={badgeStyle}>{professional.appointmentDuration} min</span>
     </div>
-  </div>
-);
-
-export interface Professional {
-  name: string;
-  email: string;
-  phone: string;
-  city: string;
-  specialty: string;
-  rating?: number;
-  appointmentDuration: number;
-}
-
-interface ProfessionalCardProps {
-  professional: Professional;
-}
-
-const ProfessionalCard: React.FC<ProfessionalCardProps> = ({
-  professional,
-}) => (
-  <div className="professional-card">
-    <h3>{professional.name}</h3>
-    <p>
-      <strong>Email:</strong> {professional.email}
-    </p>
-    <p>
-      <strong>Teléfono:</strong> {professional.phone}
-    </p>
-    <p>
-      <strong>Ciudad:</strong> {professional.city}
-    </p>
-    <p>
-      <strong>Especialidad:</strong> {professional.specialty}
-    </p>
-    <p>
-      <strong>Rating:</strong> {professional.rating ?? "N/A"}
-    </p>
-    <p>
-      <strong>Duración de turno:</strong> {professional.appointmentDuration} min
-    </p>
   </div>
 );
 
