@@ -3,6 +3,7 @@ import ProfessionalsHome from "./professionals/pages/ProfessionalsHome";
 import ProfessionalsFeatured from "./professionals/pages/ProfessionalsFeatured";
 import HomePage from "./components/HomePage";
 import LoginPage from "./components/LoginPage";
+import SignInPage from "./components/SignInPage";
 import UserRegisterPage from "./components/UserRegisterPage";
 import ProfessionalRegisterPage from "./components/ProfessionalRegisterPage";
 
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signin" element={<SignInPage />} />
         <Route path="/register/user" element={<UserRegisterPage />} />
         <Route path="/register/professional" element={<ProfessionalRegisterPage />} />
         <Route path="/professionals" element={<ProfessionalsHome />} />

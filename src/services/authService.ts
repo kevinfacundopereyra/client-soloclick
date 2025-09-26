@@ -78,10 +78,10 @@ export const authService = {
     }
   },
 
-  // Login - ajustar según tu endpoint de auth
+  // Login - usando tu endpoint /api/auth/login
   login: async (email: string, password: string): Promise<AuthResponse> => {
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/api/auth/login', { email, password });
       return {
         success: true,
         message: 'Login exitoso',
@@ -91,7 +91,7 @@ export const authService = {
     } catch (error: any) {
       return {
         success: false,
-        message: error.response?.data?.message || 'Error en el login'
+        message: error.response?.data?.message || 'Credenciales inválidas'
       };
     }
   },

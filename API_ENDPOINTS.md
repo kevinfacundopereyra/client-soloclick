@@ -85,9 +85,9 @@ Basado en tu estructura de backend actual con NestJS.
 }
 ```
 
-## POST /auth/login
+## POST /api/auth/login
 
-**Body:**
+**Body (LoginDto):**
 ```json
 {
   "email": "juan@email.com",
@@ -95,15 +95,24 @@ Basado en tu estructura de backend actual con NestJS.
 }
 ```
 
-**Response esperada:**
+**Response esperada (basada en tu AuthService):**
 ```json
 {
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
-    "_id": "64f1234567890abcdef123456",
+    "id": "64f1234567890abcdef123456",
     "name": "Juan Pérez",
     "email": "juan@email.com"
-  },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
+**Error esperado (UnauthorizedException):**
+```json
+{
+  "statusCode": 401,
+  "message": "Credenciales inválidas",
+  "error": "Unauthorized"
 }
 ```
 
