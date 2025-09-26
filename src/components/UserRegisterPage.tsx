@@ -1,0 +1,272 @@
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+const UserRegisterPage = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    phone: '',
+    city: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Registro de usuario:', formData);
+    // Aquí iría la lógica de registro
+    alert('¡Registro exitoso! (Demo)');
+    navigate('/professionals');
+  };
+
+  return (
+    <div style={{ 
+      display: 'flex', 
+      minHeight: '100vh',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
+      {/* Left Side - Register Form */}
+      <div style={{
+        flex: 1,
+        padding: '2rem',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        maxWidth: '500px',
+        margin: '0 auto'
+      }}>
+        {/* Header with back arrow */}
+        <div 
+          onClick={() => navigate('/login')}
+          style={{
+            position: 'absolute',
+            top: '2rem',
+            left: '2rem',
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer',
+            color: '#4a5568'
+          }}
+        >
+          <span style={{ fontSize: '1.5rem', marginRight: '0.5rem' }}>←</span>
+        </div>
+
+        {/* Title */}
+        <h1 style={{
+          fontSize: '2rem',
+          fontWeight: 'bold',
+          color: '#2d3748',
+          marginBottom: '1rem',
+          textAlign: 'center'
+        }}>
+          Registro de Cliente
+        </h1>
+
+        <p style={{
+          textAlign: 'center',
+          color: '#718096',
+          marginBottom: '2rem'
+        }}>
+          Crea tu cuenta para reservar servicios de belleza
+        </p>
+
+        {/* Register Form */}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '0.5rem',
+              color: '#2d3748',
+              fontWeight: '500'
+            }}>
+              Nombre completo
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                outline: 'none',
+                transition: 'border-color 0.2s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+              onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+              placeholder="Tu nombre completo"
+            />
+          </div>
+
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '0.5rem',
+              color: '#2d3748',
+              fontWeight: '500'
+            }}>
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                outline: 'none',
+                transition: 'border-color 0.2s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+              onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+              placeholder="tu@email.com"
+            />
+          </div>
+
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '0.5rem',
+              color: '#2d3748',
+              fontWeight: '500'
+            }}>
+              Contraseña
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                outline: 'none',
+                transition: 'border-color 0.2s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+              onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+              placeholder="Mínimo 6 caracteres"
+            />
+          </div>
+
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '0.5rem',
+              color: '#2d3748',
+              fontWeight: '500'
+            }}>
+              Teléfono
+            </label>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                outline: 'none',
+                transition: 'border-color 0.2s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+              onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+              placeholder="+54 11 1234-5678"
+            />
+          </div>
+
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '0.5rem',
+              color: '#2d3748',
+              fontWeight: '500'
+            }}>
+              Ciudad
+            </label>
+            <input
+              type="text"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              required
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                outline: 'none',
+                transition: 'border-color 0.2s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+              onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+              placeholder="Tu ciudad"
+            />
+          </div>
+
+          <button
+            type="submit"
+            style={{
+              background: '#667eea',
+              color: 'white',
+              border: 'none',
+              padding: '0.875rem',
+              borderRadius: '8px',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              marginTop: '1rem',
+              transition: 'background-color 0.2s'
+            }}
+            onMouseOver={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#5a67d8'}
+            onMouseOut={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#667eea'}
+          >
+            Crear cuenta
+          </button>
+        </form>
+      </div>
+
+      {/* Right Side - Image */}
+      <div style={{
+        flex: 1,
+        backgroundImage: 'url("https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        position: 'relative'
+      }}>
+        <div style={{
+          position: 'absolute',
+          inset: '0',
+          background: 'linear-gradient(45deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2))'
+        }} />
+      </div>
+    </div>
+  );
+};
+
+export default UserRegisterPage;
