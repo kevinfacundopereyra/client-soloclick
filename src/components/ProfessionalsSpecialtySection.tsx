@@ -1,5 +1,5 @@
-import ProfessionalCard from "./../professionals/components/ProfessionalCard";
-import { useProfessionalsBySpecialty } from "./../professionals/hooks/useProfessionalsBySpecialty";
+import ProfessionalCard from "../professionals/components/ProfessionalCard";
+import { useProfessionalsBySpecialty } from "../professionals/hooks/useProfessionalsBySpecialty";
 
 interface ProfessionalsSpecialtySectionProps {
   specialty: string;

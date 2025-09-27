@@ -1,6 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProfessionalsHome from "./professionals/pages/ProfessionalsHome";
 import ProfessionalsFeatured from "./professionals/pages/ProfessionalsFeatured";
+import ProfessionalDetail from "./professionals/pages/ProfessionalDetail";
+import ServicesSelection from "./professionals/pages/ServicesSelection";
+import ScheduleTime from "./professionals/pages/ScheduleTime";
+import BookingConfirmation from "./professionals/pages/BookingConfirmation";
 import HomePage from "./components/HomePage";
 import LoginPage from "./components/LoginPage";
 import SignInPage from "./components/SignInPage";
@@ -18,6 +22,10 @@ function App() {
         <Route path="/register/professional" element={<ProfessionalRegisterPage />} />
         <Route path="/professionals" element={<ProfessionalsHome />} />
         <Route path="/featured" element={<ProfessionalsFeatured />} />
+        <Route path="/profesional/:id" element={<ProfessionalDetail />} />
+        <Route path="/reservar/servicios/:id" element={<ServicesSelection />} />
+        <Route path="/reservar/horario/:id" element={<ScheduleTime />} />
+        <Route path="/reservar/confirmar/:id" element={<BookingConfirmation />} />
       </Routes>
     </BrowserRouter>
   );
