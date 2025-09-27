@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export interface Professional {
+  id?: string;
+  _id?: string; // ID de MongoDB
   name: string;
   email: string;
   phone: string;
@@ -8,6 +11,13 @@ export interface Professional {
   specialty: string;
   rating?: number;
   appointmentDuration: number;
+  // Campos adicionales que pueden venir del backend
+  description?: string;
+  address?: string;
+  workingHours?: string;
+  services?: string[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ProfessionalCardProps {
@@ -46,32 +56,78 @@ const badgeStyle: React.CSSProperties = {
   marginLeft: "0.5rem",
 };
 
+const buttonStyle: React.CSSProperties = {
+  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  color: "white",
+  border: "none",
+  borderRadius: "8px",
+  padding: "0.75rem 1.5rem",
+  fontSize: "1rem",
+  fontWeight: "600",
+  cursor: "pointer",
+  marginTop: "1rem",
+  width: "100%",
+  transition: "all 0.3s ease",
+};
+
 const ProfessionalCard: React.FC<ProfessionalCardProps> = ({
   professional,
-}) => (
-  <div style={cardStyle}>
-    <h3 style={titleStyle}>{professional.name}</h3>
-    <div style={infoStyle}>
-      <strong>Especialidad:</strong> {professional.specialty}
+}) => {
+  const navigate = useNavigate();
+
+  const handleContratar = () => {
+    // Usar el ObjectId real del backend (_id o id)
+    const professionalId = professional._id || professional.id;
+    
+    if (!professionalId) {
+      console.error('Professional sin ID válido:', professional);
+      alert('Error: No se puede navegar, profesional sin ID válido');
+      return;
+    }
+    
+    console.log('🔍 Navegando a profesional con ID:', professionalId);
+    navigate(`/profesional/${professionalId}`);
+  };
+
+  return (
+    <div style={cardStyle}>
+      <h3 style={titleStyle}>{professional.name}</h3>
+      <div style={infoStyle}>
+        <strong>Especialidad:</strong> {professional.specialty}
+      </div>
+      <div style={infoStyle}>
+        <strong>Ciudad:</strong> {professional.city}
+      </div>
+      <div style={infoStyle}>
+        <strong>Email:</strong> {professional.email}
+      </div>
+      <div style={infoStyle}>
+        <strong>Teléfono:</strong> {professional.phone}
+      </div>
+      <div style={infoStyle}>
+        <strong>Rating:</strong>{" "}
+        <span style={badgeStyle}>{professional.rating ?? "N/A"} ⭐</span>
+      </div>
+      <div style={infoStyle}>
+        <strong>Duración de turno:</strong>{" "}
+        <span style={badgeStyle}>{professional.appointmentDuration} min</span>
+      </div>
+      <button
+        style={buttonStyle}
+        onClick={handleContratar}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-2px)";
+          e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "none";
+        }}
+      >
+        Contratar
+      </button>
     </div>
-    <div style={infoStyle}>
-      <strong>Ciudad:</strong> {professional.city}
-    </div>
-    <div style={infoStyle}>
-      <strong>Email:</strong> {professional.email}
-    </div>
-    <div style={infoStyle}>
-      <strong>Teléfono:</strong> {professional.phone}
-    </div>
-    <div style={infoStyle}>
-      <strong>Rating:</strong>{" "}
-      <span style={badgeStyle}>{professional.rating ?? "N/A"} ⭐</span>
-    </div>
-    <div style={infoStyle}>
-      <strong>Duración de turno:</strong>{" "}
-      <span style={badgeStyle}>{professional.appointmentDuration} min</span>
-    </div>
-  </div>
-);
+  );
+};
 
 export default ProfessionalCard;

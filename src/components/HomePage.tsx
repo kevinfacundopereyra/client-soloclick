@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import ProfessionalsSpecialtySection from "./ProfessionalsSpecialtySection";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ const HomePage = () => {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <button
+            onClick={() => navigate('/login')}
             style={{
               background: "transparent",
               border: "1px solid #4a5568",
@@ -43,10 +45,10 @@ const HomePage = () => {
               cursor: "pointer",
             }}
           >
-            Registra tu negocio
+            Registrarse
           </button>
           <button
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/signin')}
             style={{
               background: "transparent",
               border: "1px solid #4a5568",
@@ -211,44 +213,78 @@ const HomePage = () => {
           style={{
             color: "white",
             fontSize: "1.1rem",
-            marginBottom: "2rem",
+            marginBottom: "4rem",
             fontWeight: "500",
           }}
         >
           <span style={{ fontWeight: "bold", fontSize: "1.3rem" }}>12.050</span>{" "}
           citas reservadas hoy
         </div>
-
-        {/* App Download */}
-        <button
-          style={{
-            background: "rgba(255, 255, 255, 0.2)",
-            border: "1px solid rgba(255, 255, 255, 0.3)",
-            color: "white",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "25px",
-            fontSize: "1rem",
-            cursor: "pointer",
-            backdropFilter: "blur(10px)",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-          }}
-        >
-          Obtener la app 📱
-        </button>
-
-        {/* Footer Note */}
-        <footer
-          style={{
-            marginTop: "4rem",
-            color: "rgba(255, 255, 255, 0.7)",
-            fontSize: "0.9rem",
-          }}
-        >
-          &copy; 2024 soloclick. Todos los derechos reservados.
-        </footer>
       </main>
+
+      {/* Professional Sections */}
+      <div style={{ 
+        width: '100%',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      }}>
+        {/* Sección de Barberías */}
+        <ProfessionalsSpecialtySection 
+          specialty="Barbería"
+          title="Barberías"
+          maxItems={4}
+        />
+
+        {/* Sección de Manicure */}
+        <ProfessionalsSpecialtySection 
+          specialty="Manicura"
+          title="Manicure"
+          maxItems={4}
+        />
+
+        {/* Sección de Peluquerías */}
+        <ProfessionalsSpecialtySection 
+          specialty="Peluquería"
+          title="Peluquerías"
+          maxItems={4}
+        />
+
+        {/* Footer Section */}
+        <div style={{
+          padding: '4rem 2rem',
+          textAlign: 'center'
+        }}>
+          {/* App Download */}
+          <button
+            style={{
+              background: "rgba(255, 255, 255, 0.2)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              color: "white",
+              padding: "0.75rem 1.5rem",
+              borderRadius: "25px",
+              fontSize: "1rem",
+              cursor: "pointer",
+              backdropFilter: "blur(10px)",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              margin: "0 auto"
+            }}
+          >
+            Obtener la app 📱
+          </button>
+          
+          {/* Footer Note */}
+          <footer
+            style={{
+              marginTop: "4rem",
+              color: "rgba(255, 255, 255, 0.7)",
+              fontSize: "0.9rem",
+            }}
+          >
+            &copy; 2024 soloclick. Todos los derechos reservados.
+          </footer>
+        </div>
+      </div>
     </div>
   );
 };

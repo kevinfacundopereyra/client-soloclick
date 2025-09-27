@@ -1,29 +1,53 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { authService } from "../services/authService";
+import type { UserRegisterData } from "../services/authService";
 
 const UserRegisterPage = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<UserRegisterData>({
     name: '',
     email: '',
     password: '',
     phone: '',
     city: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Limpiar error cuando el usuario empiece a escribir
+    if (error) setError(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Registro de usuario:', formData);
-    // Aquí iría la lógica de registro
-    alert('¡Registro exitoso! (Demo)');
-    navigate('/professionals');
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await authService.registerUser(formData);
+      
+      if (response.success) {
+        // Guardar sesión si el backend devuelve token
+        if (response.token && response.user) {
+          authService.saveSession(response.token, response.user);
+        }
+        
+        alert('¡Registro exitoso!');
+        navigate('/professionals');
+      } else {
+        setError(response.message || 'Error en el registro');
+      }
+    } catch (error: any) {
+      setError(error.message || 'Error de conexión');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -76,6 +100,21 @@ const UserRegisterPage = () => {
         }}>
           Crea tu cuenta para reservar servicios de belleza
         </p>
+
+        {/* Error Message */}
+        {error && (
+          <div style={{
+            background: '#fed7d7',
+            border: '1px solid #feb2b2',
+            color: '#c53030',
+            padding: '0.75rem',
+            borderRadius: '8px',
+            marginBottom: '1rem',
+            textAlign: 'center'
+          }}>
+            {error}
+          </div>
+        )}
 
         {/* Register Form */}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -231,22 +270,23 @@ const UserRegisterPage = () => {
 
           <button
             type="submit"
+            disabled={loading}
             style={{
-              background: '#667eea',
+              background: loading ? '#a0aec0' : '#667eea',
               color: 'white',
               border: 'none',
               padding: '0.875rem',
               borderRadius: '8px',
               fontSize: '1rem',
               fontWeight: 'bold',
-              cursor: 'pointer',
+              cursor: loading ? 'not-allowed' : 'pointer',
               marginTop: '1rem',
               transition: 'background-color 0.2s'
             }}
-            onMouseOver={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#5a67d8'}
-            onMouseOut={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#667eea'}
+            onMouseOver={(e) => !loading && ((e.target as HTMLButtonElement).style.backgroundColor = '#5a67d8')}
+            onMouseOut={(e) => !loading && ((e.target as HTMLButtonElement).style.backgroundColor = '#667eea')}
           >
-            Crear cuenta
+            {loading ? 'Creando cuenta...' : 'Crear cuenta'}
           </button>
         </form>
       </div>
