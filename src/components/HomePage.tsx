@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import ProfessionalsSpecialtySection from "./ProfessionalsSpecialtySection";
+import UserProfile from "./UserProfile";
+import authService from "../services/authService";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -12,7 +14,6 @@ const HomePage = () => {
           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
     >
-      {/* Header */}
       <header
         style={{
           display: "flex",
@@ -33,36 +34,55 @@ const HomePage = () => {
           soloclick
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <button
-            onClick={() => navigate('/login')}
-            style={{
-              background: "transparent",
-              border: "1px solid #4a5568",
-              color: "#4a5568",
-              padding: "0.5rem 1rem",
-              borderRadius: "6px",
-              fontSize: "0.9rem",
-              cursor: "pointer",
-            }}
-          >
-            Registrarse
-          </button>
-          <button
-            onClick={() => navigate('/signin')}
-            style={{
-              background: "transparent",
-              border: "1px solid #4a5568",
-              color: "#4a5568",
-              padding: "0.5rem 1rem",
-              borderRadius: "6px",
-              fontSize: "0.9rem",
-              cursor: "pointer",
-            }}
-          >
-            Iniciar sesión
-          </button>
+          {/*
+            Si el usuario está autenticado y tiene nombre, muestra el perfil arriba a la derecha.
+            Si no hay sesión, muestra los botones de registro e inicio de sesión.
+          */}
+          {authService.isAuthenticated() ? (
+            (() => {
+              const user = JSON.parse(localStorage.getItem('user') || '{}');
+              if (user && user.name) {
+                // Muestra el perfil con el nombre y tipo (por defecto 'user' si no existe)
+                return <UserProfile name={user.name} role={user.userType || 'user'} avatarUrl={user.avatarUrl} />;
+              }
+              return null;
+            })()
+          ) : (
+            <>
+              {/* Botón para registrarse */}
+              <button
+                onClick={() => navigate('/login')}
+                style={{
+                  background: "transparent",
+                  border: "1px solid #4a5568",
+                  color: "#4a5568",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "6px",
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                }}
+              >
+                Registrarse
+              </button>
+              {/* Botón para iniciar sesión */}
+              <button
+                onClick={() => navigate('/signin')}
+                style={{
+                  background: "transparent",
+                  border: "1px solid #4a5568",
+                  color: "#4a5568",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "6px",
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                }}
+              >
+                Iniciar sesión
+              </button>
+            </>
+          )}
         </div>
-      </header>
+  </header>
 
       {/* Main Content */}
       <main

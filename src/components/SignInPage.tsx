@@ -27,18 +27,21 @@ const SignInPage = () => {
 
     try {
       const response = await authService.login(formData.email, formData.password);
-      
+      console.log('Respuesta del backend:', response);
       if (response.success) {
         // Guardar sesión si el backend devuelve token
         if (response.token && response.user) {
           authService.saveSession(response.token, response.user);
+          console.log('Usuario guardado en localStorage:', localStorage.getItem('user'));
+        } else {
+          console.warn('No se recibió token o usuario en la respuesta');
         }
-        
         alert('¡Inicio de sesión exitoso!');
-        // Redireccionar según el tipo de usuario o a una página por defecto
-        navigate('/professionals');
+        // Redireccionar a la página principal (Home)
+        navigate('/');
       } else {
         setError(response.message || 'Error en el inicio de sesión');
+        console.error('Error en el inicio de sesión:', response.message);
       }
     } catch (error: any) {
       setError(error.message || 'Error de conexión');

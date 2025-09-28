@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProfilePage from "./components/ProfilePage";
 import ProfessionalsHome from "./professionals/pages/ProfessionalsHome";
 import ProfessionalsFeatured from "./professionals/pages/ProfessionalsFeatured";
 import ProfessionalDetail from "./professionals/pages/ProfessionalDetail";
@@ -19,13 +20,21 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/register/user" element={<UserRegisterPage />} />
-        <Route path="/register/professional" element={<ProfessionalRegisterPage />} />
+        <Route
+          path="/register/professional"
+          element={<ProfessionalRegisterPage />}
+        />
         <Route path="/professionals" element={<ProfessionalsHome />} />
         <Route path="/featured" element={<ProfessionalsFeatured />} />
+        <Route path="/featured/:id" element={<ProfessionalsFeatured />} />
         <Route path="/profesional/:id" element={<ProfessionalDetail />} />
         <Route path="/reservar/servicios/:id" element={<ServicesSelection />} />
         <Route path="/reservar/horario/:id" element={<ScheduleTime />} />
-        <Route path="/reservar/confirmar/:id" element={<BookingConfirmation />} />
+        <Route
+          path="/reservar/confirmar/:id"
+          element={<BookingConfirmation />}
+        />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );
