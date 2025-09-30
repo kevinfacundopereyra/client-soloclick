@@ -10,6 +10,7 @@ import LoginPage from "./components/LoginPage";
 import SignInPage from "./components/SignInPage";
 import UserRegisterPage from "./components/UserRegisterPage";
 import ProfessionalRegisterPage from "./components/ProfessionalRegisterPage";
+import ProfilePage from "./components/ProfilePage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/reservar/servicios/:id" element={<ServicesSelection />} />
         <Route path="/reservar/horario/:id" element={<ScheduleTime />} />
         <Route path="/reservar/confirmar/:id" element={<BookingConfirmation />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );

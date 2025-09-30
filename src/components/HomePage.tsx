@@ -5,6 +5,7 @@ import { useProfessionals } from "../professionals/hooks/useProfessionals";
 import ProfessionalCard from "../professionals/components/ProfessionalCard";
 import { authService } from "../services/authService";
 import { useState, useEffect } from "react";
+import UserProfile from "./UserProfile";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -75,35 +76,13 @@ const HomePage = () => {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           {isAuthenticated && user ? (
-            // Usuario autenticado - mostrar perfil y logout
+            // Usuario autenticado - mostrar perfil usando UserProfile component
             <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                padding: "0.5rem 1rem",
-                background: "rgba(102, 126, 234, 0.1)",
-                borderRadius: "20px",
-                cursor: "pointer"
-              }}>
-                <div style={{
-                  width: "32px",
-                  height: "32px",
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: "0.9rem"
-                }}>
-                  {user.name?.charAt(0).toUpperCase() || 'U'}
-                </div>
-                <span style={{ color: "#4a5568", fontWeight: "500" }}>
-                  {user.name || 'Usuario'}
-                </span>
-              </div>
+              <UserProfile 
+                name={user.name || 'Usuario'} 
+                role={user.userType || 'user'} 
+                avatarUrl={user.avatarUrl} 
+              />
               <button
                 onClick={handleLogout}
                 style={{

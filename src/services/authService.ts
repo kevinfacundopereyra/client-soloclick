@@ -84,7 +84,7 @@ export const authService = {
       const response = await api.post('/api/auth/login', { email, password });
       return {
         success: true,
-        message: 'Login exitoso',
+        message: 'Login exitoso', // En el front este mensaje se muestra cuando no puede iniciar sesión
         user: response.data.user,
         token: response.data.token
       };

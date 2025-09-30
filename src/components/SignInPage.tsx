@@ -28,17 +28,22 @@ const SignInPage = () => {
     try {
       const response = await authService.login(formData.email, formData.password);
       
-      if (response.success) {
-        // Guardar sesión si el backend devuelve token
-        if (response.token && response.user) {
-          authService.saveSession(response.token, response.user);
-        }
-        
+      // Logs para debugging
+      console.log('Backend response:', response);
+      
+      // Validación más estricta: SOLO éxito si tiene success=true Y token Y usuario
+      if (response.success && response.token && response.user) {
+        console.log('✅ Login exitoso - guardando sesión');
+        authService.saveSession(response.token, response.user);
         alert('¡Inicio de sesión exitoso!');
-        // Redireccionar a la página principal
         navigate('/');
       } else {
-        setError(response.message || 'Error en el inicio de sesión');
+        // Cualquier otra cosa es error
+        console.log('❌ Login falló - falta success, token o user');
+        console.log('- success:', response.success);
+        console.log('- token:', !!response.token);
+        console.log('- user:', !!response.user);
+        setError(response.message || 'Credenciales incorrectas');
       }
     } catch (error: any) {
       setError(error.message || 'Error de conexión');
