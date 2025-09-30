@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useFavorites } from "../hooks/useFavorites";
 
 export interface Professional {
   id?: string;
@@ -70,24 +71,64 @@ const buttonStyle: React.CSSProperties = {
   transition: "all 0.3s ease",
 };
 
+const favoriteButtonStyle: React.CSSProperties = {
+  background: "transparent",
+  color: "#f59e0b",
+  border: "2px solid #f59e0b",
+  borderRadius: "8px",
+  padding: "0.75rem 1.5rem",
+  fontSize: "1rem",
+  fontWeight: "600",
+  cursor: "pointer",
+  marginTop: "0.5rem",
+  width: "100%",
+  transition: "all 0.3s ease",
+};
+
+const favoriteActiveButtonStyle: React.CSSProperties = {
+  ...favoriteButtonStyle,
+  background: "#f59e0b",
+  color: "white",
+};
+
 const ProfessionalCard: React.FC<ProfessionalCardProps> = ({
   professional,
 }) => {
   const navigate = useNavigate();
+  const { isFavorite, toggleFavorite, isLoading } = useFavorites();
 
   const handleContratar = () => {
     // Usar el ObjectId real del backend (_id o id)
     const professionalId = professional._id || professional.id;
-    
+
     if (!professionalId) {
-      console.error('Professional sin ID válido:', professional);
-      alert('Error: No se puede navegar, profesional sin ID válido');
+      console.error("Professional sin ID válido:", professional);
+      alert("Error: No se puede navegar, profesional sin ID válido");
       return;
     }
-    
-    console.log('🔍 Navegando a profesional con ID:', professionalId);
+
+    console.log("🔍 Navegando a profesional con ID:", professionalId);
     navigate(`/profesional/${professionalId}`);
   };
+
+  const handleToggleFavorites = async () => {
+    const professionalId = professional._id || professional.id;
+
+    if (!professionalId) {
+      console.error("Professional sin ID válido:", professional);
+      alert("Error: No se puede agregar a favoritos, profesional sin ID válido");
+      return;
+    }
+
+    const success = await toggleFavorite(professionalId);
+    if (success) {
+      console.log("✅ Favorito actualizado correctamente");
+    }
+  };
+
+  // Obtener el ID del profesional para verificar si es favorito
+  const professionalId = professional._id || professional.id;
+  const isCurrentlyFavorite = professionalId ? isFavorite(professionalId) : false;
 
   return (
     <div style={cardStyle}>
@@ -125,6 +166,27 @@ const ProfessionalCard: React.FC<ProfessionalCardProps> = ({
         }}
       >
         Contratar
+      </button>
+
+      <button
+        style={isCurrentlyFavorite ? favoriteActiveButtonStyle : favoriteButtonStyle}
+        onClick={handleToggleFavorites}
+        disabled={isLoading}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-2px)";
+          e.currentTarget.style.boxShadow = "0 4px 12px rgba(245, 158, 11, 0.3)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "none";
+        }}
+      >
+        {isLoading 
+          ? "..." 
+          : isCurrentlyFavorite 
+            ? "⭐ Favorito" 
+            : "☆ Agregar a favoritos"
+        }
       </button>
     </div>
   );
