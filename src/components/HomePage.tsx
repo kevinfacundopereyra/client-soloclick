@@ -1,8 +1,49 @@
 import { useNavigate } from "react-router-dom";
 import ProfessionalsSpecialtySection from "./ProfessionalsSpecialtySection";
+import { useFavorites } from "../professionals/hooks/useFavorites";
+import { useProfessionals } from "../professionals/hooks/useProfessionals";
+import ProfessionalCard from "../professionals/components/ProfessionalCard";
+import { authService } from "../services/authService";
+import { useState, useEffect } from "react";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  // Verificar autenticación al cargar
+  useEffect(() => {
+    const checkAuth = () => {
+      const authenticated = authService.isAuthenticated();
+      setIsAuthenticated(authenticated);
+      
+      if (authenticated) {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+          setUser(JSON.parse(userData));
+        }
+      }
+    };
+    
+    checkAuth();
+  }, []);
+
+  // Solo cargar favoritos si el usuario está autenticado
+  const { favorites } = useFavorites();
+  const { professionals } = useProfessionals();
+
+  // Filtrar solo los profesionales favoritos
+  const favoriteProfessionals = isAuthenticated ? professionals.filter(professional => {
+    const professionalId = professional._id || professional.id;
+    return professionalId && favorites.includes(professionalId);
+  }) : [];
+
+  const handleLogout = () => {
+    authService.logout();
+    setIsAuthenticated(false);
+    setUser(null);
+    navigate('/');
+  };
   return (
     <div
       style={{
@@ -33,34 +74,84 @@ const HomePage = () => {
           soloclick
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <button
-            onClick={() => navigate('/login')}
-            style={{
-              background: "transparent",
-              border: "1px solid #4a5568",
-              color: "#4a5568",
-              padding: "0.5rem 1rem",
-              borderRadius: "6px",
-              fontSize: "0.9rem",
-              cursor: "pointer",
-            }}
-          >
-            Registrarse
-          </button>
-          <button
-            onClick={() => navigate('/signin')}
-            style={{
-              background: "transparent",
-              border: "1px solid #4a5568",
-              color: "#4a5568",
-              padding: "0.5rem 1rem",
-              borderRadius: "6px",
-              fontSize: "0.9rem",
-              cursor: "pointer",
-            }}
-          >
-            Iniciar sesión
-          </button>
+          {isAuthenticated && user ? (
+            // Usuario autenticado - mostrar perfil y logout
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                padding: "0.5rem 1rem",
+                background: "rgba(102, 126, 234, 0.1)",
+                borderRadius: "20px",
+                cursor: "pointer"
+              }}>
+                <div style={{
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "white",
+                  fontWeight: "bold",
+                  fontSize: "0.9rem"
+                }}>
+                  {user.name?.charAt(0).toUpperCase() || 'U'}
+                </div>
+                <span style={{ color: "#4a5568", fontWeight: "500" }}>
+                  {user.name || 'Usuario'}
+                </span>
+              </div>
+              <button
+                onClick={handleLogout}
+                style={{
+                  background: "transparent",
+                  border: "1px solid #e53e3e",
+                  color: "#e53e3e",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "6px",
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                }}
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          ) : (
+            // Usuario no autenticado - mostrar botones de login
+            <>
+              <button
+                onClick={() => navigate('/login')}
+                style={{
+                  background: "transparent",
+                  border: "1px solid #4a5568",
+                  color: "#4a5568",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "6px",
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                }}
+              >
+                Registrarse
+              </button>
+              <button
+                onClick={() => navigate('/signin')}
+                style={{
+                  background: "transparent",
+                  border: "1px solid #4a5568",
+                  color: "#4a5568",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "6px",
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                }}
+              >
+                Iniciar sesión
+              </button>
+            </>
+          )}
         </div>
       </header>
 
@@ -227,6 +318,38 @@ const HomePage = () => {
         width: '100%',
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
       }}>
+        {/* Sección de Favoritos - Solo aparece si hay favoritos y está autenticado */}
+        {isAuthenticated && favoriteProfessionals.length > 0 && (
+          <div style={{ 
+            padding: '2rem',
+            marginBottom: '2rem'
+          }}>
+            <h2 style={{
+              fontSize: '1.8rem',
+              fontWeight: 'bold',
+              color: 'white',
+              marginBottom: '1.5rem',
+              textAlign: 'center'
+            }}>
+              Tus Favoritos
+            </h2>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+              gap: '1rem',
+              maxWidth: '1200px',
+              margin: '0 auto'
+            }}>
+              {favoriteProfessionals.map((professional) => (
+                <ProfessionalCard 
+                  key={professional._id || professional.id} 
+                  professional={professional} 
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Sección de Barberías */}
         <ProfessionalsSpecialtySection 
           specialty="Barbería"

@@ -35,8 +35,8 @@ const SignInPage = () => {
         }
         
         alert('¡Inicio de sesión exitoso!');
-        // Redireccionar según el tipo de usuario o a una página por defecto
-        navigate('/professionals');
+        // Redireccionar a la página principal
+        navigate('/');
       } else {
         setError(response.message || 'Error en el inicio de sesión');
       }
