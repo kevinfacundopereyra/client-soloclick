@@ -31,7 +31,7 @@ const ProfessionalsSpecialtySection = ({
   }
 
   // Limitar la cantidad de profesionales mostrados
-  const displayedProfessionals = professionals.slice(0, maxItems);
+  const displayedProfessionals = professionals.slice(0, 3); // se cambio maxItems a 3 items para que sea vea mas prolijo por ahora
 
   return (
     <section style={{ 
