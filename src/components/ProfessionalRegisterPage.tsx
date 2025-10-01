@@ -6,38 +6,39 @@ import type { ProfessionalRegisterData } from "../services/authService";
 const ProfessionalRegisterPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<ProfessionalRegisterData>({
-    name: '',
-    email: '',
-    password: '',
-    phone: '',
-    city: '',
-    specialty: ''
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+    city: "",
+    specialty: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const specialties = [
-    'Peluquería',
-    'Barbería',
-    'Manicura/Pedicura',
-    'Estética Facial',
-    'Masajes',
-    'Depilación',
-    'Cejas y Pestañas',
-    'Tatuajes',
-    'Medicina Estética',
-    'Dermatología',
-    'Fisioterapia',
-    'Otro'
+    "Peluquería",
+    "Barbería",
+    "Manicura/Pedicura",
+    "Estética Facial",
+    "Masajes",
+    "Depilación",
+    "Cejas y Pestañas",
+    "Tatuajes",
+    "Medicina Estética",
+    "Dermatología",
+    "Fisioterapia",
+    "Otro",
   ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
-    // Limpiar error cuando el usuario empiece a escribir
-    if (error) setError(null);
+    if (error) setError(null); // limpiar error al escribir
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,100 +48,118 @@ const ProfessionalRegisterPage = () => {
 
     try {
       const response = await authService.registerProfessional(formData);
-      
-      if (response.success) {
-        // Guardar sesión si el backend devuelve token
-        if (response.token && response.user) {
-          authService.saveSession(response.token, response.user);
-        }
-        
-        alert('¡Registro de profesional exitoso!');
-        navigate('/featured');
-      } else {
-        setError(response.message || 'Error en el registro');
+
+      const professionalId = response.user?._id;
+      if (!professionalId) {
+        throw new Error("No se recibió el ID del profesional");
       }
+
+      if (response.token) {
+        authService.saveSession(response.token, response.user);
+      }
+
+      alert("¡Registro de profesional exitoso!");
+      navigate(`/featured/${professionalId}`);
     } catch (error: any) {
-      setError(error.message || 'Error de conexión');
+      console.error(error);
+      setError(error.message || "Error en el registro");
+      alert("Error en el registro");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      minHeight: '100vh',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    }}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      }}
+    >
       {/* Left Side - Register Form */}
-      <div style={{
-        flex: 1,
-        padding: '2rem',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        maxWidth: '500px',
-        margin: '0 auto'
-      }}>
+      <div
+        style={{
+          flex: 1,
+          padding: "2rem",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          maxWidth: "500px",
+          margin: "0 auto",
+        }}
+      >
         {/* Header with back arrow */}
-        <div 
-          onClick={() => navigate('/login')}
+        <div
+          onClick={() => navigate("/login")}
           style={{
-            position: 'absolute',
-            top: '2rem',
-            left: '2rem',
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-            color: '#4a5568'
+            position: "absolute",
+            top: "2rem",
+            left: "2rem",
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            color: "#4a5568",
           }}
         >
-          <span style={{ fontSize: '1.5rem', marginRight: '0.5rem' }}>←</span>
+          <span style={{ fontSize: "1.5rem", marginRight: "0.5rem" }}>←</span>
         </div>
 
         {/* Title */}
-        <h1 style={{
-          fontSize: '2rem',
-          fontWeight: 'bold',
-          color: '#2d3748',
-          marginBottom: '1rem',
-          textAlign: 'center'
-        }}>
+        <h1
+          style={{
+            fontSize: "2rem",
+            fontWeight: "bold",
+            color: "#2d3748",
+            marginBottom: "1rem",
+            textAlign: "center",
+          }}
+        >
           Registro de Profesional
         </h1>
 
-        <p style={{
-          textAlign: 'center',
-          color: '#718096',
-          marginBottom: '2rem'
-        }}>
+        <p
+          style={{
+            textAlign: "center",
+            color: "#718096",
+            marginBottom: "2rem",
+          }}
+        >
           Únete a nuestra plataforma y haz crecer tu negocio
         </p>
 
         {/* Error Message */}
         {error && (
-          <div style={{
-            background: '#fed7d7',
-            border: '1px solid #feb2b2',
-            color: '#c53030',
-            padding: '0.75rem',
-            borderRadius: '8px',
-            marginBottom: '1rem',
-            textAlign: 'center'
-          }}>
+          <div
+            style={{
+              background: "#fed7d7",
+              border: "1px solid #feb2b2",
+              color: "#c53030",
+              padding: "0.75rem",
+              borderRadius: "8px",
+              marginBottom: "1rem",
+              textAlign: "center",
+            }}
+          >
             {error}
           </div>
         )}
 
         {/* Register Form */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+        >
           <div>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              color: '#2d3748',
-              fontWeight: '500'
-            }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                color: "#2d3748",
+                fontWeight: "500",
+              }}
+            >
               Nombre completo
             </label>
             <input
@@ -150,27 +169,29 @@ const ProfessionalRegisterPage = () => {
               onChange={handleChange}
               required
               style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                outline: 'none',
-                transition: 'border-color 0.2s'
+                width: "100%",
+                padding: "0.75rem",
+                border: "1px solid #e2e8f0",
+                borderRadius: "8px",
+                fontSize: "1rem",
+                outline: "none",
+                transition: "border-color 0.2s",
               }}
-              onFocus={(e) => e.target.style.borderColor = '#667eea'}
-              onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
+              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
               placeholder="Tu nombre completo"
             />
           </div>
 
           <div>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              color: '#2d3748',
-              fontWeight: '500'
-            }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                color: "#2d3748",
+                fontWeight: "500",
+              }}
+            >
               Email
             </label>
             <input
@@ -180,27 +201,29 @@ const ProfessionalRegisterPage = () => {
               onChange={handleChange}
               required
               style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                outline: 'none',
-                transition: 'border-color 0.2s'
+                width: "100%",
+                padding: "0.75rem",
+                border: "1px solid #e2e8f0",
+                borderRadius: "8px",
+                fontSize: "1rem",
+                outline: "none",
+                transition: "border-color 0.2s",
               }}
-              onFocus={(e) => e.target.style.borderColor = '#667eea'}
-              onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
+              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
               placeholder="tu@email.com"
             />
           </div>
 
           <div>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              color: '#2d3748',
-              fontWeight: '500'
-            }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                color: "#2d3748",
+                fontWeight: "500",
+              }}
+            >
               Contraseña
             </label>
             <input
@@ -210,27 +233,29 @@ const ProfessionalRegisterPage = () => {
               onChange={handleChange}
               required
               style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                outline: 'none',
-                transition: 'border-color 0.2s'
+                width: "100%",
+                padding: "0.75rem",
+                border: "1px solid #e2e8f0",
+                borderRadius: "8px",
+                fontSize: "1rem",
+                outline: "none",
+                transition: "border-color 0.2s",
               }}
-              onFocus={(e) => e.target.style.borderColor = '#667eea'}
-              onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
+              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
               placeholder="Mínimo 6 caracteres"
             />
           </div>
 
           <div>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              color: '#2d3748',
-              fontWeight: '500'
-            }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                color: "#2d3748",
+                fontWeight: "500",
+              }}
+            >
               Teléfono
             </label>
             <input
@@ -240,27 +265,29 @@ const ProfessionalRegisterPage = () => {
               onChange={handleChange}
               required
               style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                outline: 'none',
-                transition: 'border-color 0.2s'
+                width: "100%",
+                padding: "0.75rem",
+                border: "1px solid #e2e8f0",
+                borderRadius: "8px",
+                fontSize: "1rem",
+                outline: "none",
+                transition: "border-color 0.2s",
               }}
-              onFocus={(e) => e.target.style.borderColor = '#667eea'}
-              onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
+              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
               placeholder="+54 11 1234-5678"
             />
           </div>
 
           <div>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              color: '#2d3748',
-              fontWeight: '500'
-            }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                color: "#2d3748",
+                fontWeight: "500",
+              }}
+            >
               Ciudad
             </label>
             <input
@@ -270,27 +297,29 @@ const ProfessionalRegisterPage = () => {
               onChange={handleChange}
               required
               style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                outline: 'none',
-                transition: 'border-color 0.2s'
+                width: "100%",
+                padding: "0.75rem",
+                border: "1px solid #e2e8f0",
+                borderRadius: "8px",
+                fontSize: "1rem",
+                outline: "none",
+                transition: "border-color 0.2s",
               }}
-              onFocus={(e) => e.target.style.borderColor = '#667eea'}
-              onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
+              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
               placeholder="Tu ciudad"
             />
           </div>
 
           <div>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              color: '#2d3748',
-              fontWeight: '500'
-            }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                color: "#2d3748",
+                fontWeight: "500",
+              }}
+            >
               Especialidad
             </label>
             <select
@@ -299,17 +328,17 @@ const ProfessionalRegisterPage = () => {
               onChange={handleChange}
               required
               style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                outline: 'none',
-                transition: 'border-color 0.2s',
-                backgroundColor: 'white'
+                width: "100%",
+                padding: "0.75rem",
+                border: "1px solid #e2e8f0",
+                borderRadius: "8px",
+                fontSize: "1rem",
+                outline: "none",
+                transition: "border-color 0.2s",
+                backgroundColor: "white",
               }}
-              onFocus={(e) => e.target.style.borderColor = '#667eea'}
-              onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
+              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
             >
               <option value="">Selecciona tu especialidad</option>
               {specialties.map((specialty) => (
@@ -324,38 +353,52 @@ const ProfessionalRegisterPage = () => {
             type="submit"
             disabled={loading}
             style={{
-              background: loading ? '#a0aec0' : '#667eea',
-              color: 'white',
-              border: 'none',
-              padding: '0.875rem',
-              borderRadius: '8px',
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              marginTop: '1rem',
-              transition: 'background-color 0.2s'
+              background: loading ? "#a0aec0" : "#667eea",
+              color: "white",
+              border: "none",
+              padding: "0.875rem",
+              borderRadius: "8px",
+              fontSize: "1rem",
+              fontWeight: "bold",
+              cursor: loading ? "not-allowed" : "pointer",
+              marginTop: "1rem",
+              transition: "background-color 0.2s",
             }}
-            onMouseOver={(e) => !loading && ((e.target as HTMLButtonElement).style.backgroundColor = '#5a67d8')}
-            onMouseOut={(e) => !loading && ((e.target as HTMLButtonElement).style.backgroundColor = '#667eea')}
+            onMouseOver={(e) =>
+              !loading &&
+              ((e.target as HTMLButtonElement).style.backgroundColor =
+                "#5a67d8")
+            }
+            onMouseOut={(e) =>
+              !loading &&
+              ((e.target as HTMLButtonElement).style.backgroundColor =
+                "#667eea")
+            }
           >
-            {loading ? 'Creando cuenta...' : 'Crear cuenta profesional'}
+            {loading ? "Creando cuenta..." : "Crear cuenta profesional"}
           </button>
         </form>
       </div>
 
       {/* Right Side - Image */}
-      <div style={{
-        flex: 1,
-        backgroundImage: 'url("https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        position: 'relative'
-      }}>
-        <div style={{
-          position: 'absolute',
-          inset: '0',
-          background: 'linear-gradient(45deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2))'
-        }} />
+      <div
+        style={{
+          flex: 1,
+          backgroundImage:
+            'url("https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          position: "relative",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            inset: "0",
+            background:
+              "linear-gradient(45deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2))",
+          }}
+        />
       </div>
     </div>
   );

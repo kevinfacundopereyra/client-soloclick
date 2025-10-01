@@ -1,4 +1,5 @@
 import React from "react";
+
 import { useNavigate } from "react-router-dom";
 import authService from "../services/authService";
 
@@ -14,6 +15,7 @@ export interface User {
 }
 
 const ProfilePage: React.FC = () => {
+
   const navigate = useNavigate();
   const user = authService.isAuthenticated()
     ? JSON.parse(localStorage.getItem("user") || "{}")
@@ -209,3 +211,4 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+

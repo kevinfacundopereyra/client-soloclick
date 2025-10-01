@@ -1,11 +1,14 @@
 import React from "react";
+
 import { useNavigate } from "react-router-dom";
+
 
 interface UserProfileProps {
   name: string;
   role: "user" | "professional";
   avatarUrl?: string;
 }
+
 
 const UserProfile: React.FC<UserProfileProps> = ({ name, role, avatarUrl }) => {
   const navigate = useNavigate();
@@ -68,9 +71,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ name, role, avatarUrl }) => {
         fontWeight: "500"
       }}>
         {role === "user" ? "Cliente" : "Pro"}
+
       </span>
     </div>
   );
 };
 
+
 export default UserProfile;
+
