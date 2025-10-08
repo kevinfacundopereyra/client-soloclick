@@ -1,4 +1,5 @@
 import React from "react";
+
 import { useNavigate } from "react-router-dom";
 import authService from "../services/authService";
 import useFeaturedPayments from "../hooks/useFeaturedPayments";
@@ -16,6 +17,7 @@ export interface User {
 }
 
 const ProfilePage: React.FC = () => {
+
   const navigate = useNavigate();
   const { paymentMethods, featuredPayments, isFeatured, toggleFeatured } = useFeaturedPayments();
   const user = authService.isAuthenticated()
@@ -339,3 +341,4 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+
