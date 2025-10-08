@@ -48,22 +48,37 @@ const ProfessionalRegisterPage = () => {
 
     try {
       const response = await authService.registerProfessional(formData);
-
-      const professionalId = response.user?._id;
-      if (!professionalId) {
-        throw new Error("No se recibió el ID del profesional");
-      }
-
-      if (response.token) {
+      console.log('Registro profesional response:', response);
+      
+      // Validación más estricta: SOLO éxito si tiene success=true Y token Y usuario
+      if (response.success && response.token && response.user) {
+        console.log('✅ Registro profesional exitoso - iniciando sesión automáticamente');
+        
+        // Guardar sesión automáticamente
         authService.saveSession(response.token, response.user);
+        
+        // Verificar que se guardó correctamente
+        const isAuthenticated = authService.isAuthenticated();
+        console.log('✅ Sesión profesional iniciada:', isAuthenticated);
+        
+        alert('¡Registro de profesional exitoso! Bienvenido a SoloClick');
+        
+        // Redirigir a la página principal (cambio de /featured a /)
+        navigate('/');
+      } else {
+        // Mostrar error específico
+        console.log('❌ Registro profesional falló - falta success, token o user');
+        console.log('- success:', response.success);
+        console.log('- token:', !!response.token);
+        console.log('- user:', !!response.user);
+        setError(response.message || 'Error en el registro de profesional. Intenta nuevamente.');
       }
 
       alert("¡Registro de profesional exitoso!");
       navigate(`/featured/${professionalId}`);
     } catch (error: any) {
-      console.error(error);
-      setError(error.message || "Error en el registro");
-      alert("Error en el registro");
+      console.error('❌ Error en registro profesional:', error);
+      setError(error.message || 'Error de conexión. Verifica tu internet.');
     } finally {
       setLoading(false);
     }
