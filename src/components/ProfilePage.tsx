@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../services/authService";
+import useFeaturedPayments from "../hooks/useFeaturedPayments";
+import paymentMethodsService from "../services/paymentMethodsService";
 
 export interface User {
   _id: string;
@@ -15,6 +17,7 @@ export interface User {
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
+  const { paymentMethods, featuredPayments, isFeatured, toggleFeatured } = useFeaturedPayments();
   const user = authService.isAuthenticated()
     ? JSON.parse(localStorage.getItem("user") || "{}")
     : null;
@@ -177,6 +180,133 @@ const ProfilePage: React.FC = () => {
                 <span style={{ marginLeft: "0.5rem", color: "#4a5568" }}>{user.specialty}</span>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Payment Methods Section */}
+        <div style={{ marginBottom: "2rem" }}>
+          <h3 style={{ 
+            color: "#2d3748", 
+            marginBottom: "1rem",
+            fontSize: "1.3rem",
+            fontWeight: "600"
+          }}>
+            Métodos de Pago
+          </h3>
+          
+          {/* Featured Payments */}
+          {featuredPayments.length > 0 && (
+            <div style={{ marginBottom: "1.5rem" }}>
+              <h4 style={{ 
+                color: "#667eea", 
+                marginBottom: "0.75rem",
+                fontSize: "1rem",
+                fontWeight: "500"
+              }}>
+                ⭐ Destacados ({featuredPayments.length}/3)
+              </h4>
+              <div style={{ display: "grid", gap: "0.75rem" }}>
+                {featuredPayments.map((method) => (
+                  <div
+                    key={method.id}
+                    style={{
+                      padding: "1rem",
+                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      color: "white",
+                      borderRadius: "8px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center"
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <span style={{ fontSize: "1.2rem" }}>
+                        {paymentMethodsService.getPaymentIcon(method.type)}
+                      </span>
+                      <div>
+                        <div style={{ fontWeight: "600" }}>{method.name}</div>
+                        {method.isDefault && (
+                          <div style={{ fontSize: "0.8rem", opacity: 0.8 }}>
+                            Por defecto
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => toggleFeatured(method.id)}
+                      style={{
+                        background: "rgba(255,255,255,0.2)",
+                        border: "1px solid rgba(255,255,255,0.3)",
+                        color: "white",
+                        padding: "0.5rem",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        fontSize: "0.9rem"
+                      }}
+                    >
+                      ⭐ Quitar
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* All Payment Methods */}
+          <h4 style={{ 
+            color: "#4a5568", 
+            marginBottom: "0.75rem",
+            fontSize: "1rem",
+            fontWeight: "500"
+          }}>
+            Todos los métodos
+          </h4>
+          <div style={{ display: "grid", gap: "0.75rem" }}>
+            {paymentMethods.map((method) => (
+              <div
+                key={method.id}
+                style={{
+                  padding: "1rem",
+                  background: "#f8f9fa",
+                  borderRadius: "8px",
+                  border: "1px solid #e9ecef",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center"
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ fontSize: "1.2rem" }}>
+                    {paymentMethodsService.getPaymentIcon(method.type)}
+                  </span>
+                  <div>
+                    <div style={{ fontWeight: "600", color: "#2d3748" }}>
+                      {method.name}
+                    </div>
+                    {method.isDefault && (
+                      <div style={{ fontSize: "0.8rem", color: "#667eea" }}>
+                        Por defecto
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <button
+                  onClick={() => toggleFeatured(method.id)}
+                  style={{
+                    background: isFeatured(method.id) ? "#f59e0b" : "transparent",
+                    border: `1px solid ${isFeatured(method.id) ? "#f59e0b" : "#d1d5db"}`,
+                    color: isFeatured(method.id) ? "white" : "#4a5568",
+                    padding: "0.5rem 0.75rem",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    fontSize: "0.9rem",
+                    fontWeight: "500"
+                  }}
+                >
+                  {isFeatured(method.id) ? "⭐ Destacado" : "☆ Destacar"}
+                </button>
+              </div>
+            ))}
           </div>
         </div>
 

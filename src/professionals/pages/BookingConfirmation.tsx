@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { appointmentsService, type CreateAppointmentData } from "../../services/appointmentsService";
+import useFeaturedPayments from "../../hooks/useFeaturedPayments";
+import paymentMethodsService from "../../services/paymentMethodsService";
 
 interface Service {
   id: string;
@@ -33,6 +35,7 @@ interface BookingData {
 const BookingConfirmation: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { featuredPayments } = useFeaturedPayments();
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>("establishment");
   const [notes, setNotes] = useState<string>("");
@@ -266,6 +269,95 @@ const BookingConfirmation: React.FC = () => {
             }}>
               Método de pago
             </h2>
+
+            {/* Featured Payment Methods */}
+            {featuredPayments.length > 0 && (
+              <div style={{ marginBottom: "1rem" }}>
+                <h3 style={{
+                  fontSize: "1rem",
+                  fontWeight: "500",
+                  color: "#667eea",
+                  marginBottom: "0.75rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem"
+                }}>
+                  ⭐ Métodos destacados
+                </h3>
+                <div style={{ display: "grid", gap: "0.75rem", marginBottom: "1rem" }}>
+                  {featuredPayments.map((method) => (
+                    <div
+                      key={method.id}
+                      onClick={() => setPaymentMethod(method.id)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1rem",
+                        padding: "1rem",
+                        border: paymentMethod === method.id ? "2px solid #667eea" : "1px solid #e0e0e0",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        background: paymentMethod === method.id ? "#f8f9ff" : "white",
+                        transition: "all 0.2s"
+                      }}
+                    >
+                      <div style={{
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
+                        border: paymentMethod === method.id ? "2px solid #667eea" : "2px solid #ccc",
+                        background: paymentMethod === method.id ? "#667eea" : "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}>
+                        {paymentMethod === method.id && (
+                          <div style={{
+                            width: "8px",
+                            height: "8px",
+                            borderRadius: "50%",
+                            background: "white"
+                          }} />
+                        )}
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flex: 1 }}>
+                        <span style={{ fontSize: "1.2rem" }}>
+                          {paymentMethodsService.getPaymentIcon(method.type)}
+                        </span>
+                        <div>
+                          <div style={{ 
+                            color: "#2d3a4a", 
+                            fontWeight: "500",
+                            fontSize: "1rem"
+                          }}>
+                            {method.name}
+                          </div>
+                          {method.isDefault && (
+                            <div style={{ 
+                              fontSize: "0.8rem", 
+                              color: "#667eea",
+                              fontWeight: "500"
+                            }}>
+                              Método por defecto
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div style={{
+                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        color: "white",
+                        padding: "0.25rem 0.5rem",
+                        borderRadius: "12px",
+                        fontSize: "0.75rem",
+                        fontWeight: "500"
+                      }}>
+                        ⭐ Destacado
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             
             <div
               onClick={() => setPaymentMethod("establishment")}
