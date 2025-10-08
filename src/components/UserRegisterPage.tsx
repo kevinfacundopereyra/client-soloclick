@@ -31,20 +31,34 @@ const UserRegisterPage = () => {
 
     try {
       const response = await authService.registerUser(formData);
+      console.log('Registro response:', response);
       
-      if (response.success) {
-        // Guardar sesión si el backend devuelve token
-        if (response.token && response.user) {
-          authService.saveSession(response.token, response.user);
-        }
+      // Validación más estricta: SOLO éxito si tiene success=true Y token Y usuario
+      if (response.success && response.token && response.user) {
+        console.log('✅ Registro exitoso - iniciando sesión automáticamente');
         
-        alert('¡Registro exitoso!');
-        navigate('/professionals');
+        // Guardar sesión automáticamente
+        authService.saveSession(response.token, response.user);
+        
+        // Verificar que se guardó correctamente
+        const isAuthenticated = authService.isAuthenticated();
+        console.log('✅ Sesión iniciada:', isAuthenticated);
+        
+        alert('¡Registro exitoso! Bienvenido a SoloClick');
+        
+        // Redirigir a la página principal con sesión activa
+        navigate('/');
       } else {
-        setError(response.message || 'Error en el registro');
+        // Mostrar error específico
+        console.log('❌ Registro falló - falta success, token o user');
+        console.log('- success:', response.success);
+        console.log('- token:', !!response.token);
+        console.log('- user:', !!response.user);
+        setError(response.message || 'Error en el registro. Intenta nuevamente.');
       }
     } catch (error: any) {
-      setError(error.message || 'Error de conexión');
+      console.error('❌ Error en registro:', error);
+      setError(error.message || 'Error de conexión. Verifica tu internet.');
     } finally {
       setLoading(false);
     }
