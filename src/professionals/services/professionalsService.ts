@@ -50,7 +50,9 @@ export async function fetchProfessionals() {
 export async function fetchProfessionalsBySpecialty(specialty: string) {
   try {
     console.log(`🔍 Obteniendo profesionales por especialidad: ${specialty}`);
-    const response = await api.get(`${API_CONFIG.ENDPOINTS.PROFESSIONALS}?specialty=${encodeURIComponent(specialty)}`);
+    
+    // ✅ CAMBIAR esta línea para usar el endpoint correcto
+    const response = await api.get(`${API_CONFIG.ENDPOINTS.PROFESSIONALS}/by-specialty/${encodeURIComponent(specialty)}`);
     
     console.log(`✅ Profesionales de ${specialty}:`, response.data);
     

@@ -335,9 +335,9 @@ const HomePage = () => {
 
         {/* Sección de Barberías */}
         <ProfessionalsSpecialtySection 
-          specialty="Barbería"
+          specialty="Barberia"
           title="Barberías"
-          maxItems={4}
+          maxItems={3}
         />
 
         {/* Sección de Manicure */}
@@ -349,7 +349,7 @@ const HomePage = () => {
 
         {/* Sección de Peluquerías */}
         <ProfessionalsSpecialtySection 
-          specialty="Peluquería"
+          specialty="Peluqueria"
           title="Peluquerías"
           maxItems={4}
         />
