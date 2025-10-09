@@ -1,7 +1,6 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import authService from "../services/authService";
+import authService from "../services/authService"; // ✅ Import correcto
 import useFeaturedPayments from "../hooks/useFeaturedPayments";
 import paymentMethodsService from "../services/paymentMethodsService";
 
@@ -17,49 +16,61 @@ export interface User {
 }
 
 const ProfilePage: React.FC = () => {
-
   const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
   const { paymentMethods, featuredPayments, isFeatured, toggleFeatured } = useFeaturedPayments();
-  const user = authService.isAuthenticated()
-    ? JSON.parse(localStorage.getItem("user") || "{}")
-    : null;
+
+  useEffect(() => {
+    // ✅ Usar las funciones correctas del authService
+    const userData = authService.getCurrentUser();
+    const isAuth = authService.isAuthenticated();
     
-  if (!user) {
-    return (
-      <div 
-        style={{ 
-          padding: "2rem",
-          textAlign: "center",
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center"
-        }}
-      >
-        <h2>No has iniciado sesión</h2>
-        <button
-          onClick={() => navigate('/signin')}
-          style={{
-            background: "#667eea",
-            color: "white",
-            border: "none",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "8px",
-            cursor: "pointer",
-            marginTop: "1rem"
-          }}
-        >
-          Iniciar Sesión
-        </button>
-      </div>
-    );
-  }
+    // LOGS DE DEBUGGING
+    console.log('🔍 DEBUGGING ProfilePage:');
+    console.log('🔍 isAuthenticated:', isAuth);
+    console.log('🔍 userData completo:', userData);
+    console.log('🔍 userData.userType:', userData?.userType);
+    console.log('🔍 ¿Es professional?:', userData?.userType === 'professional');
+    console.log('🔍 localStorage user:', localStorage.getItem('user'));
+    console.log('🔍 localStorage token:', localStorage.getItem('token'));
+    
+    if (!isAuth) {
+      console.log('❌ Usuario no autenticado, redirigiendo a login');
+      navigate('/login');
+      return;
+    }
+    
+    setUser(userData);
+  }, [navigate]);
 
   const handleLogout = () => {
     authService.logout();
-    navigate("/");
+    navigate('/');
   };
+
+  // ✅ Verificar isProfessional con logs adicionales
+  const isProfessional = user?.userType === 'professional';
+  
+  // MÁS LOGS para debugging
+  console.log('🔍 Variable isProfessional:', isProfessional);
+  console.log('🔍 user en render:', user);
+  console.log('🔍 user.userType:', user?.userType);
+
+  if (!user) {
+    return (
+      <div style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        color: "white",
+        fontSize: "1.2rem"
+      }}>
+        Cargando perfil...
+      </div>
+    );
+  }
 
   return (
     <div
@@ -126,7 +137,9 @@ const ProfilePage: React.FC = () => {
             fontSize: "1.1rem",
             fontWeight: "500"
           }}>
-            {user.userType === "user" ? "Cliente" : "Profesional"}
+            {user.userType === "user" ? "Cliente" : 
+             user.userType === "professional" ? "Profesional" : 
+             `Tipo: ${user.userType}`}
           </div>
         </div>
 
@@ -145,6 +158,16 @@ const ProfilePage: React.FC = () => {
             }}>
               <strong style={{ color: "#2d3748" }}>Email:</strong> 
               <span style={{ marginLeft: "0.5rem", color: "#4a5568" }}>{user.email}</span>
+            </div>
+            
+            <div style={{ 
+              padding: "1rem",
+              background: "#f8f9fa",
+              borderRadius: "8px",
+              border: "1px solid #e9ecef"
+            }}>
+              <strong style={{ color: "#2d3748" }}>Tipo de Usuario:</strong> 
+              <span style={{ marginLeft: "0.5rem", color: "#4a5568" }}>{user.userType}</span>
             </div>
             
             {user.phone && (
@@ -184,6 +207,78 @@ const ProfilePage: React.FC = () => {
             )}
           </div>
         </div>
+
+        {/* DEBUG INFO - TEMPORAL para ver qué está pasando */}
+        <div style={{
+          backgroundColor: '#f0f8ff',
+          border: '1px solid #4CAF50',
+          borderRadius: '8px',
+          padding: '1rem',
+          marginBottom: '1.5rem',
+          fontSize: '0.9rem'
+        }}>
+          <strong>🔍 Debug Info:</strong><br/>
+          userType: {user.userType}<br/>
+          isProfessional: {isProfessional ? 'SÍ' : 'NO'}<br/>
+          ¿Debería mostrar botón?: {isProfessional ? 'SÍ' : 'NO'}
+        </div>
+
+        {/* Services Management Section - Only for Professionals */}
+        {isProfessional && (
+          <div style={{
+            backgroundColor: '#e8f5e8',
+            borderRadius: '12px',
+            padding: '1.5rem',
+            marginBottom: '1.5rem',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            border: '2px solid #4CAF50'
+          }}>
+            <h3 style={{ margin: '0 0 1rem 0', color: '#2e7d2e' }}>⚙️ Gestión Profesional</h3>
+            <p style={{ color: '#4a5568', marginBottom: '1rem', fontSize: '0.9rem' }}>
+              Gestiona tus servicios, precios y disponibilidad
+            </p>
+            <button
+              onClick={() => {
+                console.log('🔍 Navegando a /profile/services');
+                navigate('/profile/services');
+              }}
+              style={{
+                backgroundColor: '#4CAF50',
+                color: 'white',
+                border: 'none',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#45a049'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
+            >
+              ⚙️ Gestionar Servicios
+            </button>
+          </div>
+        )}
+
+        {/* Si NO es profesional, mostrar mensaje explicativo */}
+        {!isProfessional && (
+          <div style={{
+            backgroundColor: '#f0f8ff',
+            borderRadius: '12px',
+            padding: '1.5rem',
+            marginBottom: '1.5rem',
+            border: '1px solid #667eea'
+          }}>
+            <h3 style={{ margin: '0 0 1rem 0', color: '#667eea' }}>👤 Perfil de Cliente</h3>
+            <p style={{ color: '#4a5568', margin: 0 }}>
+              Como cliente puedes reservar citas con profesionales y gestionar tus favoritos.
+            </p>
+          </div>
+        )}
 
         {/* Payment Methods Section */}
         <div style={{ marginBottom: "2rem" }}>
