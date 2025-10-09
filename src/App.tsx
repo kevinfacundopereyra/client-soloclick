@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ProfilePage from "./components/ProfilePage";
 import ProfessionalsHome from "./professionals/pages/ProfessionalsHome";
 import ProfessionalsFeatured from "./professionals/pages/ProfessionalsFeatured";
 import ProfessionalDetail from "./professionals/pages/ProfessionalDetail";
@@ -13,6 +12,7 @@ import UserRegisterPage from "./components/UserRegisterPage";
 import ProfessionalRegisterPage from "./components/ProfessionalRegisterPage";
 import ProfilePage from "./components/ProfilePage";
 import CompleteProfilePage from "./components/CompleteProfilePage";
+import ServicesManagementPage from "./components/ServicesManagementPage";
 
 function App() {
   return (
@@ -35,6 +35,7 @@ function App() {
         <Route path="/reservar/confirmar/:id" element={<BookingConfirmation />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/complete" element={<CompleteProfilePage />} />
+        <Route path="/profile/services" element={<ServicesManagementPage />} />
       </Routes>
     </BrowserRouter>
   );
