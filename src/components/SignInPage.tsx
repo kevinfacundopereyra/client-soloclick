@@ -27,6 +27,7 @@ const SignInPage = () => {
 
     try {
       const response = await authService.login(formData.email, formData.password);
+
       
       // Logs para debugging
       console.log('Backend response:', response);
@@ -44,6 +45,7 @@ const SignInPage = () => {
         console.log('- token:', !!response.token);
         console.log('- user:', !!response.user);
         setError(response.message || 'Credenciales incorrectas');
+
       }
     } catch (error: any) {
       setError(error.message || 'Error de conexión');

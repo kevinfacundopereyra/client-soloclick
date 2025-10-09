@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import ProfessionalsSpecialtySection from "./ProfessionalsSpecialtySection";
+
 import { useFavorites } from "../professionals/hooks/useFavorites";
 import { useProfessionals } from "../professionals/hooks/useProfessionals";
 import ProfessionalCard from "../professionals/components/ProfessionalCard";
@@ -54,7 +55,6 @@ const HomePage = () => {
           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
     >
-      {/* Header */}
       <header
         style={{
           display: "flex",
@@ -75,6 +75,7 @@ const HomePage = () => {
           soloclick
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+
           {isAuthenticated && user ? (
             // Usuario autenticado - mostrar perfil usando UserProfile component
             <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
@@ -101,6 +102,7 @@ const HomePage = () => {
           ) : (
             // Usuario no autenticado - mostrar botones de login
             <>
+
               <button
                 onClick={() => navigate('/login')}
                 style={{
@@ -115,6 +117,8 @@ const HomePage = () => {
               >
                 Registrarse
               </button>
+
+              {/* Botón para iniciar sesión */}
               <button
                 onClick={() => navigate('/signin')}
                 style={{
@@ -132,7 +136,7 @@ const HomePage = () => {
             </>
           )}
         </div>
-      </header>
+  </header>
 
       {/* Main Content */}
       <main
