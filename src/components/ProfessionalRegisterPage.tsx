@@ -52,18 +52,21 @@ const ProfessionalRegisterPage = () => {
       // Validación más estricta: SOLO éxito si tiene success=true Y token Y usuario
       if (response.success && response.token && response.user) {
         console.log('✅ Registro profesional exitoso - iniciando sesión automáticamente');
+        console.log('🔍 Datos del usuario recibidos:', response.user);
         
         // Guardar sesión automáticamente
         authService.saveSession(response.token, response.user);
         
         // Verificar que se guardó correctamente
         const isAuthenticated = authService.isAuthenticated();
+        const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
         console.log('✅ Sesión profesional iniciada:', isAuthenticated);
+        console.log('🔍 Usuario guardado en localStorage:', savedUser);
         
-        alert('¡Registro de profesional exitoso! Bienvenido a SoloClick');
+        alert('¡Registro de profesional exitoso! Ahora completa tu perfil');
         
-        // Redirigir a la página principal (cambio de /featured a /)
-        navigate('/');
+        // Redirigir a completar perfil (Etapa 2)
+        navigate('/profile/complete');
       } else {
         // Mostrar error específico
         console.log('❌ Registro profesional falló - falta success, token o user');

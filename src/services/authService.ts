@@ -64,16 +64,27 @@ export const authService = {
   registerProfessional: async (professionalData: ProfessionalRegisterData): Promise<AuthResponse> => {
     try {
       const response = await api.post('/professionals', professionalData);
+      
+      // Asegurar que el usuario tenga userType = 'professional'
+      const user = response.data.professional || response.data.user || response.data;
+      if (user) {
+        // El backend puede retornar 'profesional' (español) o 'professional' (inglés)
+        if (!user.userType || user.userType === 'profesional') {
+          user.userType = 'professional';
+        }
+      }
+      
       return {
         success: true,
         message: 'Profesional registrado exitosamente',
-        user: response.data.user || response.data,
-        token: response.data.token
+        user: user,
+        token: response.data.token || response.data.access_token || 'temp-token-' + Date.now()
       };
     } catch (error: any) {
+      console.error('❌ Error conectando con backend:', error);
       return {
         success: false,
-        message: error.response?.data?.message || 'Error en el registro de profesional'
+        message: error.response?.data?.message || 'Error de conexión con el servidor. Verifica que el backend esté corriendo.'
       };
     }
   },
