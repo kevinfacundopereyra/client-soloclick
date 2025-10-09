@@ -12,6 +12,7 @@ import SignInPage from "./components/SignInPage";
 import UserRegisterPage from "./components/UserRegisterPage";
 import ProfessionalRegisterPage from "./components/ProfessionalRegisterPage";
 import ProfilePage from "./components/ProfilePage";
+import CompleteProfilePage from "./components/CompleteProfilePage";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/reservar/horario/:id" element={<ScheduleTime />} />
         <Route path="/reservar/confirmar/:id" element={<BookingConfirmation />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/complete" element={<CompleteProfilePage />} />
       </Routes>
     </BrowserRouter>
   );
