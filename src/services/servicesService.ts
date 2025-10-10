@@ -1,15 +1,10 @@
+// src/services/servicesService.ts
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000'; // Tu URL del backend NestJS
+const API_BASE_URL = 'http://localhost:3000';
+const api = axios.create({ baseURL: API_BASE_URL });
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Interceptor para agregar el token automáticamente
+// ✅ Interceptor para autenticación
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -18,27 +13,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Interfaces para servicios
+// ✅ Interfaces que coincidan con el componente
 export interface Service {
+  _id?: string;
   id?: string;
-  professionalId?: string;
   name: string;
   description: string;
   price: number;
-  duration: number; // en minutos
+  duration: number;
   category: string;
   isActive: boolean;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
-export interface ServiceResponse {
-  success: boolean;
-  message: string;
-  service?: Service;
-  services?: Service[];
-}
-
+// ✅ AGREGAR estas interfaces que faltaban:
 export interface CreateServiceData {
   name: string;
   description: string;
@@ -48,152 +35,134 @@ export interface CreateServiceData {
   isActive: boolean;
 }
 
-export interface UpdateServiceData extends CreateServiceData {
+export interface UpdateServiceData {
   id: string;
+  name: string;
+  description: string;
+  price: number;
+  duration: number;
+  category: string;
+  isActive: boolean;
 }
 
-const servicesService = {
-  // Obtener todos los servicios del profesional logueado
-  async getMyServices(): Promise<ServiceResponse> {
+// ✅ Función para normalizar _id -> id
+const normalizeService = (service: any): Service => ({
+  ...service,
+  id: service._id || service.id,
+  _id: service._id || service.id
+});
+
+export const servicesService = {
+  getMyServices: async () => {
     try {
       const response = await api.get('/services/my-services');
+      console.log('🔍 Respuesta getMyServices:', response.data);
+      
+      let services = [];
+      
+      if (Array.isArray(response.data)) {
+        services = response.data;
+      } else if (response.data.services) {
+        services = response.data.services;
+      } else if (response.data.data) {
+        services = response.data.data;
+      }
+      
+      const normalizedServices = services.map(normalizeService);
+      
       return {
         success: true,
-        message: 'Servicios obtenidos correctamente',
-        services: response.data.services || response.data
+        services: normalizedServices
       };
     } catch (error: any) {
-      console.error('Error obteniendo servicios:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Error al obtener los servicios'
-      };
+      console.error('❌ Error en getMyServices:', error);
+      throw error;
     }
   },
 
-  // Crear un nuevo servicio
-  async createService(serviceData: CreateServiceData): Promise<ServiceResponse> {
+  createService: async (serviceData: CreateServiceData) => {
     try {
       const response = await api.post('/services', serviceData);
+      console.log('🔍 Respuesta createService:', response.data);
+      
       return {
         success: true,
-        message: 'Servicio creado exitosamente',
-        service: response.data.service || response.data
+        service: normalizeService(response.data),
+        message: 'Servicio creado exitosamente'
       };
     } catch (error: any) {
-      console.error('Error creando servicio:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Error al crear el servicio'
-      };
+      console.error('❌ Error en createService:', error);
+      throw error;
     }
   },
 
-  // Actualizar un servicio existente
-  async updateService(serviceData: UpdateServiceData): Promise<ServiceResponse> {
+  // ✅ ARREGLAR - cambiar firma para que coincida con el componente:
+  updateService: async (updateData: UpdateServiceData) => {
     try {
-      const { id, ...updateData } = serviceData;
-      const response = await api.put(`/services/${id}`, updateData);
+      const { id, ...serviceData } = updateData;
+      const serviceId = id;
+      
+      const response = await api.put(`/services/${serviceId}`, serviceData);
+      console.log('🔍 Respuesta updateService:', response.data);
+      
       return {
         success: true,
-        message: 'Servicio actualizado exitosamente',
-        service: response.data.service || response.data
+        service: normalizeService(response.data),
+        message: 'Servicio actualizado exitosamente'
       };
     } catch (error: any) {
-      console.error('Error actualizando servicio:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Error al actualizar el servicio'
-      };
+      console.error('❌ Error en updateService:', error);
+      throw error;
     }
   },
 
-  // Eliminar un servicio
-  async deleteService(serviceId: string): Promise<ServiceResponse> {
+  deleteService: async (serviceId: string) => {
     try {
-      await api.delete(`/services/${serviceId}`);
+      const response = await api.delete(`/services/${serviceId}`);
+      console.log('🔍 Respuesta deleteService:', response.data);
+      
       return {
         success: true,
         message: 'Servicio eliminado exitosamente'
       };
     } catch (error: any) {
-      console.error('Error eliminando servicio:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Error al eliminar el servicio'
-      };
+      console.error('❌ Error en deleteService:', error);
+      throw error;
     }
   },
 
-  // Cambiar estado activo/inactivo de un servicio
-  async toggleServiceStatus(serviceId: string, isActive: boolean): Promise<ServiceResponse> {
+  toggleServiceStatus: async (serviceId: string, isActive: boolean) => {
     try {
       const response = await api.patch(`/services/${serviceId}/status`, { isActive });
+      console.log('🔍 Respuesta toggleServiceStatus:', response.data);
+      
       return {
         success: true,
-        message: `Servicio ${isActive ? 'activado' : 'desactivado'} correctamente`,
-        service: response.data.service || response.data
+        service: normalizeService(response.data),
+        message: `Servicio ${isActive ? 'activado' : 'desactivado'} exitosamente`
       };
     } catch (error: any) {
-      console.error('Error cambiando estado del servicio:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Error al cambiar el estado del servicio'
-      };
+      console.error('❌ Error en toggleServiceStatus:', error);
+      throw error;
     }
   },
 
-  // Obtener servicios de un profesional específico (para clientes)
-  async getServicesByProfessional(professionalId: string): Promise<ServiceResponse> {
+  getServicesByProfessional: async (professionalId: string) => {
     try {
       const response = await api.get(`/services/professional/${professionalId}`);
-      return {
-        success: true,
-        message: 'Servicios obtenidos correctamente',
-        services: response.data.services || response.data
-      };
+      console.log('🔍 Respuesta getServicesByProfessional:', response.data);
+      
+      let services = [];
+      if (Array.isArray(response.data)) {
+        services = response.data;
+      } else if (response.data.services) {
+        services = response.data.services;
+      }
+      
+      return services.map(normalizeService);
     } catch (error: any) {
-      console.error('Error obteniendo servicios del profesional:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Error al obtener los servicios'
-      };
-    }
-  },
-
-  // Obtener servicios por categoría
-  async getServicesByCategory(category: string): Promise<ServiceResponse> {
-    try {
-      const response = await api.get(`/services/category/${category}`);
-      return {
-        success: true,
-        message: 'Servicios obtenidos correctamente',
-        services: response.data.services || response.data
-      };
-    } catch (error: any) {
-      console.error('Error obteniendo servicios por categoría:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Error al obtener los servicios'
-      };
-    }
-  },
-
-  // Obtener un servicio específico por ID
-  async getServiceById(serviceId: string): Promise<ServiceResponse> {
-    try {
-      const response = await api.get(`/services/${serviceId}`);
-      return {
-        success: true,
-        message: 'Servicio obtenido correctamente',
-        service: response.data.service || response.data
-      };
-    } catch (error: any) {
-      console.error('Error obteniendo servicio:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Error al obtener el servicio'
-      };
+      console.error('❌ Error en getServicesByProfessional:', error);
+      throw error;
     }
   }
 };
