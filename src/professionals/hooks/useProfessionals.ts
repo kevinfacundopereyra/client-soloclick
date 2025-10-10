@@ -11,7 +11,7 @@ export function useProfessionals() {
     fetchProfessionals()
       .then((data) => {
         setProfessionals(data);
-        console.log(data);
+        console.log("clg de setProfessionals", data);
         setLoading(false);
       })
       .catch((err) => {
