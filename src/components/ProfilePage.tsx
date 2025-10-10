@@ -407,6 +407,62 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
 
+        {/* ✅ MEJORAR - Botón Mis Reservas con contador */}
+        {!isProfessional && (
+          <div style={{
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            borderRadius: "16px",
+            padding: "1.5rem",
+            marginBottom: "2rem",
+            color: "white"
+          }}>
+            <h3 style={{ margin: "0 0 1rem 0", fontSize: "1.2rem", fontWeight: "600" }}>
+              📅 Mis Citas
+            </h3>
+            <p style={{ margin: "0 0 1.5rem 0", opacity: 0.9, fontSize: "0.95rem" }}>
+              Gestiona tus reservas y citas programadas
+            </p>
+            <button
+              onClick={() => navigate('/mis-reservas')}
+              style={{
+                background: "rgba(255, 255, 255, 0.15)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                color: "white",
+                padding: "0.75rem 1.5rem",
+                borderRadius: "10px",
+                cursor: "pointer",
+                fontSize: "1rem",
+                fontWeight: "500",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                transition: "all 0.2s ease"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(255, 255, 255, 0.25)";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              <span>Ver mis reservas</span>
+              <span style={{
+                background: "rgba(255, 255, 255, 0.3)",
+                borderRadius: "20px",
+                padding: "0.25rem 0.75rem",
+                fontSize: "0.85rem",
+                fontWeight: "600"
+              }}>
+                →
+              </span>
+            </button>
+          </div>
+        )}
+
         {/* Actions */}
         <div style={{ 
           display: "flex", 

@@ -37,6 +37,10 @@ const ScheduleTime: React.FC = () => {
     const servicesData = localStorage.getItem('selectedServices');
     const professionalData = localStorage.getItem('professionalData');
     
+    console.log('🔍 Datos cargados del localStorage:');
+    console.log('- Services:', servicesData ? JSON.parse(servicesData) : null);
+    console.log('- Professional:', professionalData ? JSON.parse(professionalData) : null);
+    
     if (servicesData) {
       setSelectedServices(JSON.parse(servicesData));
     }
@@ -48,58 +52,64 @@ const ScheduleTime: React.FC = () => {
       // Set default date to today
       const today = new Date();
       const todayString = today.toISOString().split('T')[0];
+      console.log('🔍 Fecha inicial:', todayString);
       setSelectedDate(todayString);
       
       // Load available slots for today - solo si tenemos el professional
-      if (prof?.id) {
-        loadAvailableSlots(prof.id, todayString);
+      if (prof?.id || prof?._id) {
+        const professionalId = prof.id || prof._id;
+        console.log('🔍 Cargando slots para profesional:', professionalId);
+        loadAvailableSlots(professionalId, todayString);
+      } else {
+        console.log('❌ No se encontró ID del profesional');
       }
     }
-  }, []); // ← Cambiar a array vacío para que solo se ejecute una vez
+  }, []);
 
-  // Función para cargar horarios disponibles
+  // ✅ ACTUALIZAR - Función para cargar horarios disponibles
   const loadAvailableSlots = async (professionalId: string, date: string) => {
+    console.log(`🔍 loadAvailableSlots llamado con:`, { professionalId, date });
     setLoadingSlots(true);
+    
     try {
       const response = await appointmentsService.getAvailableSlots(professionalId, date);
+      
+      console.log('🔍 Respuesta del appointmentsService:', response);
+      console.log('🔍 Success:', response.success);
+      console.log('🔍 Slots recibidos:', response.slots);
+      console.log('🔍 Cantidad de slots:', response.slots?.length || 0);
+      
       if (response.success && response.slots) {
         setAvailableSlots(response.slots);
+        console.log('✅ Slots establecidos en el estado:', response.slots.length);
       } else {
-        // Si el backend no está disponible, usar slots mock
-        setAvailableSlots(generateMockAvailableSlots());
+        console.log('⚠️ Response no exitosa o sin slots, estableciendo array vacío');
+        setAvailableSlots([]); // ✅ Array vacío en lugar de mock
       }
     } catch (error) {
-      console.error('Error loading available slots:', error);
-      // Usar slots mock como fallback
-      setAvailableSlots(generateMockAvailableSlots());
+      console.error('❌ Error loading available slots:', error);
+      setAvailableSlots([]); // ✅ Array vacío en lugar de mock
     } finally {
       setLoadingSlots(false);
+      console.log('🔍 Loading slots finalizado');
     }
   };
 
-  // Generar slots mock para testing
-  const generateMockAvailableSlots = (): AvailableSlot[] => {
-    const slots: AvailableSlot[] = [];
-    for (let hour = 12; hour < 17; hour++) {
-      for (let minute = 0; minute < 60; minute += 15) {
-        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-        // Simular algunos horarios ocupados
-        const isOccupied = Math.random() < 0.3; // 30% de probabilidad de estar ocupado
-        slots.push({
-          time: timeString,
-          available: !isOccupied
-        });
-      }
-    }
-    return slots;
-  };
+  // ❌ ELIMINAR COMPLETAMENTE esta función:
+  // const generateMockAvailableSlots = (): AvailableSlot[] => { ... }
 
-  // Función actualizada para manejar el cambio de fecha
+  // ✅ ACTUALIZAR - Función para manejar el cambio de fecha
   const handleDateChange = (newDate: string) => {
+    console.log(`🔍 Cambio de fecha a: ${newDate}`);
     setSelectedDate(newDate);
     setSelectedTime(""); // Reset selected time
-    if (professional?.id) {
-      loadAvailableSlots(professional.id, newDate);
+    
+    if (professional?.id || professional?.id) {
+      const professionalId = professional.id || professional.id;
+      console.log(`🔍 Cargando slots para nueva fecha: ${newDate}, profesional: ${professionalId}`);
+      loadAvailableSlots(professionalId, newDate);
+    } else {
+      console.log('❌ No hay professional ID para cargar slots');
     }
   };
 
@@ -377,15 +387,44 @@ const ScheduleTime: React.FC = () => {
               }}>
                 Cargando horarios disponibles...
               </div>
+            ) : availableSlots.length === 0 ? (
+              // ✅ AGREGAR: Mensaje cuando no hay horarios
+              <div style={{ 
+                gridColumn: "1 / -1", 
+                textAlign: "center", 
+                padding: "2rem",
+                color: "#4a5568",
+                background: "#f8f9fa",
+                borderRadius: "8px",
+                border: "2px dashed #e0e0e0"
+              }}>
+                <div style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>
+                  📅 No hay horarios disponibles
+                </div>
+                <div style={{ fontSize: "0.9rem" }}>
+                  El profesional no trabaja este día o no hay horarios libres
+                </div>
+              </div>
             ) : (
-              availableSlots.map((slot) => {
+              // ✅ ACTUALIZAR: Renderizar slots con más logs
+              availableSlots.map((slot, index) => {
                 const isSelected = selectedTime === slot.time;
                 const isAvailable = slot.available;
+                
+                // Log cada slot para debug
+                if (index === 0) {
+                  console.log(`🔍 Renderizando ${availableSlots.length} slots para ${selectedDate}`);
+                }
                 
                 return (
                   <button
                     key={slot.time}
-                    onClick={() => isAvailable ? setSelectedTime(slot.time) : null}
+                    onClick={() => {
+                      if (isAvailable) {
+                        console.log(`🔍 Hora seleccionada: ${slot.time}`);
+                        setSelectedTime(slot.time);
+                      }
+                    }}
                     disabled={!isAvailable}
                     style={{
                       background: isSelected ? "#667eea" : isAvailable ? "white" : "#f5f5f5",

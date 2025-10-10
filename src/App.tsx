@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProfessionalsHome from "./professionals/pages/ProfessionalsHome";
 import ProfessionalsFeatured from "./professionals/pages/ProfessionalsFeatured";
-import ProfessionalDetail from "./professionals/pages/ProfessionalDetail";
+import ProfessionalDetailPage from "./professionals/pages/ProfessionalDetailPage";
 import ServicesSelection from "./professionals/pages/ServicesSelection";
 import ScheduleTime from "./professionals/pages/ScheduleTime";
 import BookingConfirmation from "./professionals/pages/BookingConfirmation";
@@ -13,6 +13,7 @@ import ProfessionalRegisterPage from "./components/ProfessionalRegisterPage";
 import ProfilePage from "./components/ProfilePage";
 import CompleteProfilePage from "./components/CompleteProfilePage";
 import ServicesManagementPage from "./components/ServicesManagementPage";
+import MyAppointments from "./client/pages/MyAppointments";
 
 function App() {
   return (
@@ -29,13 +30,14 @@ function App() {
         <Route path="/professionals" element={<ProfessionalsHome />} />
         <Route path="/featured" element={<ProfessionalsFeatured />} />
         <Route path="/featured/:id" element={<ProfessionalsFeatured />} />
-        <Route path="/profesional/:id" element={<ProfessionalDetail />} />
+        <Route path="/profesional/:id" element={<ProfessionalDetailPage />} />
         <Route path="/reservar/servicios/:id" element={<ServicesSelection />} />
         <Route path="/reservar/horario/:id" element={<ScheduleTime />} />
         <Route path="/reservar/confirmar/:id" element={<BookingConfirmation />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/complete" element={<CompleteProfilePage />} />
         <Route path="/profile/services" element={<ServicesManagementPage />} />
+        <Route path="/mis-reservas" element={<MyAppointments />} />
       </Routes>
     </BrowserRouter>
   );

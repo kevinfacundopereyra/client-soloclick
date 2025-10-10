@@ -68,66 +68,82 @@ const BookingConfirmation: React.FC = () => {
   const handleConfirm = async () => {
     if (!bookingData) return;
     
-    // Calcular hora de fin
-    const calculateEndTime = (startTime: string, duration: number) => {
-      const [hours, minutes] = startTime.split(':').map(Number);
-      const endTime = new Date();
-      endTime.setHours(hours, minutes + duration);
-      return `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
-    };
-
-    // Preparar datos para el backend
-    const appointmentData: CreateAppointmentData = {
-      userId: getCurrentUserId(), // Función para obtener el ID del usuario logueado
-      professionalId: getProfessionalId(), // Usar el ID real del profesional
-      services: bookingData.services.map(service => ({
-        serviceId: service.id,
-        name: service.name,
-        duration: parseInt(service.duration),
-        price: parseInt(service.price)
-      })),
-      date: bookingData.date, // Ya viene en formato YYYY-MM-DD
-      startTime: bookingData.time,
-      endTime: calculateEndTime(bookingData.time, bookingData.totalDuration),
-      totalDuration: bookingData.totalDuration,
-      totalPrice: bookingData.totalPrice,
-      paymentMethod: paymentMethod,
-      notes: notes.trim() || undefined,
-      status: 'pending' // El profesional podrá confirmarla después
-    };
-
+    console.log('🔍 Iniciando confirmación de reserva...');
+    console.log('📋 Datos de reserva completos:', bookingData);
+    
     try {
+      // ✅ CORREGIR - Usar la interface correcta del appointmentsService
+      const appointmentData: CreateAppointmentData = {
+        professionalId: getProfessionalId(),
+        clientId: getCurrentUserId(), // ✅ clientId en lugar de userId
+        services: bookingData.services.map(service => service.id), // ✅ Solo IDs como strings
+        date: bookingData.date,
+        time: bookingData.time, // ✅ time en lugar de startTime
+        totalPrice: bookingData.totalPrice,
+        totalDuration: bookingData.totalDuration,
+        notes: notes.trim() || undefined
+      };
+      
+      // ✅ AGREGAR - Logs específicos para debug
+      console.log('🔍 appointmentData.time:', appointmentData.time);
+      console.log('🔍 typeof appointmentData.time:', typeof appointmentData.time);
+      console.log('🔍 bookingData.time:', bookingData.time);
+      console.log('📤 Datos EXACTOS enviando al backend:', JSON.stringify(appointmentData, null, 2));
+      
       // Enviar al backend
       const response = await appointmentsService.createAppointment(appointmentData);
       
+      console.log('📥 Respuesta del backend:', response);
+      
       if (response.success) {
+        console.log('✅ Reserva creada exitosamente');
+        
         // Limpiar localStorage
         localStorage.removeItem('selectedServices');
         localStorage.removeItem('professionalData');
         localStorage.removeItem('bookingData');
         
-        // Mostrar mensaje de éxito y redirigir
-        alert('¡Reserva creada exitosamente! Te enviaremos un email con los detalles.');
-        navigate('/');
+        // ✅ MEJORAR - Mensaje más profesional
+        alert(`¡Reserva confirmada! 🎉\n\nDetalles:\n• Profesional: ${bookingData.professional.name}\n• Fecha: ${formatDate(bookingData.date)}\n• Hora: ${bookingData.time}\n• Total: $${bookingData.totalPrice}`);
+        
+        // ✅ OPCIONAL - Redirigir a página de confirmación personalizada
+        navigate('/mis-reservas'); // O crear página /reserva-confirmada/:id
       } else {
-        alert(`Error al crear la reserva: ${response.message}`);
+        console.error('❌ Error del backend:', response);
+        alert(`Error al crear la reserva: ${response.message || 'Error desconocido'}`);
       }
-    } catch (error) {
-      console.error('Error creating appointment:', error);
-      alert('Error al crear la reserva. Por favor intenta nuevamente.');
+    } catch (error: any) {
+      console.error('💥 Error critico:', error);
+      console.error('💥 Error completo:', error);
+      console.error('💥 Error response:', error.response);
+      console.error('💥 Error response data:', error.response?.data);
+      
+      // ✅ MEJORAR - Mensaje de error más específico
+      let errorMessage = 'Error al crear la reserva. Por favor intenta nuevamente.';
+      
+      if (error.response?.status === 400) {
+        errorMessage = 'Datos de reserva inválidos. Verifica la información.';
+      } else if (error.response?.status === 409) {
+        errorMessage = 'Ese horario ya fue reservado por otro cliente.';
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Debes iniciar sesión para realizar una reserva.';
+      }
+      
+      alert(errorMessage);
     }
   };
 
-  // Función para obtener el ID real del profesional
+  // ✅ MEJORAR - Función para obtener ID del profesional
   const getProfessionalId = (): string => {
     if (!bookingData?.professional) {
       throw new Error('No hay datos del profesional');
     }
     
-    // Usar el ID real que viene del backend (_id o id)
-    const professionalId = bookingData.professional.id || bookingData.professional.id; // cambien bookingData.professional_id por bookingData.professional.id
+    // ✅ CORREGIR - Buscar _id o id
+    const professionalId = bookingData.professional.id || (bookingData.professional as any)._id;
     
     if (!professionalId) {
+      console.error('❌ Professional data:', bookingData.professional);
       throw new Error('El profesional no tiene un ID válido');
     }
     
@@ -135,7 +151,7 @@ const BookingConfirmation: React.FC = () => {
     return professionalId;
   };
 
-  // Función para obtener el ID del usuario actual
+  // ✅ MEJORAR - Función para obtener ID del usuario
   const getCurrentUserId = (): string => {
     const userData = localStorage.getItem('user');
     if (userData) {
@@ -147,14 +163,17 @@ const BookingConfirmation: React.FC = () => {
           return userId;
         }
       } catch (error) {
-        console.error('Error parsing user data:', error);
+        console.error('❌ Error parsing user data:', error);
       }
     }
     
-    // En producción, esto debería requerir login
-    // Por ahora, crear un usuario temporal para testing
-    console.warn('⚠️ No hay usuario logueado, usando ID temporal');
-    return '507f1f77bcf86cd799439000'; // ObjectId temporal para testing
+    // ✅ MEJORAR - En producción, requerir login
+    console.warn('⚠️ No hay usuario logueado');
+    
+    // Para testing, generar ID temporal válido
+    const tempUserId = '670123456789abcdef012345'; // ObjectId válido para testing
+    console.log('🧪 Usando ID temporal para testing:', tempUserId);
+    return tempUserId;
   };
 
   if (!bookingData) {
@@ -394,7 +413,7 @@ const BookingConfirmation: React.FC = () => {
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <span style={{ fontSize: "1.5rem" }}>🏪</span>
                 <span style={{ color: "#2d3a4a", fontWeight: "500" }}>
-                  Pagar en el establecimiento
+                  Pagar in el establecimiento
                 </span>
               </div>
             </div>
