@@ -14,6 +14,7 @@ import ProfilePage from "./components/ProfilePage";
 import CompleteProfilePage from "./components/CompleteProfilePage";
 import ServicesManagementPage from "./components/ServicesManagementPage";
 import MyAppointments from "./client/pages/MyAppointments";
+import ProfessionalDashboard from "./professionals/pages/ProfessionalDashboard";
 
 function App() {
   return (
@@ -38,6 +39,10 @@ function App() {
         <Route path="/profile/complete" element={<CompleteProfilePage />} />
         <Route path="/profile/services" element={<ServicesManagementPage />} />
         <Route path="/mis-reservas" element={<MyAppointments />} />
+        <Route
+          path="/dashboard-profesional"
+          element={<ProfessionalDashboard />}
+        />
       </Routes>
     </BrowserRouter>
   );
