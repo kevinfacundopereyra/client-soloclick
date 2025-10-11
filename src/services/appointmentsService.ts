@@ -187,18 +187,61 @@ export const appointmentsService = {
     }
   },
 
-  // ⚠️ Este endpoint no existe en tu backend - mock por ahora
+  // ✅ REEMPLAZAR la función confirmAppointment mock
   confirmAppointment: async (appointmentId: string) => {
     try {
-      console.log('⚠️ Endpoint PATCH /appointments/:id/confirm no implementado en backend');
+      console.log('🔍 Confirmando cita:', appointmentId);
       
-      // Mock response
+      // Usar updateStatus que ya funciona
+      const response = await appointmentsService.updateStatus(appointmentId, 'confirmed');
+      
+      console.log('✅ Cita confirmada:', response);
       return {
         success: true,
-        message: 'Funcionalidad de confirmar pendiente - necesita implementación en backend'
+        appointment: response,
+        message: 'Cita confirmada exitosamente'
       };
     } catch (error: any) {
       console.error('❌ Error confirmando cita:', error);
+      throw error;
+    }
+  },
+
+  // ✅ AGREGAR función para completar cita
+  completeAppointment: async (appointmentId: string) => {
+    try {
+      console.log('🔍 Completando cita:', appointmentId);
+      
+      // Usar updateStatus que ya funciona
+      const response = await appointmentsService.updateStatus(appointmentId, 'completed');
+      
+      console.log('✅ Cita completada:', response);
+      return {
+        success: true,
+        appointment: response,
+        message: 'Cita completada exitosamente'
+      };
+    } catch (error: any) {
+      console.error('❌ Error completando cita:', error);
+      throw error;
+    }
+  },
+
+  // ✅ AGREGAR - Actualizar status de cita  
+  updateStatus: async (appointmentId: string, newStatus: string) => {
+    try {
+      console.log(`🔍 Actualizando status de cita ${appointmentId} a ${newStatus}`);
+      
+      // ✅ USAR 'api' en lugar de 'axios' para usar los interceptors
+      const response = await api.patch(
+        `/appointments/${appointmentId}/status`,  // ✅ Sin API_BASE_URL (ya está en api)
+        { status: newStatus }
+      );
+      
+      console.log('✅ Status actualizado:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('❌ Error actualizando status:', error);
       throw error;
     }
   }
