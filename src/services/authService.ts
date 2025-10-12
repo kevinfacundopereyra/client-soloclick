@@ -83,16 +83,25 @@ export const authService = {
     try {
       const response = await api.post("/users/register", userData);
 
-      if (response.data.user && response.data.token) {
-        // Auto-login después del registro
-        authService.saveSession(response.data.token, response.data.user);
+      // ✅ SOLUCIÓN: Guardar sesión si hay usuario, aunque no haya token
+      if (response.data.user || response.data) {
+        const user = response.data.user || response.data;
+        // Asegurar que el usuario tenga userType
+        if (!user.userType) {
+          user.userType = "user";
+        }
+
+        // Guardar sesión con token temporal si no hay token real
+        const token = response.data.token || `temp-token-${Date.now()}`;
+        authService.saveSession(token, user);
+        console.log("✅ Sesión guardada después del registro:", user);
       }
 
       return {
         success: true,
         message: "Usuario registrado exitosamente",
         user: response.data.user || response.data,
-        token: response.data.token,
+        token: response.data.token || `temp-token-${Date.now()}`,
       };
     } catch (error: any) {
       return {
@@ -102,14 +111,17 @@ export const authService = {
     }
   },
 
-  // ✅ Registro de profesional
+  // ✅ Registro de profesional con mejor manejo de errores
   registerProfessional: async (
     professionalData: ProfessionalRegisterData
   ): Promise<AuthResponse> => {
     try {
+      console.log("🔍 Enviando datos al backend:", professionalData);
       const response = await api.post("/professionals", professionalData);
+      console.log("✅ Respuesta del backend:", response.data);
 
-      const user = response.data.professional || response.data.user || response.data;
+      const user =
+        response.data.professional || response.data.user || response.data;
       if (user) {
         // Asegurar userType
         if (!user.userType || user.userType === "profesional") {
@@ -129,7 +141,31 @@ export const authService = {
         token: response.data.token || "temp-token-" + Date.now(),
       };
     } catch (error: any) {
-      console.error("❌ Error conectando con backend:", error);
+      console.error("❌ Error en registro de profesional:", error);
+
+      // ✅ MEJORAR: Manejo específico de errores del servidor
+      if (error.response?.status === 500) {
+        return {
+          success: false,
+          message: "Error interno del servidor. Por favor intenta más tarde.",
+        };
+      }
+
+      if (error.response?.status === 400) {
+        return {
+          success: false,
+          message:
+            "Datos inválidos. Verifica que todos los campos estén correctos.",
+        };
+      }
+
+      if (error.response?.status === 409) {
+        return {
+          success: false,
+          message: "Ya existe un profesional con este email.",
+        };
+      }
+
       return {
         success: false,
         message:

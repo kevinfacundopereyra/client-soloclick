@@ -48,40 +48,46 @@ const ProfessionalRegisterPage = () => {
 
     try {
       const response = await authService.registerProfessional(formData);
-      console.log('Registro profesional response:', response);
-      
+      console.log("Registro profesional response:", response);
+
       // Validación más estricta: SOLO éxito si tiene success=true Y token Y usuario
       if (response.success && response.token && response.user) {
-        console.log('✅ Registro profesional exitoso - iniciando sesión automáticamente');
-        console.log('🔍 Datos del usuario recibidos:', response.user);
-        
+        console.log(
+          "✅ Registro profesional exitoso - iniciando sesión automáticamente"
+        );
+        console.log("🔍 Datos del usuario recibidos:", response.user);
+
         // Guardar sesión automáticamente
         authService.saveSession(response.token, response.user);
-        
+
         // Verificar que se guardó correctamente
         const isAuthenticated = authService.isAuthenticated();
-        const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
-        console.log('✅ Sesión profesional iniciada:', isAuthenticated);
-        console.log('🔍 Usuario guardado en localStorage:', savedUser);
-        
-        alert('¡Registro de profesional exitoso! Ahora completa tu perfil');
-        
+        const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+        console.log("✅ Sesión profesional iniciada:", isAuthenticated);
+        console.log("🔍 Usuario guardado en localStorage:", savedUser);
+
+        alert("¡Registro de profesional exitoso! Ahora completa tu perfil");
+
         // Redirigir a completar perfil (Etapa 2)
-        navigate('/profile/complete');
+        navigate("/profile/complete");
       } else {
         // Mostrar error específico
-        console.log('❌ Registro profesional falló - falta success, token o user');
-        console.log('- success:', response.success);
-        console.log('- token:', !!response.token);
-        console.log('- user:', !!response.user);
-        setError(response.message || 'Error en el registro de profesional. Intenta nuevamente.');
+        console.log(
+          "❌ Registro profesional falló - falta success, token o user"
+        );
+        console.log("- success:", response.success);
+        console.log("- token:", !!response.token);
+        console.log("- user:", !!response.user);
+        setError(
+          response.message ||
+            "Error en el registro de profesional. Intenta nuevamente."
+        );
       }
-
-      alert("¡Registro de profesional exitoso!");
-      navigate(`/featured/${professionalId}`);
+      // La alerta y navegación ya se realizan con mejor información arriba.
+      // Se elimina el código incorrecto que usaba 'professionalId' no definido.
     } catch (error: any) {
-      console.error('❌ Error en registro profesional:', error);
-      setError(error.message || 'Error de conexión. Verifica tu internet.');
+      console.error("❌ Error en registro profesional:", error);
+      setError(error.message || "Error de conexión. Verifica tu internet.");
     } finally {
       setLoading(false);
     }
