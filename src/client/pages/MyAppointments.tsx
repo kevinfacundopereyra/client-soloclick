@@ -57,11 +57,7 @@ const MyAppointments: React.FC = () => {
 
         // ✅ MEJORAR - Filtrar solo citas válidas con tiempo
         const validAppointments = rawAppointments.filter(
-          (apt) =>
-            apt &&
-            apt._id &&
-            apt.date &&
-            apt.time // ✅ Ahora SÍ requerimos time
+          (apt) => apt && apt._id && apt.date && apt.time // ✅ Ahora SÍ requerimos time
         );
 
         setAppointments(validAppointments);
@@ -70,12 +66,12 @@ const MyAppointments: React.FC = () => {
         // ✅ AGREGAR - Debug de cada cita
         validAppointments.forEach((apt, index) => {
           console.log(`--- Cita ${index} ---`);
-          console.log('Date:', apt.date);
-          console.log('Time:', apt.time);
-          console.log('CreatedAt:', apt.createdAt);
-          console.log('Status:', apt.status);
-          console.log('Professional:', apt.professional);
-          console.log('--------------------');
+          console.log("Date:", apt.date);
+          console.log("Time:", apt.time);
+          console.log("CreatedAt:", apt.createdAt);
+          console.log("Status:", apt.status);
+          console.log("Professional:", apt.professional);
+          console.log("--------------------");
         });
       } else {
         console.log("❌ Response no exitosa:", response);
@@ -176,12 +172,12 @@ const MyAppointments: React.FC = () => {
   // ✅ ARREGLAR - Función isUpcoming con timezone local correcto
   const isUpcoming = (date: string, time: string) => {
     try {
-      console.log('🔍 Checking if upcoming:', { date, time });
-      
+      console.log("🔍 Checking if upcoming:", { date, time });
+
       // ✅ CAMBIAR - Usar zona horaria local
       const appointmentDate = new Date(date);
-      const [hours, minutes] = time.split(':').map(Number);
-      
+      const [hours, minutes] = time.split(":").map(Number);
+
       // ✅ IMPORTANTE - Establecer la fecha en hora local
       const appointmentDateTime = new Date(
         appointmentDate.getFullYear(),
@@ -190,18 +186,18 @@ const MyAppointments: React.FC = () => {
         hours,
         minutes
       );
-      
+
       const now = new Date();
-      
+
       const isUp = appointmentDateTime > now;
-      
-      console.log('🔍 Appointment datetime (local):', appointmentDateTime);
-      console.log('🔍 Current datetime:', now);
-      console.log('🔍 Is upcoming?', isUp);
-      
+
+      console.log("🔍 Appointment datetime (local):", appointmentDateTime);
+      console.log("🔍 Current datetime:", now);
+      console.log("🔍 Is upcoming?", isUp);
+
       return isUp;
     } catch (error) {
-      console.error('❌ Error in isUpcoming:', error);
+      console.error("❌ Error in isUpcoming:", error);
       return false;
     }
   };
@@ -236,7 +232,12 @@ const MyAppointments: React.FC = () => {
   // ✅ MEJORAR - Filtrado con fecha Y hora
   const filteredAppointments = appointments.filter((appointment) => {
     try {
-      if (!appointment || !appointment._id || !appointment.date || !appointment.time) {
+      if (
+        !appointment ||
+        !appointment._id ||
+        !appointment.date ||
+        !appointment.time
+      ) {
         return false;
       }
 
@@ -370,16 +371,14 @@ const MyAppointments: React.FC = () => {
               key: "upcoming",
               label: "Próximas",
               count: appointments.filter(
-                (a) =>
-                  isUpcoming(a.date, a.time) && a.status !== "cancelled"
+                (a) => isUpcoming(a.date, a.time) && a.status !== "cancelled"
               ).length,
             },
             {
               key: "past",
               label: "Pasadas",
               count: appointments.filter(
-                (a) =>
-                  !isUpcoming(a.date, a.time) || a.status === "completed"
+                (a) => !isUpcoming(a.date, a.time) || a.status === "completed"
               ).length,
             },
           ].map((filterOption) => (
@@ -511,18 +510,30 @@ const MyAppointments: React.FC = () => {
 
                 // ✅ MEJORAR - Obtención más robusta del nombre del profesional
                 const professionalName = (() => {
-                  if (typeof appointment.professional === "object" && appointment.professional?.name) {
+                  if (
+                    typeof appointment.professional === "object" &&
+                    appointment.professional?.name
+                  ) {
                     return appointment.professional.name;
                   }
                   if (typeof appointment.professional === "string") {
-                    return `Profesional ID: ${appointment.professional.substring(0, 8)}...`;
+                    return `Profesional ID: ${appointment.professional.substring(
+                      0,
+                      8
+                    )}...`;
                   }
-                  console.log('🔍 Professional data:', appointment.professional);
+                  console.log(
+                    "🔍 Professional data:",
+                    appointment.professional
+                  );
                   return "Profesional no disponible";
                 })();
 
                 const professionalId = (() => {
-                  if (typeof appointment.professional === "object" && appointment.professional?._id) {
+                  if (
+                    typeof appointment.professional === "object" &&
+                    appointment.professional?._id
+                  ) {
                     return appointment.professional._id;
                   }
                   if (typeof appointment.professional === "string") {
@@ -531,7 +542,7 @@ const MyAppointments: React.FC = () => {
                   if (appointment.professionalId) {
                     return appointment.professionalId;
                   }
-                  console.log('🔍 No professional ID found:', appointment);
+                  console.log("🔍 No professional ID found:", appointment);
                   return null;
                 })();
 
@@ -609,7 +620,8 @@ const MyAppointments: React.FC = () => {
                       <div
                         style={{
                           display: "grid",
-                          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                          gridTemplateColumns:
+                            "repeat(auto-fit, minmax(200px, 1fr))",
                           gap: "1.5rem",
                           marginBottom: "2rem",
                         }}
@@ -649,7 +661,8 @@ const MyAppointments: React.FC = () => {
                                 color: "#6b7280",
                               }}
                             >
-                              Duración: {appointment.totalDuration || 45} minutos
+                              Duración: {appointment.totalDuration || 45}{" "}
+                              minutos
                             </div>
                           </div>
                         </div>
@@ -699,7 +712,8 @@ const MyAppointments: React.FC = () => {
                               color: "#2d3748",
                             }}
                           >
-                            Total: ${appointment.totalPrice?.toLocaleString() || "0"}
+                            Total: $
+                            {appointment.totalPrice?.toLocaleString() || "0"}
                           </div>
                           <div
                             style={{
@@ -708,17 +722,25 @@ const MyAppointments: React.FC = () => {
                             }}
                           >
                             {/* ✅ ARREGLAR - Manejo seguro de createdAt */}
-                            Reservado el {(() => {
-                              if (!appointment.createdAt) return 'Fecha no disponible';
-                              
+                            Reservado el{" "}
+                            {(() => {
+                              if (!appointment.createdAt)
+                                return "Fecha no disponible";
+
                               try {
-                                const createdDate = new Date(appointment.createdAt);
-                                if (isNaN(createdDate.getTime())) return 'Fecha no disponible';
-                                
-                                return createdDate.toLocaleDateString('es-ES');
+                                const createdDate = new Date(
+                                  appointment.createdAt
+                                );
+                                if (isNaN(createdDate.getTime()))
+                                  return "Fecha no disponible";
+
+                                return createdDate.toLocaleDateString("es-ES");
                               } catch (error) {
-                                console.error('Error formateando createdAt:', error);
-                                return 'Fecha no disponible';
+                                console.error(
+                                  "Error formateando createdAt:",
+                                  error
+                                );
+                                return "Fecha no disponible";
                               }
                             })()}
                           </div>
@@ -726,23 +748,26 @@ const MyAppointments: React.FC = () => {
 
                         <div style={{ display: "flex", gap: "0.75rem" }}>
                           {/* ✅ CAMBIAR - Condición más simple para mostrar cancelar */}
-                          {appointment.status !== "cancelled" && appointment.status !== "completed" && (
-                            <button
-                              onClick={() => handleCancelAppointment(appointment._id)}
-                              style={{
-                                background: "transparent",
-                                border: "2px solid #ef4444",
-                                color: "#ef4444",
-                                padding: "0.5rem 1rem",
-                                borderRadius: "8px",
-                                cursor: "pointer",
-                                fontSize: "0.9rem",
-                                fontWeight: "500",
-                              }}
-                            >
-                              Cancelar Cita
-                            </button>
-                          )}
+                          {appointment.status !== "cancelled" &&
+                            appointment.status !== "completed" && (
+                              <button
+                                onClick={() =>
+                                  handleCancelAppointment(appointment._id)
+                                }
+                                style={{
+                                  background: "transparent",
+                                  border: "2px solid #ef4444",
+                                  color: "#ef4444",
+                                  padding: "0.5rem 1rem",
+                                  borderRadius: "8px",
+                                  cursor: "pointer",
+                                  fontSize: "0.9rem",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                Cancelar Cita
+                              </button>
+                            )}
 
                           {/* ✅ MEJORAR - Botón Ver Profesional más robusto */}
                           <button
@@ -750,24 +775,33 @@ const MyAppointments: React.FC = () => {
                               if (professionalId) {
                                 navigate(`/profesional/${professionalId}`);
                               } else {
-                                console.log('Professional ID no disponible para:', appointment.professional);
-                                alert('Información del profesional no disponible');
+                                console.log(
+                                  "Professional ID no disponible para:",
+                                  appointment.professional
+                                );
+                                alert(
+                                  "Información del profesional no disponible"
+                                );
                               }
                             }}
                             style={{
-                              background: professionalId 
+                              background: professionalId
                                 ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
                                 : "#9ca3af",
                               border: "none",
                               color: "white",
                               padding: "0.5rem 1rem",
                               borderRadius: "8px",
-                              cursor: professionalId ? "pointer" : "not-allowed",
+                              cursor: professionalId
+                                ? "pointer"
+                                : "not-allowed",
                               fontSize: "0.9rem",
                               fontWeight: "500",
                             }}
                           >
-                            {professionalId ? "Ver Profesional" : "Profesional N/D"}
+                            {professionalId
+                              ? "Ver Profesional"
+                              : "Profesional N/D"}
                           </button>
                         </div>
                       </div>
