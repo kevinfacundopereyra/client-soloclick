@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Registro Profesional</title>
+</head>
+<body>
+    <h1>Test de Registro Profesional</h1>
+    <button onclick="testRegister()">Registrar Profesional de Prueba</button>
+    <div id="result"></div>
+    
+    <script>
+        async function testRegister() {
+            const professionalData = {
+                name: 'Juan Pérez',
+                email: 'juan@test.com',
+                password: '123456',
+                phone: '+54 11 1234-5678',
+                city: 'Buenos Aires',
+                specialty: 'Peluquería'
+            };
+            
+            try {
+                const response = await fetch('http://localhost:3000/professionals', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(professionalData)
+                });
+                
+                const data = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<h3>Resultado:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                    
+                if (data.token && data.user) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify({...data.user, userType: 'professional'}));
+                    alert('Registro exitoso! Redirigiendo a completar perfil...');
+                    window.location.href = 'http://localhost:5174/profile/complete';
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = 
+                    '<h3>Error de conexión - Simulando registro exitoso</h3>';
+                
+                // Simular registro exitoso
+                const simulatedUser = {
+                    id: Date.now().toString(),
+                    name: professionalData.name,
+                    email: professionalData.email,
+                    userType: 'professional'
+                };
+                
+                localStorage.setItem('token', 'dev-token-' + Date.now());
+                localStorage.setItem('user', JSON.stringify(simulatedUser));
+                alert('Registro simulado exitoso! Redirigiendo a completar perfil...');
+                window.location.href = 'http://localhost:5174/profile/complete';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -25,7 +25,6 @@ export async function fetchProfessionals() {
     const response = await api.get(API_CONFIG.ENDPOINTS.PROFESSIONALS);
 
     console.log("✅ Respuesta del backend:", response.data);
-    return null;
 
     // Si la respuesta es un array directamente
     if (Array.isArray(response.data)) {
@@ -58,31 +57,39 @@ export async function fetchProfessionals() {
 export async function fetchProfessionalsBySpecialty(specialty: string) {
   try {
     console.log(`🔍 Obteniendo profesionales por especialidad: ${specialty}`);
-    const response = await api.get(
-      `${API_CONFIG.ENDPOINTS.PROFESSIONALS}?specialty=${encodeURIComponent(
-        specialty
-      )}`
-    );
 
-    console.log(`✅ Profesionales de ${specialty}:`, response.data);
+    // ✅ SOLUCIÓN: Usar el endpoint general y filtrar en el frontend
+    const response = await api.get(API_CONFIG.ENDPOINTS.PROFESSIONALS);
 
-    // Si la respuesta es un array directamente
+    console.log(`✅ Todos los profesionales obtenidos:`, response.data);
+
+    // Obtener todos los profesionales
+    let allProfessionals = [];
     if (Array.isArray(response.data)) {
-      return response.data;
-    }
-    // Si la respuesta es un objeto con una propiedad que contiene los datos
-    if (
+      allProfessionals = response.data;
+    } else if (
       response.data.professionals &&
       Array.isArray(response.data.professionals)
     ) {
-      return response.data.professionals;
-    }
-    if (response.data.data && Array.isArray(response.data.data)) {
-      return response.data.data;
+      allProfessionals = response.data.professionals;
+    } else if (response.data.data && Array.isArray(response.data.data)) {
+      allProfessionals = response.data.data;
     }
 
-    console.warn("⚠️ Formato de respuesta inesperado:", response.data);
-    return [];
+    // ✅ Filtrar por especialidad en el frontend
+    const filteredProfessionals = allProfessionals.filter(
+      (professional: { specialty: string }) => {
+        const profSpecialty = professional.specialty?.toLowerCase();
+        const targetSpecialty = specialty.toLowerCase();
+        return profSpecialty === targetSpecialty;
+      }
+    );
+
+    console.log(
+      `✅ Profesionales filtrados de ${specialty}:`,
+      filteredProfessionals
+    );
+    return filteredProfessionals;
   } catch (error) {
     console.error(
       `❌ Error obteniendo profesionales para ${specialty}:`,

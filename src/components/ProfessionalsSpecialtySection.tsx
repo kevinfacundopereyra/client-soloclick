@@ -1,3 +1,5 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import ProfessionalCard from "../professionals/components/ProfessionalCard";
 import { useProfessionalsBySpecialty } from "../professionals/hooks/useProfessionalsBySpecialty";
 
@@ -12,6 +14,7 @@ const ProfessionalsSpecialtySection = ({
   title, 
   maxItems = 4 
 }: ProfessionalsSpecialtySectionProps) => {
+  const navigate = useNavigate();
   const { professionals, loading, error } = useProfessionalsBySpecialty(specialty);
 
   if (loading) {
@@ -31,7 +34,12 @@ const ProfessionalsSpecialtySection = ({
   }
 
   // Limitar la cantidad de profesionales mostrados
-  const displayedProfessionals = professionals.slice(0, maxItems);
+  const displayedProfessionals = professionals.slice(0, 3);
+
+  // ✅ Función para navegar a la página de especialidad
+  const handleViewMore = () => {
+    navigate(`/professionals?specialty=${encodeURIComponent(specialty)}`);
+  };
 
   return (
     <section style={{ 
@@ -68,23 +76,34 @@ const ProfessionalsSpecialtySection = ({
       </div>
 
       {/* Botón ver más si hay más profesionales */}
-      {professionals.length > maxItems && (
+      {professionals.length > 3 && (
         <div style={{
           textAlign: 'center',
           marginTop: '2rem'
         }}>
-          <button style={{
-            background: 'rgba(255, 255, 255, 0.2)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            color: 'white',
-            padding: '0.75rem 2rem',
-            borderRadius: '25px',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            backdropFilter: 'blur(10px)',
-            transition: 'all 0.2s'
-          }}>
-            Ver más {title.toLowerCase()} ({professionals.length - maxItems} más)
+          <button 
+            onClick={handleViewMore}
+            style={{
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              color: 'white',
+              padding: '0.75rem 2rem',
+              borderRadius: '25px',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              backdropFilter: 'blur(10px)',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+              e.currentTarget.style.transform = 'translateY(0px)';
+            }}
+          >
+            Ver más {title.toLowerCase()} ({professionals.length - 3} más) →
           </button>
         </div>
       )}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import type { Professional } from "../components/ProfessionalCard";
 import { fetchProfessionalById } from "../services/professionalsService";
+import { useServicesByProfessional } from "../hooks/useServicesByProfessional";
 
 interface Service {
   id: string;
@@ -17,6 +18,8 @@ const ServicesSelection: React.FC = () => {
   const [professional, setProfessional] = useState<Professional | null>(null);
   const [selectedServices, setSelectedServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const { services: realServices, loading: servicesLoading, error: servicesError } = useServicesByProfessional(id || '');
 
   useEffect(() => {
     // Fetch real professional data
@@ -150,7 +153,21 @@ const ServicesSelection: React.FC = () => {
     return selectedServices.reduce((total, service) => total + parseInt(service.price), 0);
   };
 
-
+  const getDisplayServices = () => {
+    if (realServices && realServices.length > 0) {
+      // Usar servicios reales del profesional
+      return realServices.map(service => ({
+        id: service._id,
+        name: service.name,
+        description: service.description,
+        price: service.price.toString(),
+        duration: service.duration.toString()
+      }));
+    } else {
+      // Fallback a servicios por defecto si no tiene servicios configurados
+      return getServicesBySpecialty(professional?.specialty || 'Barbería');
+    }
+  };
 
   const handleContinue = () => {
     if (selectedServices.length === 0) {
@@ -165,7 +182,7 @@ const ServicesSelection: React.FC = () => {
     navigate(`/reservar/horario/${id}`);
   };
 
-  if (loading) {
+  if (loading || servicesLoading) {
     return (
       <div style={{ 
         minHeight: "100vh", 
@@ -175,7 +192,7 @@ const ServicesSelection: React.FC = () => {
         background: "#f8f9fa"
       }}>
         <div style={{ fontSize: "1.2rem", color: "#4a5568" }}>
-          Cargando servicios...
+          Cargando servicios del profesional...
         </div>
       </div>
     );
@@ -211,7 +228,7 @@ const ServicesSelection: React.FC = () => {
     );
   }
 
-  const services = getServicesBySpecialty(professional.specialty);
+  const services = getDisplayServices();
 
   return (
     <div style={{ 

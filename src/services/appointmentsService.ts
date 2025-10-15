@@ -1,175 +1,360 @@
-import { api } from '../professionals/services/professionalsService';
-import { API_CONFIG } from '../config/api';
+import axios from "axios";
 
-// Interfaces para los datos de appointment
-export interface ServiceItem {
-  serviceId: string;
-  name: string;
-  duration: number;
-  price: number;
+const API_BASE_URL = "http://localhost:3000";
+const api = axios.create({ baseURL: API_BASE_URL });
+
+// ✅ Interceptor para autenticación
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// ✅ Interfaces
+export interface AvailableSlot {
+  time: string; // "09:00", "09:30", etc.
+  available: boolean;
 }
 
 export interface CreateAppointmentData {
-  userId: string;
   professionalId: string;
-  services: ServiceItem[];
-  date: string; // formato YYYY-MM-DD
-  startTime: string; // formato HH:mm
-  endTime: string; // formato HH:mm
-  totalDuration: number;
+  clientId?: string;
+  services: string[]; // IDs de los servicios
+  date: string; // "2024-10-09"
+  time: string; // "14:30"
   totalPrice: number;
-  paymentMethod: string;
+  totalDuration: number;
   notes?: string;
-  status: string;
 }
 
 export interface Appointment {
   _id: string;
-  userId: string;
-  professionalId: string;
-  services: ServiceItem[];
-  date: Date;
-  startTime: string;
-  endTime: string;
-  totalDuration: number;
-  totalPrice: number;
-  paymentMethod: string;
-  notes?: string;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface AppointmentResponse {
-  success: boolean;
-  message: string;
-  appointment?: Appointment;
-}
-
-export interface AvailableSlot {
+  professional: {
+    _id: string;
+    name: string;
+    specialty: string;
+  };
+  client?: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  services: Array<{
+    _id: string;
+    name: string;
+    price: number;
+    duration: number;
+  }>;
+  date: string;
   time: string;
-  available: boolean;
+  status: "pending" | "confirmed" | "cancelled" | "completed";
+  totalPrice: number;
+  totalDuration: number;
+  notes?: string;
+  createdAt: string;
 }
 
-// Servicio de appointments
 export const appointmentsService = {
-  // Crear nueva cita
-  createAppointment: async (appointmentData: CreateAppointmentData): Promise<AppointmentResponse> => {
+  // ✅ CAMBIAR - usar tu endpoint real
+  getAvailableSlots: async (professionalId: string, date: string) => {
     try {
-      const response = await api.post(API_CONFIG.ENDPOINTS.APPOINTMENTS, appointmentData);
+      console.log(
+        `🔍 Obteniendo horarios para profesional ${professionalId} el ${date}`
+      );
+
+      const [professionalResponse, appointmentsResponse] = await Promise.all([
+        api.get(`/professionals/${professionalId}`),
+        api.get(`/appointments/professional/${professionalId}`),
+      ]);
+
+      const professional = professionalResponse.data;
+      const existingAppointments = appointmentsResponse.data || [];
+
+      console.log("✅ Profesional:", professional);
+      console.log("✅ Citas existentes:", existingAppointments);
+
+      // ✅ SIEMPRE usar la función correcta
+      const availableSlots = generateAvailableSlotsWithRealHours(
+        date,
+        professional.workingHours,
+        professional.appointmentDuration || 45,
+        existingAppointments
+      );
+
       return {
         success: true,
-        message: 'Cita creada exitosamente',
-        appointment: response.data
+        slots: availableSlots,
       };
     } catch (error: any) {
-      console.error('Error creating appointment:', error);
+      console.error("❌ Error obteniendo horarios:", error);
+
+      // ✅ CAMBIAR: usar horarios reales también en el fallback
+      console.log("⚠️ Error conectando con backend, usando horarios vacíos");
       return {
         success: false,
-        message: error.response?.data?.message || 'Error al crear la cita'
+        slots: [], // ✅ Devolver array vacío en lugar de mock
+        error: error.message,
       };
     }
   },
 
-  // Obtener citas del usuario
-  getUserAppointments: async (userId: string): Promise<{ success: boolean; appointments?: Appointment[] }> => {
+  // ✅ SOLO BACKEND: Crear cita únicamente en el backend
+  createAppointment: async (appointmentData: CreateAppointmentData) => {
     try {
-      const response = await api.get(`${API_CONFIG.ENDPOINTS.APPOINTMENTS}/user/${userId}`);
+      console.log("🔍 Creando cita en backend:", appointmentData);
+
+      const backendData = {
+        professionalId: appointmentData.professionalId,
+        services: appointmentData.services,
+        date: appointmentData.date,
+        time: appointmentData.time,
+        totalPrice: appointmentData.totalPrice,
+        totalDuration: appointmentData.totalDuration,
+        notes: appointmentData.notes || "",
+      };
+
+      const response = await api.post("/appointments", backendData);
+      console.log("✅ Cita creada en backend:", response.data);
+
       return {
         success: true,
-        appointments: response.data
+        appointment: response.data,
+        message: "Cita reservada exitosamente",
       };
     } catch (error: any) {
-      console.error('Error fetching user appointments:', error);
-      return {
-        success: false
-      };
+      console.error("❌ Error creando cita en backend:", error);
+      throw error;
     }
   },
 
-  // Obtener citas del profesional
-  getProfessionalAppointments: async (professionalId: string): Promise<{ success: boolean; appointments?: Appointment[] }> => {
+  // ✅ SOLO BACKEND: Obtener citas únicamente del backend
+  getMyAppointments: async () => {
     try {
-      const response = await api.get(`${API_CONFIG.ENDPOINTS.APPOINTMENTS}/professional/${professionalId}`);
+      console.log("🔍 Obteniendo citas del backend");
+
+      const response = await api.get("/appointments");
+      console.log("✅ Citas del backend:", response.data?.length || 0);
+
       return {
         success: true,
-        appointments: response.data
+        appointments: response.data || [],
       };
     } catch (error: any) {
-      console.error('Error fetching professional appointments:', error);
-      return {
-        success: false
-      };
+      console.error("❌ Error obteniendo mis citas del backend:", error);
+      throw error;
     }
   },
 
-  // Verificar disponibilidad de horarios para un profesional en una fecha específica
-  getAvailableSlots: async (professionalId: string, date: string): Promise<{ success: boolean; slots?: AvailableSlot[] }> => {
+  // ✅ USAR tu endpoint existente
+  getProfessionalAppointments: async (professionalId?: string) => {
     try {
-      const response = await api.get(`${API_CONFIG.ENDPOINTS.APPOINTMENTS}/availability/${professionalId}?date=${date}`);
+      let url = "/appointments";
+
+      if (professionalId) {
+        url = `/appointments/professional/${professionalId}`;
+      }
+
+      const response = await api.get(url);
+      console.log("✅ Citas del profesional:", response.data);
+
       return {
         success: true,
-        slots: response.data
+        appointments: response.data,
       };
     } catch (error: any) {
-      console.error('Error fetching available slots:', error);
-      return {
-        success: false
-      };
+      console.error("❌ Error obteniendo citas del profesional:", error);
+      throw error;
     }
   },
 
-  // Cancelar cita
-  cancelAppointment: async (appointmentId: string): Promise<AppointmentResponse> => {
+  // ✅ USAR DELETE /appointments/:id (tu backend actual)
+  cancelAppointment: async (appointmentId: string, reason?: string) => {
     try {
-      const response = await api.patch(`${API_CONFIG.ENDPOINTS.APPOINTMENTS}/${appointmentId}/cancel`);
+      // Tu backend usa DELETE, no PATCH /cancel
+      const response = await api.delete(`/appointments/${appointmentId}`);
+
+      console.log("✅ Cita eliminada:", response.data);
+
       return {
         success: true,
-        message: 'Cita cancelada exitosamente',
-        appointment: response.data
+        message: "Cita cancelada exitosamente",
       };
     } catch (error: any) {
-      console.error('Error cancelling appointment:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Error al cancelar la cita'
-      };
+      console.error("❌ Error cancelando cita:", error);
+      throw error;
     }
   },
 
-  // Obtener una cita específica
-  getAppointment: async (appointmentId: string): Promise<{ success: boolean; appointment?: Appointment }> => {
+  // ✅ REEMPLAZAR la función confirmAppointment mock
+  confirmAppointment: async (appointmentId: string) => {
     try {
-      const response = await api.get(`${API_CONFIG.ENDPOINTS.APPOINTMENTS}/${appointmentId}`);
+      console.log("🔍 Confirmando cita:", appointmentId);
+
+      // Usar updateStatus que ya funciona
+      const response = await appointmentsService.updateStatus(
+        appointmentId,
+        "confirmed"
+      );
+
+      console.log("✅ Cita confirmada:", response);
       return {
         success: true,
-        appointment: response.data
+        appointment: response,
+        message: "Cita confirmada exitosamente",
       };
     } catch (error: any) {
-      console.error('Error fetching appointment:', error);
-      return {
-        success: false
-      };
+      console.error("❌ Error confirmando cita:", error);
+      throw error;
     }
   },
 
-  // Confirmar cita (para el profesional)
-  confirmAppointment: async (appointmentId: string): Promise<AppointmentResponse> => {
+  // ✅ AGREGAR función para completar cita
+  completeAppointment: async (appointmentId: string) => {
     try {
-      const response = await api.patch(`${API_CONFIG.ENDPOINTS.APPOINTMENTS}/${appointmentId}/confirm`);
+      console.log("🔍 Completando cita:", appointmentId);
+
+      // Usar updateStatus que ya funciona
+      const response = await appointmentsService.updateStatus(
+        appointmentId,
+        "completed"
+      );
+
+      console.log("✅ Cita completada:", response);
       return {
         success: true,
-        message: 'Cita confirmada exitosamente',
-        appointment: response.data
+        appointment: response,
+        message: "Cita completada exitosamente",
       };
     } catch (error: any) {
-      console.error('Error confirming appointment:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Error al confirmar la cita'
-      };
+      console.error("❌ Error completando cita:", error);
+      throw error;
+    }
+  },
+
+  // ✅ AGREGAR - Actualizar status de cita
+  updateStatus: async (appointmentId: string, newStatus: string) => {
+    try {
+      console.log(
+        `🔍 Actualizando status de cita ${appointmentId} a ${newStatus}`
+      );
+
+      // ✅ USAR 'api' en lugar de 'axios' para usar los interceptors
+      const response = await api.patch(
+        `/appointments/${appointmentId}/status`, // ✅ Sin API_BASE_URL (ya está en api)
+        { status: newStatus }
+      );
+
+      console.log("✅ Status actualizado:", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error("❌ Error actualizando status:", error);
+      throw error;
+    }
+  },
+};
+
+// ✅ MANTENER SOLO esta función (ya está bien):
+function generateAvailableSlotsWithRealHours(
+  targetDate: string,
+  workingHours: any,
+  appointmentDuration: number,
+  existingAppointments: any[]
+): AvailableSlot[] {
+  const slots: AvailableSlot[] = [];
+
+  const date = new Date(targetDate);
+  const jsDay = date.getDay();
+  const dayNames = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
+  const dayName = dayNames[jsDay];
+
+  console.log(`🔍 Fecha: ${targetDate}`);
+  console.log(`🔍 Date.getDay(): ${jsDay} (0=Dom, 1=Lun, etc.)`);
+  console.log(`🔍 Día mapeado: ${dayName}`);
+
+  const daySchedule = workingHours?.[dayName];
+
+  if (
+    !daySchedule ||
+    !daySchedule.open ||
+    !daySchedule.close ||
+    daySchedule.open === "" ||
+    daySchedule.close === ""
+  ) {
+    console.log(`⚠️ Profesional no trabaja los ${dayName}`);
+    return []; // ✅ Array vacío = no horarios
+  }
+
+  console.log(
+    `✅ Horarios ${dayName}: ${daySchedule.open} - ${daySchedule.close}`
+  );
+
+  // 3. Convertir horarios a minutos para cálculos
+  const [openHour, openMin] = daySchedule.open.split(":").map(Number);
+  const [closeHour, closeMin] = daySchedule.close.split(":").map(Number);
+
+  const openMinutes = openHour * 60 + openMin;
+  const closeMinutes = closeHour * 60 + closeMin;
+
+  console.log(`🔍 Apertura: ${openHour}:${openMin} (${openMinutes} min)`);
+  console.log(`🔍 Cierre: ${closeHour}:${closeMin} (${closeMinutes} min)`);
+  console.log(`🔍 Duración de cita: ${appointmentDuration} min`);
+
+  // 4. Filtrar citas del día específico
+  const dayAppointments = existingAppointments.filter((apt) => {
+    const aptDate = apt.date;
+    if (typeof aptDate === "string") {
+      // Comparar exactamente la fecha (formato YYYY-MM-DD)
+      const aptDateOnly = aptDate.split("T")[0]; // Remover hora si existe
+      return aptDateOnly === targetDate;
+    }
+    return false;
+  });
+
+  const occupiedTimes = dayAppointments.map((apt) => apt.time);
+  console.log(`🔍 Citas del día ${targetDate}:`, dayAppointments.length);
+  console.log(`🔍 Horarios ocupados:`, occupiedTimes);
+
+  // 5. Generar slots cada X minutos (según appointmentDuration)
+  for (
+    let minutes = openMinutes;
+    minutes < closeMinutes;
+    minutes += appointmentDuration
+  ) {
+    const hour = Math.floor(minutes / 60);
+    const minute = minutes % 60;
+    const timeString = `${hour.toString().padStart(2, "0")}:${minute
+      .toString()
+      .padStart(2, "0")}`;
+
+    // Verificar si hay tiempo suficiente para la cita antes del cierre
+    if (minutes + appointmentDuration <= closeMinutes) {
+      const isOccupied = occupiedTimes.includes(timeString);
+
+      slots.push({
+        time: timeString,
+        available: !isOccupied,
+      });
     }
   }
-};
+
+  console.log(
+    `✅ Slots generados para ${dayName}: ${slots.length} horarios totales`
+  );
+  console.log(
+    `✅ Horarios disponibles: ${slots.filter((s) => s.available).length}`
+  );
+
+  return slots;
+}
 
 export default appointmentsService;
