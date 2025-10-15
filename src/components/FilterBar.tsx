@@ -179,10 +179,10 @@ const FilterBar: React.FC<FilterBarProps> = ({
               }}
             >
               <option value="">Ciudad</option>
-              <option value="Bogotá">Bogotá</option>
-              <option value="Medellín">Medellín</option>
-              <option value="Cali">Cali</option>
-              <option value="Barranquilla">Barranquilla</option>
+              <option value="Mendoza">Mendoza</option>
+              <option value="Cordoba">Córdoba</option>
+              <option value="Buenos Aires">Buenos Aires</option>
+              <option value="Rosario">Rosario</option>
               <option value="Cartagena">Cartagena</option>
               <option value="Bucaramanga">Bucaramanga</option>
             </select>
