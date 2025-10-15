@@ -10,6 +10,7 @@ export interface Professional {
   phone: string;
   city: string;
   specialty: string;
+  modality?: 'local' | 'home'; // Nuevo campo para modalidad
   rating?: number;
   appointmentDuration: number;
   // Campos adicionales que pueden venir del backend
