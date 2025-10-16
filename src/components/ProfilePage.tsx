@@ -53,9 +53,9 @@ const ProfilePage: React.FC = () => {
   const isProfessional = user?.userType === "professional";
 
   // MÁS LOGS para debugging
-  console.log("🔍 Variable isProfessional:", isProfessional);
+/*   console.log("🔍 Variable isProfessional:", isProfessional);
   console.log("🔍 user en render:", user);
-  console.log("🔍 user.userType:", user?.userType);
+  console.log("🔍 user.userType:", user?.userType); */
 
   if (!user) {
     return (
@@ -245,7 +245,7 @@ const ProfilePage: React.FC = () => {
         </div>
 
         {/* DEBUG INFO - TEMPORAL para ver qué está pasando */}
-        <div
+{/*         <div
           style={{
             backgroundColor: "#f0f8ff",
             border: "1px solid #4CAF50",
@@ -262,7 +262,7 @@ const ProfilePage: React.FC = () => {
           isProfessional: {isProfessional ? "SÍ" : "NO"}
           <br />
           ¿Debería mostrar botón?: {isProfessional ? "SÍ" : "NO"}
-        </div>
+        </div> */}
 
         {/* Services Management Section - Only for Professionals */}
         {isProfessional && (
@@ -286,11 +286,18 @@ const ProfilePage: React.FC = () => {
                 fontSize: "0.9rem",
               }}
             >
-              Gestiona tus servicios, precios y disponibilidad
+              Gestiona tus servicios, precios, citas y pagos
             </p>
 
-            {/* Botones en fila */}
-            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+            {/* ✅ ACTUALIZAR: Botones en grid de 2x2 */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: "1rem",
+              }}
+            >
+              {/* Gestionar Servicios */}
               <button
                 onClick={() => {
                   console.log("🔍 Navegando a /profile/services");
@@ -300,56 +307,207 @@ const ProfilePage: React.FC = () => {
                   backgroundColor: "#4CAF50",
                   color: "white",
                   border: "none",
-                  padding: "12px 24px",
+                  padding: "12px 16px",
                   borderRadius: "8px",
                   cursor: "pointer",
-                  fontSize: "16px",
+                  fontSize: "14px",
                   fontWeight: "bold",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: "8px",
-                  transition: "background-color 0.2s",
-                  flex: "1",
-                  minWidth: "200px",
+                  transition: "all 0.2s",
+                  minHeight: "48px",
                 }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#45a049")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#4CAF50")
-                }
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#45a049";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#4CAF50";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
               >
                 ⚙️ Gestionar Servicios
               </button>
 
-              {/* ✅ NUEVO - Botón Gestionar Citas (mismo estilo) */}
+              {/* Ver mi Agenda */}
               <button
                 onClick={() => navigate("/dashboard-profesional")}
                 style={{
                   backgroundColor: "#10b981",
                   color: "white",
                   border: "none",
-                  padding: "12px 24px",
+                  padding: "12px 16px",
                   borderRadius: "8px",
                   cursor: "pointer",
-                  fontSize: "16px",
+                  fontSize: "14px",
                   fontWeight: "bold",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: "8px",
-                  transition: "background-color 0.2s",
-                  flex: "1",
-                  minWidth: "200px",
+                  transition: "all 0.2s",
+                  minHeight: "48px",
                 }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#059669")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#10b981")
-                }
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#059669";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#10b981";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
               >
                 📅 Ver mi Agenda
               </button>
+
+              {/* ✅ NUEVO: Historial de Pagos */}
+              <button
+                onClick={() => {
+                  console.log("🔍 Navegando a /profile/payments");
+                  navigate("/profile/payments");
+                }}
+                style={{
+                  backgroundColor: "#f59e0b",
+                  color: "white",
+                  border: "none",
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  transition: "all 0.2s",
+                  minHeight: "48px",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#d97706";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f59e0b";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                💰 Historial de Pagos
+              </button>
+
+              {/* ✅ NUEVO: Estadísticas (opcional) */}
+              <button
+                onClick={() => {
+                  console.log("🔍 Navegando a /profile/stats");
+                  navigate("/profile/stats");
+                }}
+                style={{
+                  backgroundColor: "#8b5cf6",
+                  color: "white",
+                  border: "none",
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  transition: "all 0.2s",
+                  minHeight: "48px",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#7c3aed";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#8b5cf6";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                📊 Mis Estadísticas
+              </button>
+            </div>
+
+            {/* ✅ AGREGAR: Resumen rápido de estadísticas */}
+            <div
+              style={{
+                marginTop: "1.5rem",
+                padding: "1rem",
+                background: "rgba(76, 175, 80, 0.1)",
+                borderRadius: "8px",
+                border: "1px solid rgba(76, 175, 80, 0.2)",
+              }}
+            >
+              <h4
+                style={{
+                  margin: "0 0 0.5rem 0",
+                  color: "#2e7d2e",
+                  fontSize: "0.95rem",
+                }}
+              >
+                📈 Resumen Rápido
+              </h4>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+                  gap: "0.75rem",
+                  fontSize: "0.85rem",
+                  color: "#4a5568",
+                }}
+              >
+                <div style={{ textAlign: "center", padding: "0.5rem" }}>
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      color: "#2e7d2e",
+                      fontSize: "1.2rem",
+                    }}
+                  >
+                    12
+                  </div>
+                  <div>Citas este mes</div>
+                </div>
+                <div style={{ textAlign: "center", padding: "0.5rem" }}>
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      color: "#f59e0b",
+                      fontSize: "1.2rem",
+                    }}
+                  >
+                    $450.000
+                  </div>
+                  <div>Ingresos mensuales</div>
+                </div>
+                <div style={{ textAlign: "center", padding: "0.5rem" }}>
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      color: "#8b5cf6",
+                      fontSize: "1.2rem",
+                    }}
+                  >
+                    4.8★
+                  </div>
+                  <div>Calificación</div>
+                </div>
+                <div style={{ textAlign: "center", padding: "0.5rem" }}>
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      color: "#10b981",
+                      fontSize: "1.2rem",
+                    }}
+                  >
+                    95%
+                  </div>
+                  <div>Puntualidad</div>
+                </div>
+              </div>
             </div>
           </div>
         )}

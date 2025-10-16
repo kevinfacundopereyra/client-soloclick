@@ -15,6 +15,7 @@ import CompleteProfilePage from "./components/CompleteProfilePage";
 import ServicesManagementPage from "./components/ServicesManagementPage";
 import MyAppointments from "./client/pages/MyAppointments";
 import ProfessionalDashboard from "./professionals/pages/ProfessionalDashboard";
+import PaymentsHistoryPage from "./components/PaymentsHistoryPage";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/complete" element={<CompleteProfilePage />} />
         <Route path="/profile/services" element={<ServicesManagementPage />} />
+        <Route path="/profile/payments" element={<PaymentsHistoryPage />} />
         <Route path="/mis-reservas" element={<MyAppointments />} />
         <Route
           path="/dashboard-profesional"
