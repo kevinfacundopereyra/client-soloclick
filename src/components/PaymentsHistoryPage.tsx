@@ -17,24 +17,68 @@ const PaymentsHistoryPage: React.FC = () => {
   const loadPayments = async () => {
     try {
       setLoading(true);
+      console.log('🔄 PaymentsHistoryPage: Iniciando carga...');
+      
       const result = await paymentsService.getMyPayments();
-      setPayments(result.payments);
-      setStats(result.stats);
+      console.log('🎯 PaymentsHistoryPage: Resultado completo recibido:', result);
+      console.log('🎯 PaymentsHistoryPage: result.success:', result.success);
+      console.log('🎯 PaymentsHistoryPage: result.payments:', result.payments);
+      console.log('🎯 PaymentsHistoryPage: result.payments.length:', result.payments?.length);
+      console.log('🎯 PaymentsHistoryPage: result.stats:', result.stats);
+      
+      // ✅ VERIFICAR antes de setear el estado
+      if (result && result.payments) {
+        console.log('✅ PaymentsHistoryPage: Datos válidos, actualizando estado...');
+        console.log('✅ PaymentsHistoryPage: Primer pago:', result.payments[0]);
+        
+        setPayments(result.payments);
+        setStats(result.stats);
+        
+        console.log('✅ PaymentsHistoryPage: Estado actualizado');
+        
+        // ✅ VERIFICAR después de setear
+        setTimeout(() => {
+          console.log('🔍 PaymentsHistoryPage: Estado después del set:', {
+            paymentsLength: result.payments.length,
+            firstPayment: result.payments[0]
+          });
+        }, 100);
+        
+      } else {
+        console.warn('⚠️ PaymentsHistoryPage: Datos inválidos recibidos:', result);
+      }
+      
     } catch (error) {
-      console.error('Error cargando pagos:', error);
+      console.error('❌ PaymentsHistoryPage: Error cargando pagos:', error);
     } finally {
       setLoading(false);
+      console.log('🏁 PaymentsHistoryPage: Carga completada');
     }
   };
 
   const getFilteredPayments = () => {
+    console.log('🔍 getFilteredPayments: Iniciando filtrado...');
+    console.log('🔍 getFilteredPayments: payments.length:', payments.length);
+    console.log('🔍 getFilteredPayments: filter actual:', filter);
+    
+    if (payments.length === 0) {
+      console.log('⚠️ getFilteredPayments: No hay pagos para filtrar');
+      return [];
+    }
+    
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
     const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-    return payments.filter(payment => {
+    const filtered = payments.filter(payment => {
       const paymentDate = new Date(payment.paymentDate);
+      
+      console.log(`🔍 Filtrando pago ${payment._id}:`, {
+        filter,
+        paymentDate,
+        status: payment.status
+      });
       
       switch (filter) {
         case 'completed':
@@ -48,9 +92,17 @@ const PaymentsHistoryPage: React.FC = () => {
         case 'month':
           return paymentDate >= monthAgo;
         default:
-          return true;
+          return true; // 'all'
       }
     });
+    
+    console.log('🎯 getFilteredPayments: Resultado filtrado:', {
+      original: payments.length,
+      filtered: filtered.length,
+      filter
+    });
+    
+    return filtered;
   };
 
   const getStatusColor = (status: string) => {
@@ -92,16 +144,66 @@ const PaymentsHistoryPage: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Intl.DateTimeFormat('es-CO', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(new Date(dateString));
+    try {
+      // ✅ ARREGLAR: Manejar diferentes formatos de fecha
+      let date: Date;
+      
+      if (!dateString) {
+        return 'Fecha no disponible';
+      }
+      
+      // Si ya es un objeto Date
+      if (dateString instanceof Date) {
+        date = dateString;
+      }
+      // Si es un string de fecha
+      else if (typeof dateString === 'string') {
+        // Remover caracteres especiales y normalizar
+        const cleanDateString = dateString.replace(/[^\d-T:.Z]/g, '');
+        date = new Date(cleanDateString);
+        
+        // Si no es válida, probar con Date.parse
+        if (isNaN(date.getTime())) {
+          date = new Date(Date.parse(dateString));
+        }
+        
+        // Si sigue sin ser válida, usar fecha actual
+        if (isNaN(date.getTime())) {
+          console.warn('⚠️ Fecha inválida, usando fecha actual:', dateString);
+          date = new Date();
+        }
+      }
+      // Fallback
+      else {
+        date = new Date();
+      }
+      
+      return new Intl.DateTimeFormat('es-CO', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(date);
+      
+    } catch (error) {
+      console.error('❌ Error formateando fecha:', error, 'Fecha original:', dateString);
+      return 'Fecha inválida';
+    }
   };
 
   const filteredPayments = getFilteredPayments();
+
+  console.log('🎨 PaymentsHistoryPage: Renderizando...', {
+    loading,
+    paymentsLength: payments.length,
+    filteredLength: filteredPayments.length,
+    statsExists: !!stats
+  });
+
+  if (payments.length > 0) {
+    console.log('🎨 PaymentsHistoryPage: Primer pago en render:', payments[0]);
+  }
 
   if (loading) {
     return (
