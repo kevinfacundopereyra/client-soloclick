@@ -21,7 +21,7 @@ export interface Payment {
   serviceName: string;
   amount: number;
   commission: number;
-  netAmount: number; // amount - commission
+  netAmount: number;
   paymentMethod: 'cash' | 'card' | 'transfer' | 'digital';
   status: 'pending' | 'completed' | 'failed' | 'refunded';
   paymentDate: string;
@@ -42,95 +42,101 @@ export interface PaymentStats {
 }
 
 export const paymentsService = {
-  // Obtener historial de pagos del profesional
   getMyPayments: async (): Promise<{ success: boolean; payments: Payment[]; stats: PaymentStats }> => {
     try {
+      console.log('🔄 Obteniendo pagos del backend...');
+      
       const response = await api.get('/payments/my-payments');
-      console.log('✅ Pagos obtenidos:', response.data);
+      console.log('✅ Respuesta del backend:', response.data);
+      
+      // ✅ SIMPLIFICAR: Como el backend ya funciona, usar directamente la respuesta
+      const { success, payments, stats } = response.data;
+      
+      console.log('📊 Datos recibidos:', {
+        success,
+        paymentsCount: payments?.length || 0,
+        hasStats: !!stats
+      });
+      
+      // ✅ Normalizar pagos si es necesario
+      const normalizedPayments = (payments || []).map((payment: any) => ({
+        ...payment,
+        id: payment._id || payment.id,
+        netAmount: payment.netAmount || (payment.amount - (payment.commission || 0)),
+        commission: payment.commission || 0,
+        // ✅ Asegurar que las fechas estén en formato string
+        paymentDate: payment.paymentDate instanceof Date ? 
+          payment.paymentDate.toISOString() : payment.paymentDate,
+        serviceDate: payment.serviceDate instanceof Date ? 
+          payment.serviceDate.toISOString() : payment.serviceDate,
+      }));
+      
+      // ✅ Usar stats del backend o calcular básicas
+      const finalStats = stats || {
+        totalIncome: normalizedPayments
+          .filter(p => p.status === 'completed')
+          .reduce((sum, p) => sum + (p.netAmount || 0), 0),
+        thisMonth: normalizedPayments
+          .filter(p => p.status === 'completed')
+          .reduce((sum, p) => sum + (p.netAmount || 0), 0),
+        thisWeek: normalizedPayments
+          .filter(p => p.status === 'completed')
+          .reduce((sum, p) => sum + (p.netAmount || 0), 0),
+        today: normalizedPayments
+          .filter(p => p.status === 'completed')
+          .reduce((sum, p) => sum + (p.netAmount || 0), 0),
+        totalCommissions: normalizedPayments
+          .reduce((sum, p) => sum + (p.commission || 0), 0),
+        completedPayments: normalizedPayments
+          .filter(p => p.status === 'completed').length,
+        pendingPayments: normalizedPayments
+          .filter(p => p.status === 'pending').length,
+        averageService: normalizedPayments.filter(p => p.status === 'completed').length > 0 ? 
+          normalizedPayments
+            .filter(p => p.status === 'completed')
+            .reduce((sum, p) => sum + (p.netAmount || 0), 0) / 
+          normalizedPayments.filter(p => p.status === 'completed').length : 0
+      };
+      
+      console.log('🎯 RESULTADO FINAL:', {
+        success: true,
+        paymentsCount: normalizedPayments.length,
+        statsCalculated: true,
+        firstPayment: normalizedPayments[0] || null
+      });
       
       return {
         success: true,
-        payments: response.data.payments || [],
-        stats: response.data.stats || {}
+        payments: normalizedPayments,
+        stats: finalStats
       };
+      
     } catch (error: any) {
       console.error('❌ Error obteniendo pagos:', error);
+      console.error('❌ Status:', error.response?.status);
+      console.error('❌ Data:', error.response?.data);
       
-      // Datos de ejemplo mientras el backend no esté listo
-      const mockPayments: Payment[] = [
-        {
-          _id: '1',
-          appointmentId: 'apt_001',
-          clientName: 'María García',
-          serviceName: 'Corte de cabello',
-          amount: 35000,
-          commission: 3500,
-          netAmount: 31500,
-          paymentMethod: 'card',
-          status: 'completed',
-          paymentDate: '2024-10-15T10:30:00Z',
-          serviceDate: '2024-10-15T10:00:00Z',
-          city: 'Bogotá',
-          notes: 'Cliente satisfecho'
-        },
-        {
-          _id: '2',
-          appointmentId: 'apt_002',
-          clientName: 'Carlos Pérez',
-          serviceName: 'Barba + Corte',
-          amount: 45000,
-          commission: 4500,
-          netAmount: 40500,
-          paymentMethod: 'cash',
-          status: 'completed',
-          paymentDate: '2024-10-14T15:20:00Z',
-          serviceDate: '2024-10-14T15:00:00Z',
-          city: 'Bogotá'
-        },
-        {
-          _id: '3',
-          appointmentId: 'apt_003',
-          clientName: 'Ana Rodríguez',
-          serviceName: 'Manicure Gel',
-          amount: 28000,
-          commission: 2800,
-          netAmount: 25200,
-          paymentMethod: 'transfer',
-          status: 'pending',
-          paymentDate: '2024-10-13T12:15:00Z',
-          serviceDate: '2024-10-13T12:00:00Z',
-          city: 'Medellín',
-          notes: 'Pago pendiente de confirmación'
-        }
-      ];
-
-      const mockStats: PaymentStats = {
-        totalIncome: 1250000,
-        thisMonth: 450000,
-        thisWeek: 108000,
-        today: 35000,
-        totalCommissions: 125000,
-        completedPayments: 24,
-        pendingPayments: 2,
-        averageService: 36500
-      };
-
-      return {
-        success: true,
-        payments: mockPayments,
-        stats: mockStats
-      };
+      // ✅ Si hay error de autenticación, informar claramente
+      if (error.response?.status === 401) {
+        console.error('🔐 Error de autenticación - verifica que estés logueado como profesional');
+        throw new Error('No autorizado - inicia sesión como profesional');
+      }
+      
+      throw error;
     }
   },
 
-  // Filtrar pagos por período
+  // ✅ NUEVO: Método para obtener pagos por período específico
   getPaymentsByPeriod: async (period: 'today' | 'week' | 'month' | 'all'): Promise<Payment[]> => {
     try {
+      console.log(`🔄 Obteniendo pagos por período: ${period}`);
       const response = await api.get(`/payments/my-payments?period=${period}`);
       return response.data.payments || [];
     } catch (error) {
       console.error('Error filtering payments:', error);
-      throw error;
+      // Fallback: obtener todos y filtrar en frontend
+      const allPayments = await paymentsService.getMyPayments();
+      return allPayments.payments;
     }
   }
 };
