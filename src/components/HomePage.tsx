@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import ProfessionalsSpecialtySection from "./ProfessionalsSpecialtySection";
-
 import { useFavorites } from "../professionals/hooks/useFavorites";
 import { useProfessionals } from "../professionals/hooks/useProfessionals";
 import ProfessionalCard from "../professionals/components/ProfessionalCard";
 import { authService } from "../services/authService";
 import { useState, useEffect } from "react";
 import UserProfile from "./UserProfile";
+import FilterBar from "./FilterBar";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -68,6 +68,7 @@ const HomePage = () => {
     setUser(null);
     navigate("/");
   };
+
   return (
     <div
       style={{
@@ -184,123 +185,8 @@ const HomePage = () => {
           desde cualquier lugar
         </h1>
 
-        {/* Search Bar */}
-        <div
-          style={{
-            background: "white",
-            borderRadius: "50px",
-            padding: "0.5rem",
-            display: "flex",
-            alignItems: "center",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-            marginBottom: "3rem",
-            maxWidth: "900px",
-            width: "100%",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "0.75rem 1.5rem",
-              flex: 1,
-              borderRight: "1px solid #e2e8f0",
-            }}
-          >
-            <span style={{ marginRight: "0.75rem", fontSize: "1.1rem" }}>
-              🔍
-            </span>
-            <input
-              type="text"
-              placeholder="Busca profesionales, especialidades..."
-              style={{
-                border: "none",
-                outline: "none",
-                fontSize: "1rem",
-                width: "100%",
-                color: "#4a5568",
-              }}
-            />
-          </div>
-
-          {/* <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0.75rem 1.5rem',
-            flex: 1,
-            borderRight: '1px solid #e2e8f0'
-          }}>
-            <span style={{ marginRight: '0.75rem', fontSize: '1.1rem' }}>📍</span>
-            <input
-              type="text"
-              placeholder="Ubicación actual"
-              style={{
-                border: 'none',
-                outline: 'none',
-                fontSize: '1rem',
-                width: '100%',
-                color: '#4a5568'
-              }}
-            />
-          </div>
-
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0.75rem 1.5rem',
-            flex: 1,
-            borderRight: '1px solid #e2e8f0'
-          }}>
-            <span style={{ marginRight: '0.75rem', fontSize: '1.1rem' }}>📅</span>
-            <input
-              type="text"
-              placeholder="Cualquier fecha"
-              style={{
-                border: 'none',
-                outline: 'none',
-                fontSize: '1rem',
-                width: '100%',
-                color: '#4a5568'
-              }}
-            />
-          </div>
-
-          <div style={{
-           display: 'flex',
-            alignItems: 'center',
-            padding: '0.75rem 1.5rem',
-            flex: 1
-          }}>
-            <span style={{ marginRight: '0.75rem', fontSize: '1.1rem' }}>⏰</span>
-            <input
-              type="text"
-              placeholder="En cualquier momento"
-              style={{
-                border: 'none',
-                outline: 'none',
-                fontSize: '1rem',
-                width: '100%',
-                color: '#4a5568'
-              }}
-            /> 
-          </div> */}
-
-          <button
-            style={{
-              background: "#2d3748",
-              color: "white",
-              border: "none",
-              padding: "1rem 2rem",
-              borderRadius: "50px",
-              fontSize: "1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              marginLeft: "0.5rem",
-            }}
-          >
-            Buscar
-          </button>
-        </div>
+        {/* ✅ USAR: FilterBar con filtros expandidos */}
+        <FilterBar isHomePage={true} />
 
         {/* Stats */}
         <div
