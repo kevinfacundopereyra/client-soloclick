@@ -1,4 +1,3 @@
-// src/professionals/hooks/useServicesByProfessional.ts
 import { useState, useEffect } from "react";
 import { api } from "../services/professionalsService";
 
@@ -23,17 +22,15 @@ export const useServicesByProfessional = (professionalId: string) => {
         setLoading(true);
         setError(null);
 
-        // ✅ SOLUCIÓN: Usar el servicio que ya arreglamos
-        const { servicesService } = await import(
-          "../../services/servicesService"
+        // Llamar al endpoint que ya tienes en tu backend
+        const response = await api.get(
+          `/services/professional/${professionalId}`
         );
-        const professionalServices =
-          await servicesService.getServicesByProfessional(professionalId);
 
-        console.log("🔍 Servicios del profesional:", professionalServices);
+        console.log("🔍 Servicios del profesional:", response.data);
 
         // Filtrar solo servicios activos
-        const activeServices = professionalServices.filter(
+        const activeServices = response.data.filter(
           (service: Service) => service.isActive
         );
 

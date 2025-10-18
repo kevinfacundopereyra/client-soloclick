@@ -77,11 +77,13 @@ export async function fetchProfessionalsBySpecialty(specialty: string) {
     }
 
     // ✅ Filtrar por especialidad en el frontend
-    const filteredProfessionals = allProfessionals.filter((professional) => {
-      const profSpecialty = professional.specialty?.toLowerCase();
-      const targetSpecialty = specialty.toLowerCase();
-      return profSpecialty === targetSpecialty;
-    });
+    const filteredProfessionals = allProfessionals.filter(
+      (professional: { specialty: string }) => {
+        const profSpecialty = professional.specialty?.toLowerCase();
+        const targetSpecialty = specialty.toLowerCase();
+        return profSpecialty === targetSpecialty;
+      }
+    );
 
     console.log(
       `✅ Profesionales filtrados de ${specialty}:`,
