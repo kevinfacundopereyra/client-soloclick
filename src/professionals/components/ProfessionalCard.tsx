@@ -2,6 +2,14 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useFavorites } from "../hooks/useFavorites";
 
+// Define la estructura para la ubicación
+interface Location {
+  latitude: number;
+  longitude: number;
+  address?: string; // Opcional, pero útil
+  branchName?: string; // Opcional, para el futuro
+}
+
 export interface Professional {
   id?: string;
   _id?: string; // ID de MongoDB
@@ -10,7 +18,7 @@ export interface Professional {
   phone: string;
   city: string;
   specialty: string;
-  modality?: 'local' | 'home'; // Nuevo campo para modalidad
+  modality?: "local" | "home"; // Nuevo campo para modalidad
   rating?: number;
   appointmentDuration: number;
   // Campos adicionales que pueden venir del backend
@@ -20,6 +28,7 @@ export interface Professional {
   services?: string[];
   createdAt?: string;
   updatedAt?: string;
+  locations: Location[]; // Arreglo de ubicaciones
 }
 
 export interface ProfessionalCardProps {
@@ -117,7 +126,9 @@ const ProfessionalCard: React.FC<ProfessionalCardProps> = ({
 
     if (!professionalId) {
       console.error("Professional sin ID válido:", professional);
-      alert("Error: No se puede agregar a favoritos, profesional sin ID válido");
+      alert(
+        "Error: No se puede agregar a favoritos, profesional sin ID válido"
+      );
       return;
     }
 
@@ -129,7 +140,9 @@ const ProfessionalCard: React.FC<ProfessionalCardProps> = ({
 
   // Obtener el ID del profesional para verificar si es favorito
   const professionalId = professional._id || professional.id;
-  const isCurrentlyFavorite = professionalId ? isFavorite(professionalId) : false;
+  const isCurrentlyFavorite = professionalId
+    ? isFavorite(professionalId)
+    : false;
 
   return (
     <div style={cardStyle}>
@@ -170,24 +183,26 @@ const ProfessionalCard: React.FC<ProfessionalCardProps> = ({
       </button>
 
       <button
-        style={isCurrentlyFavorite ? favoriteActiveButtonStyle : favoriteButtonStyle}
+        style={
+          isCurrentlyFavorite ? favoriteActiveButtonStyle : favoriteButtonStyle
+        }
         onClick={handleToggleFavorites}
         disabled={isLoading}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
-          e.currentTarget.style.boxShadow = "0 4px 12px rgba(245, 158, 11, 0.3)";
+          e.currentTarget.style.boxShadow =
+            "0 4px 12px rgba(245, 158, 11, 0.3)";
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = "translateY(0)";
           e.currentTarget.style.boxShadow = "none";
         }}
       >
-        {isLoading 
-          ? "..." 
-          : isCurrentlyFavorite 
-            ? "⭐ Favorito" 
-            : "☆ Agregar a favoritos"
-        }
+        {isLoading
+          ? "..."
+          : isCurrentlyFavorite
+          ? "⭐ Favorito"
+          : "☆ Agregar a favoritos"}
       </button>
     </div>
   );
