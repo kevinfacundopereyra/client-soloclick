@@ -46,11 +46,22 @@ export const paymentsService = {
   // Método para crear un pago y preferencia en Mercado Pago
   createPayment: async (createPaymentDto: Partial<Payment>) => {
     try {
-      const response = await api.post("/payments", createPaymentDto);
+      const response = await axios.post(
+        "http://localhost:3000/payments/create-preference",
+        createPaymentDto
+      );
       return response.data;
     } catch (error) {
-      console.error("Error creando pago:", error);
-      throw error;
+      const e: any = error;
+      console.error("Error creando pago:", e);
+      console.error("Status:", e.response?.status);
+      console.error("Response data:", e.response?.data);
+      // Lanzar un Error más informativo manteniendo la info original
+      const message =
+        e.response?.data?.message || e.message || "Error creando pago";
+      const err = new Error(message);
+      (err as any).original = e;
+      throw err;
     }
   },
   getMyPayments: async (): Promise<{

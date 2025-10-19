@@ -53,6 +53,16 @@ const BookingConfirmation: React.FC = () => {
     }
   }, []);
 
+  // Si hay métodos destacados online, seleccionar el primero por defecto
+  useEffect(() => {
+    if (featuredPayments && featuredPayments.length > 0) {
+      // Si el usuario no cambió el método (sigue siendo 'establishment'), usamos el primero destacado
+      setPaymentMethod((prev) =>
+        prev === "establishment" ? featuredPayments[0].id : prev
+      );
+    }
+  }, [featuredPayments]);
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString + "T00:00:00");
     return date.toLocaleDateString("es-ES", {
@@ -98,25 +108,47 @@ const BookingConfirmation: React.FC = () => {
       console.log("� Respuesta del backend:", response);
       if (response.success) {
         // Si el método de pago es online, crear el pago y redirigir
-        if (paymentMethod == "establishment") {
+        if (paymentMethod !== "establishment") {
           try {
-            const paymentResponse = await paymentsService.createPayment({
-              serviceName: bookingData.services[0]?.name || "Servicio",
-              amount: bookingData.totalPrice,
-              appointmentId:
-                response.appointment?._id || response.appointment?.id,
-              // otros datos relevantes...
-            });
-            console.log("Respuesta de la API de pago:", paymentResponse);
-            if (paymentResponse.preference_url) {
+            // Obtener IDs y coercionarlos a string/number explícitamente
+            const appointmentId = String(
+              response.appointment?._id || response.appointment?.id || ""
+            );
+            const professionalId = String(getProfessionalId());
+            const clientId = String(getCurrentUserId());
+            const amount = Number(bookingData.totalPrice);
+            const netAmount = Number(amount);
+
+            const paymentBody = {
+              professionalId,
+              appointmentId,
+              clientId,
+              amount,
+              netAmount,
+            } as const;
+
+            console.log("📤 Enviando POST /payments con body:", paymentBody);
+
+            const paymentResponse = await paymentsService.createPayment(
+              paymentBody as any
+            );
+            console.log("📥 Respuesta de la API de pago:", paymentResponse);
+
+            if (paymentResponse?.preference_url) {
               window.location.href = paymentResponse.preference_url;
-              return; // No continuar con la confirmación local
-            } else {
-              alert("No se recibió la URL de pago");
+              return; // redirigimos al checkout y detenemos flujo
             }
-          } catch (error) {
-            console.error("Error al crear el pago:", error);
-            alert("Error al crear el pago");
+
+            alert("No se recibió la URL de pago");
+          } catch (err) {
+            console.error("Error al crear el pago:", err);
+            const e: any = err;
+            const msg =
+              e?.message ||
+              e?.response?.data?.message ||
+              JSON.stringify(e?.response?.data) ||
+              "Error al crear el pago";
+            alert(msg);
             return;
           }
         }
@@ -177,29 +209,37 @@ const BookingConfirmation: React.FC = () => {
     return professionalId;
   };
 
-  // ✅ MEJORAR - Función para obtener ID del usuario
+  // ✅ MEJORAR - Función para obtener ID del usuario desde localStorage
   const getCurrentUserId = (): string => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      try {
-        const user = JSON.parse(userData);
-        const userId = user._id || user.id;
-        if (userId) {
-          console.log("🔍 Usuario logueado con ID:", userId);
-          return userId;
-        }
-      } catch (error) {
-        console.error("❌ Error parsing user data:", error);
-      }
+    const raw = localStorage.getItem("user");
+    if (!raw) {
+      const tempUserId = "670123456789abcdef012345";
+      console.warn(
+        "⚠️ No hay usuario logueado, usando id temporal:",
+        tempUserId
+      );
+      return tempUserId;
     }
-
-    // ✅ MEJORAR - En producción, requerir login
-    console.warn("⚠️ No hay usuario logueado");
-
-    // Para testing, generar ID temporal válido
-    const tempUserId = "670123456789abcdef012345"; // ObjectId válido para testing
-    console.log("🧪 Usando ID temporal para testing:", tempUserId);
-    return tempUserId;
+    try {
+      const parsed = JSON.parse(raw);
+      const id = parsed.id || parsed._id || parsed.userId || parsed._userId;
+      if (!id) {
+        const tempUserId = "670123456789abcdef012345";
+        console.warn(
+          "⚠️ El objeto user no contiene id, usando id temporal:",
+          tempUserId
+        );
+        return tempUserId;
+      }
+      return String(id);
+    } catch (e) {
+      const tempUserId = "670123456789abcdef012345";
+      console.warn(
+        "⚠️ No se pudo parsear user en localStorage, usando id temporal:",
+        tempUserId
+      );
+      return tempUserId;
+    }
   };
 
   if (!bookingData) {
