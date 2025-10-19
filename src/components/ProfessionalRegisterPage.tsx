@@ -3,6 +3,16 @@ import { useState } from "react";
 import { authService } from "../services/authService";
 import type { ProfessionalRegisterData } from "../services/authService";
 
+// ✅ AÑADIDO: Importamos el componente del mapa con buscador que creamos
+import LocationPickerWithSearch from "../components/LocationPickerWithSearch";
+
+// ✅ AÑADIDO: Definimos un tipo para la estructura de la ubicación
+type LocationData = {
+  address: string;
+  latitude: number;
+  longitude: number;
+};
+
 const ProfessionalRegisterPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<ProfessionalRegisterData>({
@@ -13,6 +23,10 @@ const ProfessionalRegisterPage = () => {
     city: "",
     specialty: "",
   });
+
+  // ✅ AÑADIDO: Un nuevo estado para guardar las ubicaciones que el profesional seleccione en el mapa
+  const [locations, setLocations] = useState<LocationData[]>([]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,48 +57,42 @@ const ProfessionalRegisterPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // ✅ AÑADIDO: Validación para asegurar que se haya seleccionado una ubicación en el mapa
+    if (locations.length === 0) {
+      setError(
+        "Debes buscar y seleccionar la dirección de tu local en el mapa."
+      );
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const response = await authService.registerProfessional(formData);
+      // ✅ MODIFICADO: Combinamos los datos del formulario con las ubicaciones del estado
+      const dataToSend = {
+        ...formData,
+        locations,
+      };
+
+      // ✅ MODIFICADO: Enviamos el objeto completo (con ubicaciones) al backend
+      const response = await authService.registerProfessional(dataToSend);
       console.log("Registro profesional response:", response);
 
-      // Validación más estricta: SOLO éxito si tiene success=true Y token Y usuario
       if (response.success && response.token && response.user) {
         console.log(
           "✅ Registro profesional exitoso - iniciando sesión automáticamente"
         );
-        console.log("🔍 Datos del usuario recibidos:", response.user);
-
-        // Guardar sesión automáticamente
         authService.saveSession(response.token, response.user);
-
-        // Verificar que se guardó correctamente
-        const isAuthenticated = authService.isAuthenticated();
-        const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
-        console.log("✅ Sesión profesional iniciada:", isAuthenticated);
-        console.log("🔍 Usuario guardado en localStorage:", savedUser);
-
         alert("¡Registro de profesional exitoso! Ahora completa tu perfil");
-
-        // Redirigir a completar perfil (Etapa 2)
         navigate("/profile/complete");
       } else {
-        // Mostrar error específico
-        console.log(
-          "❌ Registro profesional falló - falta success, token o user"
-        );
-        console.log("- success:", response.success);
-        console.log("- token:", !!response.token);
-        console.log("- user:", !!response.user);
         setError(
           response.message ||
             "Error en el registro de profesional. Intenta nuevamente."
         );
       }
-      // La alerta y navegación ya se realizan con mejor información arriba.
-      // Se elimina el código incorrecto que usaba 'professionalId' no definido.
     } catch (error: any) {
       console.error("❌ Error en registro profesional:", error);
       setError(error.message || "Error de conexión. Verifica tu internet.");
@@ -102,7 +110,6 @@ const ProfessionalRegisterPage = () => {
           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
     >
-      {/* Left Side - Register Form */}
       <div
         style={{
           flex: 1,
@@ -114,7 +121,6 @@ const ProfessionalRegisterPage = () => {
           margin: "0 auto",
         }}
       >
-        {/* Header with back arrow */}
         <div
           onClick={() => navigate("/login")}
           style={{
@@ -130,7 +136,6 @@ const ProfessionalRegisterPage = () => {
           <span style={{ fontSize: "1.5rem", marginRight: "0.5rem" }}>←</span>
         </div>
 
-        {/* Title */}
         <h1
           style={{
             fontSize: "2rem",
@@ -153,7 +158,6 @@ const ProfessionalRegisterPage = () => {
           Únete a nuestra plataforma y haz crecer tu negocio
         </p>
 
-        {/* Error Message */}
         {error && (
           <div
             style={{
@@ -170,7 +174,6 @@ const ProfessionalRegisterPage = () => {
           </div>
         )}
 
-        {/* Register Form */}
         <form
           onSubmit={handleSubmit}
           style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
@@ -206,7 +209,6 @@ const ProfessionalRegisterPage = () => {
               placeholder="Tu nombre completo"
             />
           </div>
-
           <div>
             <label
               style={{
@@ -238,7 +240,6 @@ const ProfessionalRegisterPage = () => {
               placeholder="tu@email.com"
             />
           </div>
-
           <div>
             <label
               style={{
@@ -270,7 +271,6 @@ const ProfessionalRegisterPage = () => {
               placeholder="Mínimo 6 caracteres"
             />
           </div>
-
           <div>
             <label
               style={{
@@ -302,7 +302,6 @@ const ProfessionalRegisterPage = () => {
               placeholder="+54 11 1234-5678"
             />
           </div>
-
           <div>
             <label
               style={{
@@ -334,7 +333,6 @@ const ProfessionalRegisterPage = () => {
               placeholder="Tu ciudad"
             />
           </div>
-
           <div>
             <label
               style={{
@@ -373,6 +371,48 @@ const ProfessionalRegisterPage = () => {
             </select>
           </div>
 
+          {/* ✅ AÑADIDO: El componente de mapa con buscador */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                color: "#2d3748",
+                fontWeight: "500",
+              }}
+            >
+              Busca y selecciona la dirección de tu local
+            </label>
+            <LocationPickerWithSearch
+              onLocationSelect={(data) => {
+                const newLocation: LocationData = {
+                  address: data.address,
+                  latitude: data.latitude,
+                  longitude: data.longitude,
+                };
+                setLocations([newLocation]);
+                if (error) setError(null);
+              }}
+            />
+          </div>
+
+          {/* ✅ AÑADIDO: Confirmación visual de la dirección seleccionada */}
+          {locations.length > 0 && (
+            <div
+              style={{
+                background: "#e6fffa",
+                border: "1px solid #b2f5ea",
+                color: "#237a6b",
+                padding: "0.75rem",
+                borderRadius: "8px",
+                fontSize: "0.9rem",
+                textAlign: "center",
+              }}
+            >
+              <strong>Ubicación seleccionada:</strong> {locations[0].address}
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={loading}
@@ -404,7 +444,6 @@ const ProfessionalRegisterPage = () => {
         </form>
       </div>
 
-      {/* Right Side - Image */}
       <div
         style={{
           flex: 1,

@@ -1,19 +1,42 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ProfessionalsSpecialtySection from "./ProfessionalsSpecialtySection";
 import { useFavorites } from "../professionals/hooks/useFavorites";
 import { useProfessionals } from "../professionals/hooks/useProfessionals";
-import ProfessionalCard from "../professionals/components/ProfessionalCard";
 import { authService } from "../services/authService";
+import ProfessionalCard from "../professionals/components/ProfessionalCard";
 import { useState, useEffect } from "react";
 import UserProfile from "./UserProfile";
 import FilterBar from "./FilterBar";
+import ProfessionalsListMap from "../components/ProfessionalsListMap";
+
+// Tu función haversineDistance no cambia
+const haversineDistance = (
+  coords1: { lat: number; lng: number },
+  coords2: { lat: number; lng: number }
+): number => {
+  const toRad = (x: number) => (x * Math.PI) / 180;
+  const R = 6371; // Radio de la Tierra en km
+
+  const dLat = toRad(coords2.lat - coords1.lat);
+  const dLon = toRad(coords2.lng - coords1.lng);
+  const lat1 = toRad(coords1.lat);
+  const lat2 = toRad(coords2.lat);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c; // Distancia en km
+};
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any>(null);
 
-  // Verificar autenticación al cargar y cuando cambie
+  // Tu useEffect de autenticación no cambia
   useEffect(() => {
     const checkAuth = () => {
       const authenticated = authService.isAuthenticated();
@@ -34,14 +57,12 @@ const HomePage = () => {
 
     checkAuth();
 
-    // ✅ SOLUCIÓN: Escuchar cambios en localStorage para detectar login/logout
     const handleStorageChange = () => {
       checkAuth();
     };
 
     window.addEventListener("storage", handleStorageChange);
 
-    // También verificar cada vez que se monta el componente
     const interval = setInterval(checkAuth, 1000);
 
     return () => {
@@ -50,17 +71,48 @@ const HomePage = () => {
     };
   }, []);
 
-  // Solo cargar favoritos si el usuario está autenticado
   const { favorites } = useFavorites();
   const { professionals } = useProfessionals();
 
-  // Filtrar solo los profesionales favoritos
+  // Tu lógica de filtrado por ubicación no cambia
+  const locationFilter = {
+    lat: searchParams.get("lat"),
+    lng: searchParams.get("lng"),
+  };
+  const locationFilteredProfessionals =
+    locationFilter.lat && locationFilter.lng
+      ? professionals.filter((prof) => {
+          if (!prof.locations || prof.locations.length === 0) return false;
+
+          const userCoords = {
+            lat: parseFloat(locationFilter.lat!),
+            lng: parseFloat(locationFilter.lng!),
+          };
+
+          return prof.locations.some((loc) => {
+            const profCoords = { lat: loc.latitude, lng: loc.longitude };
+            const distance = haversineDistance(userCoords, profCoords);
+            const SEARCH_RADIUS_KM = 10; // Radio de búsqueda: 10km (puedes ajustarlo)
+            return distance <= SEARCH_RADIUS_KM;
+          });
+        })
+      : professionals;
+
+  // Tu lógica de `favoriteProfessionals` no cambia
   const favoriteProfessionals = isAuthenticated
-    ? professionals.filter((professional) => {
+    ? locationFilteredProfessionals.filter((professional) => {
         const professionalId = professional._id || professional.id;
         return professionalId && favorites.includes(professionalId);
       })
     : [];
+
+  // Tu lógica de `specialtyCounts` no cambia
+  const specialtyCounts = {
+    Barberia: professionals.filter((p) => p.specialty === "Barbería").length,
+    Manicura: professionals.filter((p) => p.specialty === "Manicura").length,
+    Peluqueria: professionals.filter((p) => p.specialty === "Peluquería")
+      .length,
+  };
 
   const handleLogout = () => {
     authService.logout();
@@ -89,17 +141,12 @@ const HomePage = () => {
         }}
       >
         <div
-          style={{
-            fontSize: "1.8rem",
-            fontWeight: "bold",
-            color: "#2d3748",
-          }}
+          style={{ fontSize: "1.8rem", fontWeight: "bold", color: "#2d3748" }}
         >
           soloclick
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           {isAuthenticated && user ? (
-            // Usuario autenticado - mostrar perfil usando UserProfile component
             <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
               <UserProfile
                 name={user.name || "Usuario"}
@@ -122,7 +169,6 @@ const HomePage = () => {
               </button>
             </div>
           ) : (
-            // Usuario no autenticado - mostrar botones de login
             <>
               <button
                 onClick={() => navigate("/login")}
@@ -138,8 +184,6 @@ const HomePage = () => {
               >
                 Registrarse
               </button>
-
-              {/* Botón para iniciar sesión */}
               <button
                 onClick={() => navigate("/signin")}
                 style={{
@@ -158,8 +202,6 @@ const HomePage = () => {
           )}
         </div>
       </header>
-
-      {/* Main Content */}
       <main
         style={{
           display: "flex",
@@ -169,7 +211,6 @@ const HomePage = () => {
           textAlign: "center",
         }}
       >
-        {/* Main Title */}
         <h1
           style={{
             fontSize: "3.5rem",
@@ -184,11 +225,7 @@ const HomePage = () => {
           <br />
           desde cualquier lugar
         </h1>
-
-        {/* ✅ USAR: FilterBar con filtros expandidos */}
         <FilterBar isHomePage={true} />
-
-        {/* Stats */}
         <div
           style={{
             color: "white",
@@ -202,21 +239,49 @@ const HomePage = () => {
         </div>
       </main>
 
-      {/* Professional Sections */}
+      {locationFilter.lat && locationFilter.lng && (
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto 4rem auto",
+            padding: "0 2rem",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "1.8rem",
+              fontWeight: "bold",
+              color: "white",
+              marginBottom: "1.5rem",
+              textAlign: "center",
+            }}
+          >
+            Profesionales Cerca de Ti
+          </h2>
+          <div
+            style={{
+              borderRadius: "16px",
+              overflow: "hidden",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+            }}
+          >
+            <ProfessionalsListMap
+              professionals={locationFilteredProfessionals}
+              // ✅ MODIFICADO: Le pasamos la ubicación seleccionada al mapa para que sepa dónde centrarse.
+              selectedLocation={locationFilter}
+            />
+          </div>
+        </div>
+      )}
+
       <div
         style={{
           width: "100%",
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         }}
       >
-        {/* Sección de Favoritos - Solo aparece si hay favoritos y está autenticado */}
         {isAuthenticated && favoriteProfessionals.length > 0 && (
-          <div
-            style={{
-              padding: "2rem",
-              marginBottom: "2rem",
-            }}
-          >
+          <div style={{ padding: "2rem", marginBottom: "2rem" }}>
             <h2
               style={{
                 fontSize: "1.8rem",
@@ -247,35 +312,32 @@ const HomePage = () => {
           </div>
         )}
 
-        {/* Sección de Barberías */}
         <ProfessionalsSpecialtySection
-          specialty="Barberia"
+          specialty="Barbería"
           title="Barberías"
           maxItems={3}
+          professionals={locationFilteredProfessionals}
+          showViewMoreButton={specialtyCounts.Barberia > 3}
+          totalSpecialtyCount={specialtyCounts.Barberia}
         />
-
-        {/* Sección de Manicure */}
         <ProfessionalsSpecialtySection
           specialty="Manicura"
           title="Manicure"
           maxItems={4}
+          professionals={locationFilteredProfessionals}
+          showViewMoreButton={specialtyCounts.Manicura > 4}
+          totalSpecialtyCount={specialtyCounts.Manicura}
         />
-
-        {/* Sección de Peluquerías */}
         <ProfessionalsSpecialtySection
-          specialty="Peluqueria"
+          specialty="Peluquería"
           title="Peluquerías"
           maxItems={4}
+          professionals={locationFilteredProfessionals}
+          showViewMoreButton={specialtyCounts.Peluqueria > 4}
+          totalSpecialtyCount={specialtyCounts.Peluqueria}
         />
 
-        {/* Footer Section */}
-        <div
-          style={{
-            padding: "4rem 2rem",
-            textAlign: "center",
-          }}
-        >
-          {/* App Download */}
+        <div style={{ padding: "4rem 2rem", textAlign: "center" }}>
           <button
             style={{
               background: "rgba(255, 255, 255, 0.2)",
@@ -294,8 +356,6 @@ const HomePage = () => {
           >
             Obtener la app 📱
           </button>
-
-          {/* Footer Note */}
           <footer
             style={{
               marginTop: "4rem",
