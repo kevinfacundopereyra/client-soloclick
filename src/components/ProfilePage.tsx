@@ -53,7 +53,7 @@ const ProfilePage: React.FC = () => {
   const isProfessional = user?.userType === "professional";
 
   // MÁS LOGS para debugging
-/*   console.log("🔍 Variable isProfessional:", isProfessional);
+  /*   console.log("🔍 Variable isProfessional:", isProfessional);
   console.log("🔍 user en render:", user);
   console.log("🔍 user.userType:", user?.userType); */
 
@@ -88,25 +88,44 @@ const ProfilePage: React.FC = () => {
         style={{
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
           marginBottom: "2rem",
           color: "white",
         }}
       >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <button
+            onClick={() => navigate("/")}
+            style={{
+              background: "rgba(255, 255, 255, 0.2)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              color: "white",
+              padding: "0.5rem 1rem",
+              borderRadius: "6px",
+              cursor: "pointer",
+              marginRight: "1rem",
+            }}
+          >
+            ← Volver
+          </button>
+          <h1 style={{ color: "white", margin: 0 }}>Mi Perfil</h1>
+        </div>
+
+        {/* Botón en esquina superior derecha que redirige al inicio */}
         <button
           onClick={() => navigate("/")}
           style={{
-            background: "rgba(255, 255, 255, 0.2)",
-            border: "1px solid rgba(255, 255, 255, 0.3)",
+            background: "rgba(255, 255, 255, 0.12)",
+            border: "1px solid rgba(255, 255, 255, 0.25)",
             color: "white",
             padding: "0.5rem 1rem",
-            borderRadius: "6px",
+            borderRadius: "20px",
             cursor: "pointer",
-            marginRight: "1rem",
+            fontWeight: 600,
           }}
         >
-          ← Volver
+          Volver al inicio
         </button>
-        <h1 style={{ color: "white", margin: 0 }}>Mi Perfil</h1>
       </div>
 
       {/* Profile Card */}
@@ -245,7 +264,7 @@ const ProfilePage: React.FC = () => {
         </div>
 
         {/* DEBUG INFO - TEMPORAL para ver qué está pasando */}
-{/*         <div
+        {/*         <div
           style={{
             backgroundColor: "#f0f8ff",
             border: "1px solid #4CAF50",
