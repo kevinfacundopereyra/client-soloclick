@@ -127,12 +127,35 @@ const ProfessionalDetailPage: React.FC = () => {
           {/* Header de la tarjeta */}
           <div
             style={{
+              position: "relative",
               background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
               padding: "2rem",
               color: "white",
               textAlign: "center",
             }}
           >
+            {/* Botón en esquina superior derecha que redirige al inicio */}
+            <button
+              onClick={() => navigate("/")}
+              style={{
+                position: "absolute",
+                top: 12,
+                right: 12,
+                background: "rgba(255, 255, 255, 0.12)",
+                border: "1px solid rgba(255, 255, 255, 0.25)",
+                color: "white",
+                padding: "0.45rem 1rem",
+                borderRadius: 20,
+                cursor: "pointer",
+                fontWeight: 600,
+                zIndex: 1000,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              Volver al inicio
+            </button>
             <div
               style={{
                 width: "80px",
