@@ -222,25 +222,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                 <option value="Cordoba">Córdoba</option>
               </select>
             </div>
-            <div
-              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-            >
-              <span>📅</span>
-              <input
-                type="date"
-                value={filters.date}
-                onChange={(e) => handleFilterChange("date", e.target.value)}
-                min={new Date().toISOString().split("T")[0]}
-                style={{
-                  border: "1px solid #e2e8f0",
-                  borderRadius: "8px",
-                  padding: "0.5rem",
-                  fontSize: "0.9rem",
-                  width: "100%",
-                  background: "white",
-                }}
-              />
-            </div>
+
             <div
               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >

@@ -41,7 +41,7 @@ const BookingConfirmation: React.FC = () => {
   const navigate = useNavigate();
   const { featuredPayments } = useFeaturedPayments();
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<string>("establishment");
+  const [paymentMethod, setPaymentMethod] = useState<string>("mercadopago");
   const [notes, setNotes] = useState<string>("");
 
   useEffect(() => {
@@ -496,59 +496,7 @@ const BookingConfirmation: React.FC = () => {
               </div>
             )}
 
-            <div
-              onClick={() => setPaymentMethod("establishment")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "1rem",
-                padding: "1rem",
-                border:
-                  paymentMethod === "establishment"
-                    ? "2px solid #667eea"
-                    : "1px solid #e0e0e0",
-                borderRadius: "8px",
-                cursor: "pointer",
-                background:
-                  paymentMethod === "establishment" ? "#f8f9ff" : "white",
-              }}
-            >
-              <div
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  border:
-                    paymentMethod === "establishment"
-                      ? "2px solid #667eea"
-                      : "2px solid #ccc",
-                  background:
-                    paymentMethod === "establishment" ? "#667eea" : "white",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {paymentMethod === "establishment" && (
-                  <div
-                    style={{
-                      width: "8px",
-                      height: "8px",
-                      borderRadius: "50%",
-                      background: "white",
-                    }}
-                  />
-                )}
-              </div>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-              >
-                <span style={{ fontSize: "1.5rem" }}>🏪</span>
-                <span style={{ color: "#2d3a4a", fontWeight: "500" }}>
-                  Pagar in el establecimiento
-                </span>
-              </div>
-            </div>
+
           </div>
 
           {/* Cancellation Policy */}
@@ -762,16 +710,7 @@ const BookingConfirmation: React.FC = () => {
             <span>0 ARS</span>
           </div>
 
-          <div
-            style={{
-              fontSize: "0.9rem",
-              color: "#4a5568",
-              marginBottom: "1.5rem",
-              lineHeight: "1.4",
-            }}
-          >
-            Pagar en el establecimiento: {bookingData.totalPrice} ARS
-          </div>
+
 
           {/* Confirm Button */}
           <button
