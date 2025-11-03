@@ -226,21 +226,38 @@ const ProfessionalDashboard: React.FC = () => {
             </p>
           </div>
 
-          <button
-            onClick={() => navigate("/profile")}
-            style={{
-              background: "rgba(255, 255, 255, 0.2)",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
-              color: "white",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "25px",
-              cursor: "pointer",
-              fontSize: "1rem",
-              fontWeight: "500",
-            }}
-          >
-            👤 Mi Perfil
-          </button>
+          <div style={{ display: "flex", gap: "1rem" }}>
+            <button
+              onClick={() => navigate("/profile/stats")}
+              style={{
+                background: "rgba(255, 255, 255, 0.2)",
+                border: "1px solid rgba(255, 255, 255, 0.3)",
+                color: "white",
+                padding: "0.75rem 1.5rem",
+                borderRadius: "25px",
+                cursor: "pointer",
+                fontSize: "1rem",
+                fontWeight: "500",
+              }}
+            >
+              📊 Mis Estadísticas
+            </button>
+            <button
+              onClick={() => navigate("/profile")}
+              style={{
+                background: "rgba(255, 255, 255, 0.2)",
+                border: "1px solid rgba(255, 255, 255, 0.3)",
+                color: "white",
+                padding: "0.75rem 1.5rem",
+                borderRadius: "25px",
+                cursor: "pointer",
+                fontSize: "1rem",
+                fontWeight: "500",
+              }}
+            >
+              👤 Mi Perfil
+            </button>
+          </div>
         </div>
 
         {/* Stats Cards */}

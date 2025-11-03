@@ -16,6 +16,7 @@ import ServicesManagementPage from "./components/ServicesManagementPage";
 import MyAppointments from "./client/pages/MyAppointments";
 import ProfessionalDashboard from "./professionals/pages/ProfessionalDashboard";
 import PaymentsHistoryPage from "./components/PaymentsHistoryPage";
+import ProfessionalStats from "./professionals/pages/ProfessionalStats";
 
 function App() {
   return (
@@ -44,6 +45,10 @@ function App() {
         <Route
           path="/dashboard-profesional"
           element={<ProfessionalDashboard />}
+        />
+        <Route
+          path="/profile/stats"
+          element={<ProfessionalStats />}
         />
       </Routes>
     </BrowserRouter>
