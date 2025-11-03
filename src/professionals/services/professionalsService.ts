@@ -147,10 +147,10 @@ export async function fetchProfessionalById(id: string) {
   }
 }
 
-// Función auxiliar para verificar si un string es un ObjectId válido de MongoDB
-function isValidObjectId(id: string): boolean {
-  return /^[0-9a-fA-F]{24}$/.test(id);
-}
+/**
+ * Envía una nueva reseña para un profesional.
+ * @param reviewData - Los datos de la reseña.
+ */
 
 // Exportar la instancia de axios configurada para usar en otros servicios
 export { api };
