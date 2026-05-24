@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 
 interface UserProfileProps {
   name: string;
-  role: "user" | "professional";
-  avatarUrl?: string;
+/*   role: "user" | "professional";
+ */  avatarUrl?: string;
 }
 
 
-const UserProfile: React.FC<UserProfileProps> = ({ name, role, avatarUrl }) => {
+const UserProfile: React.FC<UserProfileProps> = ({ name, avatarUrl }) => {
   const navigate = useNavigate();
   
   return (
