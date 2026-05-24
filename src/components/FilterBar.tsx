@@ -34,7 +34,7 @@ interface FilterBarProps {
 const FilterBar: React.FC<FilterBarProps> = ({
   onFiltersChange,
   // ✅ MODIFICADO: Se elimina la prop de la desestructuración.
-  isHomePage = false,
+  isHomePage = true,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();

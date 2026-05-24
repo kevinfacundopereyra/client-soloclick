@@ -62,7 +62,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ name, role, avatarUrl }) => {
       </span>
       
       {/* Role badge */}
-      <span style={{ 
+{/*       <span style={{ 
         fontSize: "0.75rem", 
         color: "#667eea",
         background: "rgba(102, 126, 234, 0.1)",
@@ -72,7 +72,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ name, role, avatarUrl }) => {
       }}>
         {role === "user" ? "Cliente" : "Pro"}
 
-      </span>
+      </span> */}
     </div>
   );
 };

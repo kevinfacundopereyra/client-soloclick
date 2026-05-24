@@ -1,8 +1,12 @@
 // src/services/servicesService.ts
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3000";
-const api = axios.create({ baseURL: API_BASE_URL });
+import { API_CONFIG } from '../config/api';
+
+const api = axios.create({ 
+  baseURL: API_CONFIG.BASE_URL,
+  timeout: API_CONFIG.TIMEOUT
+});
 
 // ✅ Interceptor para autenticación
 api.interceptors.request.use((config) => {
@@ -159,7 +163,7 @@ const getDefaultServicesBySpecialty = (specialty: string): Service[] => {
 export const servicesService = {
   getMyServices: async () => {
     try {
-      const response = await api.get("/services/my-services");
+      const response = await api.get("/services/professional/my-services");
       console.log("🔍 Respuesta getMyServices:", response.data);
 
       let services = [];
@@ -170,8 +174,12 @@ export const servicesService = {
         services = response.data.services;
       } else if (response.data.data) {
         services = response.data.data;
+      } else if (typeof response.data === 'object' && response.data !== null) {
+        // Si response.data es un objeto (pero no null), asumimos que es un servicio individual
+        services = [response.data];
       }
 
+      console.log("🔍 Servicios antes de normalizar:", services);
       const normalizedServices = services.map(normalizeService);
 
       return {
@@ -206,7 +214,7 @@ export const servicesService = {
       const { id, ...serviceData } = updateData;
       const serviceId = id;
 
-      const response = await api.put(`/services/${serviceId}`, serviceData);
+      const response = await api.put(`/api/services/${serviceId}`, serviceData);
       console.log("🔍 Respuesta updateService:", response.data);
 
       return {
@@ -222,7 +230,7 @@ export const servicesService = {
 
   deleteService: async (serviceId: string) => {
     try {
-      const response = await api.delete(`/services/${serviceId}`);
+      const response = await api.delete(`/api/services/${serviceId}`);
       console.log("🔍 Respuesta deleteService:", response.data);
 
       return {
@@ -237,7 +245,7 @@ export const servicesService = {
 
   toggleServiceStatus: async (serviceId: string, isActive: boolean) => {
     try {
-      const response = await api.patch(`/services/${serviceId}/status`, {
+      const response = await api.patch(`/api/services/${serviceId}/status`, {
         isActive,
       });
       console.log("🔍 Respuesta toggleServiceStatus:", response.data);
