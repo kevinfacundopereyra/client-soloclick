@@ -63,15 +63,24 @@ const MyAppointments: React.FC = () => {
         setAppointments(validAppointments);
         console.log("✅ Citas válidas establecidas:", validAppointments.length);
 
-        // ✅ AGREGAR - Debug de cada cita
-        validAppointments.forEach((apt, index) => {
-          console.log(`--- Cita ${index} ---`);
-          console.log("Date:", apt.date);
-          console.log("Time:", apt.time);
-          console.log("CreatedAt:", apt.createdAt);
-          console.log("Status:", apt.status);
-          console.log("Professional:", apt.professional);
-          console.log("--------------------");
+        // ✅ AGREGAR - Debug de cada cita con manejo seguro de propiedades
+        validAppointments.forEach((apt: Appointment, index: number) => {
+          try {
+            console.log(`--- Cita ${index + 1} ---`);
+            console.log("ID:", apt._id || 'N/D');
+            console.log("Date:", apt.date || 'N/D');
+            console.log("Time:", apt.time || 'N/D');
+            console.log("CreatedAt:", apt.createdAt || 'N/D');
+            console.log("Status:", apt.status || 'N/D');
+            console.log("Professional:", typeof apt.professional === 'object' ? 
+              JSON.stringify(apt.professional, null, 2) : 
+              (apt.professional || 'N/D'));
+            console.log("Total Price:", apt.totalPrice || 0);
+            console.log("Total Duration:", apt.totalDuration || 'N/D');
+            console.log("--------------------");
+          } catch (error) {
+            console.error(`Error al mostrar detalles de la cita ${index + 1}:`, error);
+          }
         });
       } else {
         console.log("❌ Response no exitosa:", response);

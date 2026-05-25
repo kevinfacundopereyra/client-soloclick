@@ -1,69 +1,72 @@
-# React + TypeScript + Vite
+# 🎯 SoloClick
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Plataforma web que conecta profesionales independientes con clientes, facilitando la gestión de reservas y servicios.
 
-Currently, two official plugins are available:
+## 🚀 Características Principales
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 👥 **Registro y Perfil Profesional**
+  - Registro en 2 etapas
+  - Gestión de perfil completo
+  - Carga de imágenes y horarios
 
-## Expanding the ESLint configuration
+- 📅 **Sistema de Reservas**
+  - Gestión de citas
+  - Horarios personalizables
+  - Estado de reservas en tiempo real
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 🗺️ **Geolocalización**
+  - Búsqueda por ubicación
+  - Mapas interactivos
+  - Rutas y direcciones
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- 💳 **Pagos y Servicios**
+  - Gestión de servicios
+  - Precios personalizados
+  - Métodos de pago destacados
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 🛠️ Tecnologías
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Frontend:** React 19, TypeScript, Vite
+- **UI/Maps:** Leaflet, TailwindCSS
+- **Rutas:** React Router Dom
+- **HTTP:** Axios
+- **Formularios:** React Modal, Google Autocomplete
+
+## ⚡ Inicio Rápido
+
+```bash
+# Instalar dependencias
+npm install
+
+# Iniciar servidor de desarrollo
+npm run dev
+
+# Construir para producción
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📱 Flujo de Usuario
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Registro básico del profesional
+2. Completar perfil con detalles
+3. Gestión de servicios y horarios
+4. Recepción y gestión de reservas
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🔐 Seguridad
+
+- Autenticación JWT
+- Rutas protegidas
+- Interceptores de requests
+- Validación en tiempo real
+
+## 👥 Colaboradores
+
+- Kevin Facundo Pereyra
+- Brian Miranda
+- Pedro Hidalgo
+- Sofia Gonzalez
+
+## 📄 Licencia
+
+Este proyecto es privado y confidencial. Todos los derechos reservados.
 ```
