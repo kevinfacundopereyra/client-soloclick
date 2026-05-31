@@ -247,7 +247,7 @@ const getFilteredProfessionals = () => {
           </p>
         </div>
 
-        {/* <FilterBar showAllFilters={true} /> */}
+       <FilterBar isHomePage={false} />
 
         <div
           style={{

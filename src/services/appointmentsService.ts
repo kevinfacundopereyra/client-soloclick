@@ -170,7 +170,8 @@ export const appointmentsService = {
   },
 
   // ✅ USAR DELETE /appointments/:id (tu backend actual)
-  cancelAppointment: async (appointmentId: string, reason?: string) => {
+  /* cancelAppointment: async (appointmentId: string, reason?: string) => { */
+  cancelAppointment: async (appointmentId: string) => {
     try {
       // Tu backend usa DELETE, no PATCH /cancel
       const response = await api.delete(`/appointments/${appointmentId}`);

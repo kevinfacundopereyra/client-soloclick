@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
-import profileService from '../services/profileService';
 import type { ProfileData, WorkingHours } from '../services/profileService';
 
 const CompleteProfilePage: React.FC = () => {

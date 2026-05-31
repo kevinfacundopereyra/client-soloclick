@@ -19,7 +19,8 @@ const ServicesSelection: React.FC = () => {
   const [selectedServices, setSelectedServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { services: realServices, loading: servicesLoading, error: servicesError } = useServicesByProfessional(id || '');
+/*   const { services: realServices, loading: servicesLoading, error: servicesError } = useServicesByProfessional(id || ''); */
+  const { services: realServices, loading: servicesLoading } = useServicesByProfessional(id || '');
 
   useEffect(() => {
     // Fetch real professional data

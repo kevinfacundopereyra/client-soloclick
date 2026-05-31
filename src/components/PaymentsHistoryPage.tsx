@@ -175,7 +175,7 @@ const PaymentsHistoryPage: React.FC = () => {
     }).format(amount);
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: any) => {
     try {
       // ✅ ARREGLAR: Manejar diferentes formatos de fecha
       let date: Date;

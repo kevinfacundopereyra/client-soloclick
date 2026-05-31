@@ -28,7 +28,7 @@ export interface Professional {
   services?: string[];
   createdAt?: string;
   updatedAt?: string;
-  locations: Location[]; // Arreglo de ubicaciones
+  locations?: Location[]; // Arreglo de ubicaciones
 }
 
 export interface ProfessionalCardProps {
