@@ -57,7 +57,7 @@ const normalizeService = (service: any): Service => ({
 });
 
 // ✅ Función para crear servicios por defecto según especialidad
-const getDefaultServicesBySpecialty = (specialty: string): Service[] => {
+export const getDefaultServicesBySpecialty = (specialty: string): Service[] => {
   const servicesBySpecialty: { [key: string]: Service[] } = {
     Barberia: [
       {
