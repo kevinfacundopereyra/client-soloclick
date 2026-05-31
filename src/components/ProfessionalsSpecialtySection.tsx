@@ -24,10 +24,11 @@ const ProfessionalsSpecialtySection = ({
   const navigate = useNavigate();
 
   // Esta lógica no cambia: filtra por especialidad la lista que recibe
-  const professionalsOfThisSpecialty = allProfessionals.filter(
-    (professional) => professional.specialty === specialty
-  );
 
+  //Modificado un dia antes, revisar
+const professionalsOfThisSpecialty = allProfessionals
+  .filter((professional) => professional.specialty === specialty)
+  .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
   if (professionalsOfThisSpecialty.length === 0) {
     return null;
   }
@@ -35,7 +36,7 @@ const ProfessionalsSpecialtySection = ({
   // Esta lógica no cambia: limita los profesionales a mostrar
   const displayedProfessionals = professionalsOfThisSpecialty.slice(
     0,
-    maxItems
+    maxItems,
   );
 
   const handleViewMore = () => {
