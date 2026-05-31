@@ -18,6 +18,14 @@ export interface UserRegisterData {
   city: string;
 }
 
+export interface ProfessionalServiceData {
+  name: string;
+  description: string;
+  price: number;
+  duration: number;
+  category: string;
+}
+
 export interface ProfessionalRegisterData {
   name: string;
   email: string;
@@ -25,6 +33,7 @@ export interface ProfessionalRegisterData {
   phone: string;
   city: string;
   specialty: string;
+  services?: ProfessionalServiceData[];
 }
 
 export interface AuthResponse {

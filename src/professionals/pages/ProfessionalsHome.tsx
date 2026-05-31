@@ -10,6 +10,7 @@ import ProfessionalsListMap from "../../components/ProfessionalsListMap";
 
 function ProfessionalsHome() {
   const [searchParams] = useSearchParams();
+  const sort = searchParams.get("sort") || "";
   const { professionals, loading, error } = useProfessionals();
   const { favorites } = useFavorites();
 
@@ -118,6 +119,13 @@ function ProfessionalsHome() {
 
   const filteredProfessionals = getFilteredProfessionals();
 
+  const sortByRating = (list: Professional[], desc = true) =>
+    [...list].sort((a, b) =>
+      desc
+        ? (b.rating ?? 0) - (a.rating ?? 0)
+        : (a.rating ?? 0) - (b.rating ?? 0)
+    );
+
   const favoriteProfessionals: Professional[] = [];
   const allProfessionals: Professional[] = [];
 
@@ -128,6 +136,19 @@ function ProfessionalsHome() {
     }
     allProfessionals.push(professional);
   });
+
+  const sortedFavorites =
+    sort === "rating_asc"
+      ? sortByRating(favoriteProfessionals, false)
+      : sort === "rating_desc"
+      ? sortByRating(favoriteProfessionals, true)
+      : favoriteProfessionals;
+  const sortedProfessionals =
+    sort === "rating_asc"
+      ? sortByRating(allProfessionals, false)
+      : sort === "rating_desc"
+      ? sortByRating(allProfessionals, true)
+      : allProfessionals;
 
   const getPageTitle = () => {
     const activeFilters = Object.entries(filters).filter(([_, value]) => value);
@@ -183,9 +204,9 @@ function ProfessionalsHome() {
             boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
           }}
         >
-          {filteredProfessionals.length > 0 && (
+          {sortedProfessionals.length > 0 && (
             // ✅ MODIFICADO: Usamos el componente correcto que espera una lista.
-            <ProfessionalsListMap professionals={filteredProfessionals} />
+            <ProfessionalsListMap professionals={sortedProfessionals} />
           )}
         </div>
 
@@ -227,7 +248,7 @@ function ProfessionalsHome() {
                 gap: "1.5rem",
               }}
             >
-              {favoriteProfessionals.map((professional) => (
+              {sortedFavorites.map((professional) => (
                 <ProfessionalCard
                   key={professional._id || professional.id}
                   professional={professional}

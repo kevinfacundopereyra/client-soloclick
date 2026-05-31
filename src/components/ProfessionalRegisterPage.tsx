@@ -13,6 +13,14 @@ type LocationData = {
   longitude: number;
 };
 
+type ServiceInput = {
+  name: string;
+  description: string;
+  price: string;
+  duration: string;
+  category: string;
+};
+
 const ProfessionalRegisterPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<ProfessionalRegisterData>({
@@ -26,6 +34,15 @@ const ProfessionalRegisterPage = () => {
 
   // ✅ AÑADIDO: Un nuevo estado para guardar las ubicaciones que el profesional seleccione en el mapa
   const [locations, setLocations] = useState<LocationData[]>([]);
+  const [services, setServices] = useState<ServiceInput[]>([
+    {
+      name: "",
+      description: "",
+      price: "",
+      duration: "60",
+      category: "",
+    },
+  ]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,6 +72,33 @@ const ProfessionalRegisterPage = () => {
     if (error) setError(null); // limpiar error al escribir
   };
 
+  const updateServiceField = (
+    index: number,
+    field: keyof ServiceInput,
+    value: string,
+  ) => {
+    setServices((prev) => {
+      const next = [...prev];
+      next[index] = {
+        ...next[index],
+        [field]: value,
+      };
+      return next;
+    });
+    if (error) setError(null);
+  };
+
+  const addService = () => {
+    setServices((prev) => [
+      ...prev,
+      { name: "", description: "", price: "", duration: "60", category: "" },
+    ]);
+  };
+
+  const removeService = (index: number) => {
+    setServices((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -66,17 +110,50 @@ const ProfessionalRegisterPage = () => {
       return;
     }
 
+    const validServices = services.filter(
+      (service) =>
+        service.name.trim() &&
+        service.description.trim() &&
+        service.price.trim() &&
+        service.duration.trim() &&
+        service.category.trim(),
+    );
+
+    if (validServices.length === 0) {
+      setError("Debes agregar al menos un servicio con precio y duración.");
+      return;
+    }
+
+    const invalidService = validServices.find(
+      (service) =>
+        Number.isNaN(parseFloat(service.price)) ||
+        Number.isNaN(parseInt(service.duration, 10)),
+    );
+
+    if (invalidService) {
+      setError("Asegúrate de que todos los servicios tienen precio y duración válidos.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      // ✅ MODIFICADO: Combinamos los datos del formulario con las ubicaciones del estado
+      const normalizedServices = validServices.map((service) => ({
+        name: service.name.trim(),
+        description: service.description.trim(),
+        price: Number(service.price),
+        duration: Number(service.duration),
+        category: service.category.trim(),
+      }));
+
       const dataToSend = {
         ...formData,
         locations,
+        services: normalizedServices,
       };
 
-      // ✅ MODIFICADO: Enviamos el objeto completo (con ubicaciones) al backend
+      // ✅ MODIFICADO: Enviamos el objeto completo (con ubicaciones y servicios) al backend
       const response = await authService.registerProfessional(dataToSend);
       console.log("Registro profesional response:", response);
 
@@ -369,6 +446,215 @@ const ProfessionalRegisterPage = () => {
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* ✅ AÑADIDO: Modalidad de servicios ofrecidos */}
+          <div
+            style={{
+              background: "#f7fafc",
+              border: "1px solid #e2e8f0",
+              borderRadius: "12px",
+              padding: "1rem",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "1rem",
+              }}
+            >
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: "1.1rem",
+                  color: "#2d3748",
+                }}
+              >
+                Servicios que ofreces
+              </h2>
+              <button
+                type="button"
+                onClick={addService}
+                style={{
+                  background: "#667eea",
+                  color: "white",
+                  border: "none",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                }}
+              >
+                + Agregar servicio
+              </button>
+            </div>
+
+            {services.map((service, index) => (
+              <div
+                key={`service-${index}`}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "1rem",
+                  marginBottom: "1rem",
+                  padding: "1rem",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "10px",
+                  background: "white",
+                }}
+              >
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    <strong style={{ color: "#2d3748" }}>
+                      Servicio {index + 1}
+                    </strong>
+                    {services.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeService(index)}
+                        style={{
+                          background: "transparent",
+                          color: "#e53e3e",
+                          border: "none",
+                          cursor: "pointer",
+                          fontWeight: "700",
+                        }}
+                      >
+                        Eliminar
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                    Nombre del servicio
+                  </label>
+                  <input
+                    type="text"
+                    value={service.name}
+                    onChange={(e) =>
+                      updateServiceField(index, "name", e.target.value)
+                    }
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "8px",
+                      fontSize: "1rem",
+                    }}
+                    placeholder="Ej: Corte clásico"
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                    Categoría
+                  </label>
+                  <select
+                    value={service.category}
+                    onChange={(e) =>
+                      updateServiceField(index, "category", e.target.value)
+                    }
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "8px",
+                      fontSize: "1rem",
+                      background: "white",
+                    }}
+                  >
+                    <option value="">Selecciona categoría</option>
+                    {specialties.map((specialty) => (
+                      <option key={specialty} value={specialty}>
+                        {specialty}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                    Precio
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={service.price}
+                    onChange={(e) =>
+                      updateServiceField(index, "price", e.target.value)
+                    }
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "8px",
+                      fontSize: "1rem",
+                    }}
+                    placeholder="Ej: 4500"
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                    Duración (minutos)
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={service.duration}
+                    onChange={(e) =>
+                      updateServiceField(index, "duration", e.target.value)
+                    }
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "8px",
+                      fontSize: "1rem",
+                    }}
+                    placeholder="Ej: 45"
+                  />
+                </div>
+
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                    Descripción
+                  </label>
+                  <textarea
+                    value={service.description}
+                    onChange={(e) =>
+                      updateServiceField(index, "description", e.target.value)
+                    }
+                    required
+                    rows={3}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "8px",
+                      fontSize: "1rem",
+                      resize: "vertical",
+                    }}
+                    placeholder="Describe brevemente este servicio"
+                  />
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* ✅ AÑADIDO: El componente de mapa con buscador */}
