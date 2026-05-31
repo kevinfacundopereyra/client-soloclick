@@ -87,7 +87,82 @@ function ProfessionalsHome() {
     );
   }
 
-  const getFilteredProfessionals = () => {
+  // 1. Limpia mayúsculas y tildes
+const normalizeText = (text?: string) => {
+  if (!text) return "";
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+};
+
+// 2. Calcula cuántos errores tipográficos hay entre dos palabras (Distancia de Levenshtein)
+const getEditDistance = (a: string, b: string) => {
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1, // Sustitución
+          Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1) // Inserción o eliminación
+        );
+      }
+    }
+  }
+  return matrix[b.length][a.length];
+};
+
+// 3. Verifica si hay coincidencia tolerando hasta 2 errores de tipeo
+const isFuzzyMatch = (search: string, text: string) => {
+  if (!search || !text) return false;
+  if (text.includes(search)) return true; // Si es coincidencia parcial exacta, pasa rápido
+
+  const textWords = text.split(" ");
+  
+  // Si la búsqueda es muy corta (ej: "li"), no toleramos errores para evitar resultados basura.
+  // Si tiene 4 o más letras, toleramos hasta 2 errores (ej: "pardes" vs "paredes" = 1 error).
+  const allowedErrors = search.length < 4 ? 0 : 2;
+
+  return textWords.some(word => getEditDistance(search, word) <= allowedErrors);
+};
+
+const getFilteredProfessionals = () => {
+    return professionals.filter((professional) => {
+      // 1. Filtro de búsqueda general con tolerancia a errores tipográficos
+      if (filters.search) {
+        const searchTerm = normalizeText(filters.search);
+        const name = normalizeText(professional.name);
+        const specialty = normalizeText(professional.specialty);
+        
+        // Usamos isFuzzyMatch en lugar de includes()
+        if (!isFuzzyMatch(searchTerm, name) && !isFuzzyMatch(searchTerm, specialty)) {
+          return false;
+        }
+      }
+
+      // ... el resto de tus filtros (specialty, modality, city) quedan exactamente igual ...
+      if (filters.specialty) {
+        const profSpecialty = normalizeText(professional.specialty);
+        const targetSpecialty = normalizeText(filters.specialty);
+        if (!profSpecialty.includes(targetSpecialty)) return false;
+      }
+      if (filters.modality) {
+        const profModality = normalizeText(professional.modality);
+        const targetModality = normalizeText(filters.modality);
+        if (!profModality.includes(targetModality)) return false;
+      }
+      if (filters.city) {
+        const profCity = normalizeText(professional.city);
+        const targetCity = normalizeText(filters.city);
+        if (!profCity.includes(targetCity)) return false;
+      }
+      return true;
+    });
+  };
+/*   const getFilteredProfessionals = () => {
     return professionals.filter((professional) => {
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
@@ -114,7 +189,7 @@ function ProfessionalsHome() {
       }
       return true;
     });
-  };
+  }; */
 
   const filteredProfessionals = getFilteredProfessionals();
 
@@ -172,7 +247,7 @@ function ProfessionalsHome() {
           </p>
         </div>
 
-        <FilterBar showAllFilters={true} />
+        {/* <FilterBar showAllFilters={true} /> */}
 
         <div
           style={{
