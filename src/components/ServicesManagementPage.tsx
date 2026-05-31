@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
-import servicesService, { Service, CreateServiceData, UpdateServiceData } from '../services/servicesService';
+import servicesService, { type Service, type CreateServiceData, type UpdateServiceData } from '../services/servicesService';
 
 // Interface local para el formulario
 

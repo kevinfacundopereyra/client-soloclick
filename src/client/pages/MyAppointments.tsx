@@ -57,7 +57,7 @@ const MyAppointments: React.FC = () => {
 
         // ✅ MEJORAR - Filtrar solo citas válidas con tiempo
         const validAppointments = rawAppointments.filter(
-          (apt) => apt && apt._id && apt.date && apt.time // ✅ Ahora SÍ requerimos time
+          (apt: any) => apt && apt._id && apt.date && apt.time // ✅ Ahora SÍ requerimos time
         );
 
         setAppointments(validAppointments);
@@ -220,8 +220,7 @@ const MyAppointments: React.FC = () => {
       try {
         console.log("🔍 Cancelando cita:", appointmentId);
         const response = await appointmentsService.cancelAppointment(
-          appointmentId,
-          "Cancelado por el cliente"
+          appointmentId
         );
 
         if (response.success) {

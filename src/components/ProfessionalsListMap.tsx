@@ -110,7 +110,7 @@ const ProfessionalsListMap: React.FC<ProfessionalsListMapProps> = ({
       {professionals
         .filter((prof) => prof && prof.locations && prof.locations.length > 0)
         .map((prof) => {
-          const firstLocation = prof.locations[0];
+          const firstLocation = prof.locations![0];
           const profPosition: LatLngExpression = [
             firstLocation.latitude,
             firstLocation.longitude,
@@ -135,8 +135,8 @@ const ProfessionalsListMap: React.FC<ProfessionalsListMapProps> = ({
           start={startPoint}
           end={
             new L.LatLng(
-              selectedProfessional.locations[0].latitude,
-              selectedProfessional.locations[0].longitude
+              selectedProfessional.locations![0].latitude,
+              selectedProfessional.locations![0].longitude
             )
           }
         />

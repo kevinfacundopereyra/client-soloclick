@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import ProfessionalCard from "../professionals/components/ProfessionalCard";
 import type { Professional } from "../professionals/components/ProfessionalCard";
