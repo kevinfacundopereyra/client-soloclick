@@ -36,13 +36,140 @@ interface BookingData {
   totalDuration: number;
 }
 
+interface PaymentMethodForm {
+  cardNumber: string;
+  cardholderName: string;
+  expiryDate: string;
+  cvv: string;
+}
+
 const BookingConfirmation: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { featuredPayments } = useFeaturedPayments();
+  const { featuredPayments, paymentMethods } = useFeaturedPayments();
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>("mercadopago");
   const [notes, setNotes] = useState<string>("");
+  const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
+  const [savePaymentMethod, setSavePaymentMethod] = useState<boolean>(false);
+  const [paymentForm, setPaymentForm] = useState<PaymentMethodForm>({
+    cardNumber: "",
+    cardholderName: "",
+    expiryDate: "",
+    cvv: "",
+  });
+  const [savingPayment, setSavingPayment] = useState<boolean>(false);
+
+  const handleSavePaymentMethod = async () => {
+    if (!paymentForm.cardNumber || !paymentForm.cardholderName || !paymentForm.expiryDate || !paymentForm.cvv) {
+      alert("Por favor completa todos los campos de la tarjeta");
+      return;
+    }
+
+    if (paymentForm.cardNumber.length !== 16) {
+      alert("El número de tarjeta debe tener 16 dígitos");
+      return;
+    }
+
+    if (paymentForm.cvv.length !== 3) {
+      alert("El CVV debe tener 3 dígitos");
+      return;
+    }
+
+    setSavingPayment(true);
+    try {
+      const user = localStorage.getItem("user");
+      if (!user) {
+        alert("Debes iniciar sesión para guardar un método de pago");
+        setSavingPayment(false);
+        return;
+      }
+
+      const userData = JSON.parse(user);
+      const professionalId = userData.id || userData._id;
+
+      if (!professionalId) {
+        alert("No se encontró tu ID de profesional");
+        setSavingPayment(false);
+        return;
+      }
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("No hay token de autenticación. Por favor inicia sesión nuevamente.");
+        setSavingPayment(false);
+        return;
+      }
+
+      const apiUrl = "http://localhost:3000"; // Usar puerto 3000 directamente
+      const endpoint = `${apiUrl}/professionals/${professionalId}`;
+      
+      console.log("📤 Enviando solicitud de guardar método de pago:");
+      console.log("URL:", endpoint);
+      console.log("Datos:", { paymentMethods: [paymentForm] });
+
+      // Enviar al backend para guardar el método de pago
+      const response = await fetch(endpoint, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          paymentMethods: [paymentForm],
+        }),
+      });
+
+      console.log("📥 Estado de respuesta:", response.status, response.statusText);
+
+      const responseData = await response.text();
+      console.log("📥 Datos de respuesta:", responseData);
+
+      if (!response.ok) {
+        let errorMessage = "Error al guardar el método de pago";
+        try {
+          const errorJson = JSON.parse(responseData);
+          errorMessage = errorJson.message || errorJson.error || errorMessage;
+        } catch (e) {
+          // Si no es JSON, usar el texto como está
+          errorMessage = responseData || errorMessage;
+        }
+        throw new Error(`${response.status}: ${errorMessage}`);
+      }
+
+      alert("✅ Método de pago guardado exitosamente");
+      setPaymentForm({
+        cardNumber: "",
+        cardholderName: "",
+        expiryDate: "",
+        cvv: "",
+      });
+      setShowPaymentModal(false);
+      setSavePaymentMethod(false);
+    } catch (error: any) {
+      console.error("❌ Error al guardar método de pago:", error);
+      console.error("Detalles del error:", {
+        message: error.message,
+        stack: error.stack,
+      });
+      alert(`Error al guardar el método de pago: ${error.message}`);
+    } finally {
+      setSavingPayment(false);
+    }
+  };
+
+  const formatCardNumber = (value: string) => {
+    const cleaned = value.replace(/\D/g, "").slice(0, 16);
+    return cleaned.replace(/(\d{4})/g, "$1 ").trim();
+  };
+
+  const formatExpiryDate = (value: string) => {
+    const cleaned = value.replace(/\D/g, "").slice(0, 4);
+    if (cleaned.length >= 2) {
+      return `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
+    }
+    return cleaned;
+  };
 
   useEffect(() => {
     // Load booking data from localStorage
@@ -374,7 +501,7 @@ const BookingConfirmation: React.FC = () => {
             </h2>
 
             {/* Featured Payment Methods */}
-            {featuredPayments.length > 0 && (
+            {paymentMethods.length > 0 && (
               <div style={{ marginBottom: "1rem" }}>
                 <h3
                   style={{
@@ -387,7 +514,7 @@ const BookingConfirmation: React.FC = () => {
                     gap: "0.5rem",
                   }}
                 >
-                  ⭐ Métodos destacados
+                  Métodos de pago online
                 </h3>
                 <div
                   style={{
@@ -396,7 +523,7 @@ const BookingConfirmation: React.FC = () => {
                     marginBottom: "1rem",
                   }}
                 >
-                  {featuredPayments.map((method) => (
+                  {paymentMethods.map((method) => (
                     <div
                       key={method.id}
                       onClick={() => setPaymentMethod(method.id)}
@@ -477,26 +604,90 @@ const BookingConfirmation: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      <div
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                          color: "white",
-                          padding: "0.25rem 0.5rem",
-                          borderRadius: "12px",
-                          fontSize: "0.75rem",
-                          fontWeight: "500",
-                        }}
-                      >
-                        ⭐ Destacado
-                      </div>
+                  {featuredPayments.some((fp) => fp.id === method.id) && (
+                    <div
+                      style={{
+                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        color: "white",
+                        padding: "0.25rem 0.5rem",
+                        borderRadius: "12px",
+                        fontSize: "0.75rem",
+                        fontWeight: "500",
+                      }}
+                    >
+                      ⭐ Destacado
+                    </div>
+                  )}
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
+            {/* Add New Payment Method Section */}
+            <div style={{ marginTop: "1.5rem", paddingTop: "1.5rem", borderTop: "1px solid #e0e0e0" }}>
+              <h3
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: "500",
+                  color: "#2d3a4a",
+                  marginBottom: "0.75rem",
+                }}
+              >
+                Agregar un nuevo método de pago
+              </h3>
+              <button
+                onClick={() => setShowPaymentModal(true)}
+                style={{
+                  width: "100%",
+                  padding: "0.75rem 1rem",
+                  border: "2px dashed #667eea",
+                  borderRadius: "8px",
+                  background: "transparent",
+                  color: "#667eea",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  transition: "all 0.2s",
+                }}
+                onMouseOver={(e) => {
+                  (e.target as HTMLButtonElement).style.background = "#f8f9ff";
+                }}
+                onMouseOut={(e) => {
+                  (e.target as HTMLButtonElement).style.background = "transparent";
+                }}
+              >
+                + Agregar tarjeta de crédito
+              </button>
 
+              {/* Save Payment Method Checkbox */}
+              {showPaymentModal && (
+                <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <input
+                    type="checkbox"
+                    id="savePaymentCheckbox"
+                    checked={savePaymentMethod}
+                    onChange={(e) => setSavePaymentMethod(e.target.checked)}
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      cursor: "pointer",
+                    }}
+                  />
+                  <label
+                    htmlFor="savePaymentCheckbox"
+                    style={{
+                      fontSize: "0.95rem",
+                      color: "#4a5568",
+                      cursor: "pointer",
+                      userSelect: "none",
+                    }}
+                  >
+                    Guardar este método de pago para futuras compras
+                  </label>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Cancellation Policy */}
@@ -731,6 +922,311 @@ const BookingConfirmation: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowPaymentModal(false)}
+        >
+          <div
+            style={{
+              background: "white",
+              borderRadius: "12px",
+              padding: "2rem",
+              maxWidth: "500px",
+              width: "90%",
+              boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "1.5rem",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: "1.5rem",
+                  fontWeight: "700",
+                  color: "#2d3a4a",
+                  margin: 0,
+                }}
+              >
+                Agregar tarjeta de crédito
+              </h2>
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                  color: "#4a5568",
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Payment Form */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              {/* Card Number */}
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.9rem",
+                    fontWeight: "600",
+                    color: "#2d3a4a",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Número de tarjeta
+                </label>
+                <input
+                  type="text"
+                  placeholder="1234 5678 9012 3456"
+                  value={formatCardNumber(paymentForm.cardNumber)}
+                  onChange={(e) => {
+                    const cleaned = e.target.value.replace(/\s/g, "").replace(/\D/g, "");
+                    setPaymentForm({
+                      ...paymentForm,
+                      cardNumber: cleaned,
+                    });
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem",
+                    border: "1px solid #e0e0e0",
+                    borderRadius: "8px",
+                    fontSize: "1rem",
+                    fontFamily: "monospace",
+                    boxSizing: "border-box",
+                  }}
+                  maxLength={19}
+                />
+              </div>
+
+              {/* Cardholder Name */}
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.9rem",
+                    fontWeight: "600",
+                    color: "#2d3a4a",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Nombre del titular
+                </label>
+                <input
+                  type="text"
+                  placeholder="Juan Pérez"
+                  value={paymentForm.cardholderName}
+                  onChange={(e) =>
+                    setPaymentForm({
+                      ...paymentForm,
+                      cardholderName: e.target.value,
+                    })
+                  }
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem",
+                    border: "1px solid #e0e0e0",
+                    borderRadius: "8px",
+                    fontSize: "1rem",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+
+              {/* Expiry Date and CVV */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "0.9rem",
+                      fontWeight: "600",
+                      color: "#2d3a4a",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    Expiración
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="MM/YY"
+                    value={formatExpiryDate(paymentForm.expiryDate)}
+                    onChange={(e) => {
+                      const cleaned = e.target.value.replace(/\D/g, "");
+                      setPaymentForm({
+                        ...paymentForm,
+                        expiryDate: cleaned,
+                      });
+                    }}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #e0e0e0",
+                      borderRadius: "8px",
+                      fontSize: "1rem",
+                      fontFamily: "monospace",
+                      boxSizing: "border-box",
+                    }}
+                    maxLength={5}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "0.9rem",
+                      fontWeight: "600",
+                      color: "#2d3a4a",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    CVV
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="123"
+                    value={paymentForm.cvv}
+                    onChange={(e) => {
+                      const cleaned = e.target.value.replace(/\D/g, "").slice(0, 3);
+                      setPaymentForm({
+                        ...paymentForm,
+                        cvv: cleaned,
+                      });
+                    }}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #e0e0e0",
+                      borderRadius: "8px",
+                      fontSize: "1rem",
+                      fontFamily: "monospace",
+                      boxSizing: "border-box",
+                    }}
+                    maxLength={3}
+                  />
+                </div>
+              </div>
+
+              {/* Save Payment Method Checkbox */}
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem" }}>
+                <input
+                  type="checkbox"
+                  id="savePaymentModal"
+                  checked={savePaymentMethod}
+                  onChange={(e) => setSavePaymentMethod(e.target.checked)}
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    cursor: "pointer",
+                  }}
+                />
+                <label
+                  htmlFor="savePaymentModal"
+                  style={{
+                    fontSize: "0.95rem",
+                    color: "#4a5568",
+                    cursor: "pointer",
+                    userSelect: "none",
+                  }}
+                >
+                  Guardar este método de pago
+                </label>
+              </div>
+
+              {/* Info Text */}
+              <div
+                style={{
+                  background: "#f0f4ff",
+                  padding: "0.75rem",
+                  borderRadius: "8px",
+                  fontSize: "0.85rem",
+                  color: "#4a5568",
+                  marginTop: "0.5rem",
+                }}
+              >
+                ℹ️ Esto es un ejemplo. No usaremos datos reales de tarjetas.
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1rem" }}>
+                <button
+                  onClick={() => setShowPaymentModal(false)}
+                  style={{
+                    padding: "0.75rem 1rem",
+                    border: "1px solid #e0e0e0",
+                    borderRadius: "8px",
+                    background: "white",
+                    color: "#4a5568",
+                    fontSize: "1rem",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseOver={(e) => {
+                    (e.target as HTMLButtonElement).style.background = "#f8f9fa";
+                  }}
+                  onMouseOut={(e) => {
+                    (e.target as HTMLButtonElement).style.background = "white";
+                  }}
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleSavePaymentMethod}
+                  disabled={savingPayment}
+                  style={{
+                    padding: "0.75rem 1rem",
+                    border: "none",
+                    borderRadius: "8px",
+                    background: savePaymentMethod ? "#667eea" : "#ccc",
+                    color: "white",
+                    fontSize: "1rem",
+                    fontWeight: "600",
+                    cursor: savePaymentMethod ? "pointer" : "not-allowed",
+                    opacity: savingPayment ? 0.7 : 1,
+                  }}
+                  onMouseOver={(e) => {
+                    if (savePaymentMethod && !savingPayment) {
+                      (e.target as HTMLButtonElement).style.background = "#5568d3";
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (savePaymentMethod && !savingPayment) {
+                      (e.target as HTMLButtonElement).style.background = "#667eea";
+                    }
+                  }}
+                >
+                  {savingPayment ? "Guardando..." : savePaymentMethod ? "Guardar" : "Usar sin guardar"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

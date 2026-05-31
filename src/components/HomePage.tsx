@@ -150,7 +150,7 @@ const HomePage = () => {
             <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
               <UserProfile
                 name={user.name || "Usuario"}
-                role={user.userType || "user"}
+                /* role={user.userType || "user"} */
                 avatarUrl={user.avatarUrl}
               />
               <button
