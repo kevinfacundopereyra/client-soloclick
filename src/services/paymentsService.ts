@@ -1,9 +1,9 @@
 // src/services/paymentsService.ts
 import axios from "axios";
+import { API_CONFIG } from "../config/api";
 // Nota: CreatePaymentButton no es necesario en el archivo de servicio.
 
-const API_BASE_URL = "http://localhost:3000";
-const api = axios.create({ baseURL: API_BASE_URL });
+const api = axios.create({ baseURL: API_CONFIG.BASE_URL });
 
 // Interceptor para autenticación
 api.interceptors.request.use((config) => {

@@ -5,6 +5,7 @@ import { servicesService } from "../../services/servicesService";
 import type { Professional } from "../components/ProfessionalCard";
 import type { Service } from "../../services/servicesService";
 import { authService } from "../../services/authService"; // Importación de tu servicio de autenticación
+import { API_CONFIG } from "../../config/api"; // Importación de configuración de API
 
 // 🚨 NUEVOS IMPORTS para reseñas
 import type { Review as ReviewType } from "../../services/reviewsService";
@@ -70,7 +71,7 @@ const ProfessionalDetailPage: React.FC = () => {
       throw new Error("Debes iniciar sesión para dejar una reseña.");
     }
 
-    const API_URL = "http://localhost:3000/reviews";
+    const API_URL = `${API_CONFIG.BASE_URL}/reviews`;
 
     const response = await fetch(API_URL, {
       method: "POST",
