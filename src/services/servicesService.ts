@@ -163,7 +163,7 @@ const getDefaultServicesBySpecialty = (specialty: string): Service[] => {
 export const servicesService = {
   getMyServices: async () => {
     try {
-      const response = await api.get("/services/professional/my-services");
+      const response = await api.get("/services/my-services");
       console.log("🔍 Respuesta getMyServices:", response.data);
 
       let services = [];
@@ -214,7 +214,7 @@ export const servicesService = {
       const { id, ...serviceData } = updateData;
       const serviceId = id;
 
-      const response = await api.put(`/api/services/${serviceId}`, serviceData);
+      const response = await api.put(`/services/${serviceId}`, serviceData);
       console.log("🔍 Respuesta updateService:", response.data);
 
       return {
@@ -230,7 +230,7 @@ export const servicesService = {
 
   deleteService: async (serviceId: string) => {
     try {
-      const response = await api.delete(`/api/services/${serviceId}`);
+      const response = await api.delete(`/services/${serviceId}`);
       console.log("🔍 Respuesta deleteService:", response.data);
 
       return {
@@ -245,7 +245,7 @@ export const servicesService = {
 
   toggleServiceStatus: async (serviceId: string, isActive: boolean) => {
     try {
-      const response = await api.patch(`/api/services/${serviceId}/status`, {
+      const response = await api.patch(`/services/${serviceId}/status`, {
         isActive,
       });
       console.log("🔍 Respuesta toggleServiceStatus:", response.data);
@@ -265,33 +265,18 @@ export const servicesService = {
 
   getServicesByProfessional: async (professionalId: string) => {
     try {
-      // ✅ SOLUCIÓN: Crear servicios por defecto basados en la especialidad
+      const response = await api.get(`/services/professional/${professionalId}`);
       console.log(
-        "🔍 Creando servicios por defecto para profesional:",
-        professionalId
+        "🔍 Servicios obtenidos por profesional:",
+        response.data
       );
-
-      // Obtener información del profesional para saber su especialidad
-      const { fetchProfessionalById } = await import(
-        "../professionals/services/professionalsService"
-      );
-      const professional = await fetchProfessionalById(professionalId);
-
-      // ✅ Crear servicios por defecto según la especialidad
-      const defaultServices = getDefaultServicesBySpecialty(
-        professional.specialty || "Barberia"
-      );
-
-      console.log(
-        `✅ Servicios por defecto para ${professional.specialty}:`,
-        defaultServices
-      );
-      return defaultServices;
+      const services = Array.isArray(response.data)
+        ? response.data
+        : response.data.services || response.data.data || [];
+      return services.map(normalizeService);
     } catch (error: any) {
       console.error("❌ Error en getServicesByProfessional:", error);
-      // ✅ SOLUCIÓN: Crear servicios por defecto genéricos
-      console.log("⚠️ Creando servicios por defecto genéricos");
-      return getDefaultServicesBySpecialty("Barberia");
+      throw error;
     }
   },
 };
