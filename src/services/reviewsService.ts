@@ -1,6 +1,7 @@
 import axios from "axios";
 import { authService } from "./authService";
-const API_BASE_URL = "http://localhost:3000";
+import { API_CONFIG } from "../config/api";
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
 // Interfaz para la reseña que recibimos del backend
 export interface Review {

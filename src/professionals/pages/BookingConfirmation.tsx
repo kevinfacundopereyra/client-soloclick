@@ -7,6 +7,7 @@ import {
 import paymentsService from "../../services/paymentsService";
 import useFeaturedPayments from "../../hooks/useFeaturedPayments";
 import paymentMethodsService from "../../services/paymentMethodsService";
+import { API_CONFIG } from "../../config/api"; // Importación de configuración de API
 
 interface Service {
   id: string;
@@ -101,7 +102,7 @@ const BookingConfirmation: React.FC = () => {
         return;
       }
 
-      const apiUrl = "http://localhost:3000"; // Usar puerto 3000 directamente
+      const apiUrl = API_CONFIG.BASE_URL; // Usar configuración centralizada
       const endpoint = `${apiUrl}/professionals/${professionalId}`;
       
       console.log("📤 Enviando solicitud de guardar método de pago:");

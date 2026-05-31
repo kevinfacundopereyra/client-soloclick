@@ -1,7 +1,8 @@
-// Configuración de la API
+// Configuración de la API desde variables de entorno
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
 export const API_CONFIG = {
-  // Cambiar por la URL real de tu backend
-  BASE_URL: "http://localhost:3000", // Cambiar por tu URL
+  BASE_URL: API_BASE_URL,
   TIMEOUT: 10000, // 10 segundos
 
   // Endpoints
@@ -17,3 +18,5 @@ export const API_CONFIG = {
 export const getApiUrl = (endpoint: string): string => {
   return `${API_CONFIG.BASE_URL}${endpoint}`;
 };
+
+export default API_CONFIG;
