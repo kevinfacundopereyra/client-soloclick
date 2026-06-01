@@ -264,8 +264,8 @@ const getFilteredProfessionals = () => {
               boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
             }}
           >
+            {/* ✅ MODIFICADO: Usamos el componente correcto que espera una lista. */}
             {filteredProfessionals.length > 0 && (
-              // ✅ MODIFICADO: Usamos el componente correcto que espera una lista.
               <ProfessionalsListMap
                   professionals={filteredProfessionals}
                   selectedLocation={locationFilter}
