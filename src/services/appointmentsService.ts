@@ -132,13 +132,13 @@ export const appointmentsService = {
     }
   },
 
-  // ✅ SOLO BACKEND: Obtener citas únicamente del backend
+  // ✅ SOLO BACKEND: Obtener citas únicas del cliente autenticado
   getMyAppointments: async () => {
     try {
-      console.log("🔍 Obteniendo citas del backend");
+      console.log("🔍 Obteniendo citas del cliente autenticado desde backend");
 
-      const response = await api.get("/appointments");
-      console.log("✅ Citas del backend:", response.data?.length || 0);
+      const response = await api.get("/appointments/my");
+      console.log("✅ Citas del cliente:", response.data?.length || 0);
 
       return {
         success: true,
