@@ -223,12 +223,12 @@ const getFilteredProfessionals = () => {
       : sort === "rating_desc"
       ? sortByRating(favoriteProfessionals, true)
       : favoriteProfessionals;
-  const sortedProfessionals =
+/*   const sortedProfessionals =
     sort === "rating_asc"
       ? sortByRating(allProfessionals, false)
       : sort === "rating_desc"
       ? sortByRating(allProfessionals, true)
-      : allProfessionals;
+      : allProfessionals; */
 
   const getPageTitle = () => {
     const activeFilters = Object.entries(filters).filter(([_, value]) => value);
