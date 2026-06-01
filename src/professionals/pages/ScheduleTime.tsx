@@ -174,27 +174,13 @@ const ScheduleTime: React.FC = () => {
 
   if (!professional || selectedServices.length === 0) {
     return (
-      <div style={{ 
-        minHeight: "100vh", 
-        display: "flex", 
-        flexDirection: "column",
-        alignItems: "center", 
-        justifyContent: "center",
-        background: "#f8f9fa"
-      }}>
-        <div style={{ fontSize: "1.2rem", marginBottom: "1rem", color: "#4a5568" }}>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <div className="text-lg mb-4 text-gray-700">
           No hay datos de reserva
         </div>
         <button
           onClick={() => navigate("/")}
-          style={{
-            background: "#667eea",
-            border: "none",
-            color: "white",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "8px",
-            cursor: "pointer"
-          }}
+          className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg cursor-pointer transition"
         >
           Volver al inicio
         </button>
@@ -205,107 +191,51 @@ const ScheduleTime: React.FC = () => {
   const calendarDays = generateCalendarDays();
 
   return (
-    <div style={{ 
-      minHeight: "100vh",
-      background: "#f8f9fa",
-      padding: "1rem"
-    }}>
+    <div className="min-h-screen bg-gray-50 px-4 sm:px-6">
       {/* Header */}
-      <div style={{
-        maxWidth: "800px",
-        margin: "0 auto",
-        marginBottom: "2rem"
-      }}>
-        <div style={{ 
-          display: "flex", 
-          alignItems: "center", 
-          marginBottom: "1rem"
-        }}>
+      <div className="max-w-4xl mx-auto mb-6 sm:mb-8">
+        <div className="flex items-center mb-4 sm:mb-6">
           <button
             onClick={() => navigate(`/reservar/servicios/${id}`)}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: "1.5rem",
-              cursor: "pointer",
-              marginRight: "1rem",
-              color: "#4a5568"
-            }}
+            className="text-2xl bg-none border-none cursor-pointer mr-4 text-gray-600 hover:text-gray-800"
           >
             ←
           </button>
-          <div style={{ fontSize: "0.9rem", color: "#667eea" }}>
+          <div className="text-xs sm:text-sm text-indigo-500">
             Servicios &gt; Hora &gt; Confirmar
           </div>
           <button
             onClick={() => navigate(`/profesional/${id}`)}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: "1.5rem",
-              cursor: "pointer",
-              marginLeft: "auto",
-              color: "#4a5568"
-            }}
+            className="text-2xl bg-none border-none cursor-pointer ml-auto text-gray-600 hover:text-gray-800"
           >
             ✕
           </button>
         </div>
         
-        <h1 style={{ 
-          fontSize: "2rem", 
-          fontWeight: "bold", 
-          color: "#2d3a4a",
-          margin: 0 
-        }}>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 m-0">
           Seleccionar hora
         </h1>
       </div>
 
-      <div style={{
-        maxWidth: "800px",
-        margin: "0 auto",
-        display: "grid",
-        gridTemplateColumns: "1fr 300px",
-        gap: "2rem"
-      }}>
+      <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
         {/* Calendar and Time Selection */}
-        <div>
+        <div className="lg:col-span-3">
           {/* Month Navigation */}
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: "2rem"
-          }}>
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem"
-            }}>
-              <div style={{ fontSize: "1.5rem" }}>📅</div>
-              <div style={{ fontSize: "1.1rem", fontWeight: "600", color: "#2d3a4a" }}>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+            <div className="flex items-center gap-2">
+              <div className="text-2xl">📅</div>
+              <div className="text-lg sm:text-xl font-semibold text-gray-800">
                 {getMonthName(currentMonth)} de {currentMonth.getFullYear()}
               </div>
             </div>
-            <div style={{ display: "flex", gap: "0.5rem" }}>
+            <div className="flex gap-2">
               <button
                 onClick={() => {
                   const prevMonth = new Date(currentMonth);
                   prevMonth.setMonth(currentMonth.getMonth() - 1);
                   setCurrentMonth(prevMonth);
                 }}
-                style={{
-                  background: "none",
-                  border: "1px solid #e0e0e0",
-                  borderRadius: "50%",
-                  width: "40px",
-                  height: "40px",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
+                className="bg-none border border-gray-300 rounded-full w-10 h-10 cursor-pointer flex items-center justify-center hover:bg-gray-100 transition"
               >
                 ←
               </button>
@@ -315,17 +245,7 @@ const ScheduleTime: React.FC = () => {
                   nextMonth.setMonth(currentMonth.getMonth() + 1);
                   setCurrentMonth(nextMonth);
                 }}
-                style={{
-                  background: "none",
-                  border: "1px solid #e0e0e0",
-                  borderRadius: "50%",
-                  width: "40px",
-                  height: "40px",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
+                className="bg-none border border-gray-300 rounded-full w-10 h-10 cursor-pointer flex items-center justify-center hover:bg-gray-100 transition"
               >
                 →
               </button>
@@ -333,12 +253,7 @@ const ScheduleTime: React.FC = () => {
           </div>
 
           {/* Calendar Days */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(7, 1fr)",
-            gap: "0.5rem",
-            marginBottom: "2rem"
-          }}>
+          <div className="grid grid-cols-7 gap-2 mb-6 sm:mb-8">
             {calendarDays.map((date) => {
               const dateString = formatDate(date);
               const isSelected = selectedDate === dateString;
@@ -347,24 +262,16 @@ const ScheduleTime: React.FC = () => {
                 <button
                   key={dateString}
                   onClick={() => handleDateChange(dateString)}
-                  style={{
-                    background: isSelected ? "#667eea" : "white",
-                    border: isSelected ? "2px solid #667eea" : "1px solid #e0e0e0",
-                    borderRadius: "8px",
-                    padding: "1rem 0.5rem",
-                    cursor: "pointer",
-                    textAlign: "center",
-                    color: isSelected ? "white" : "#2d3a4a"
-                  }}
+                  className={`rounded-lg p-2 sm:p-3 cursor-pointer text-center transition ${
+                    isSelected 
+                      ? "bg-indigo-500 border-2 border-indigo-500 text-white" 
+                      : "bg-white border border-gray-300 text-gray-800 hover:border-gray-400"
+                  }`}
                 >
-                  <div style={{ 
-                    fontSize: "1.5rem", 
-                    fontWeight: "bold",
-                    marginBottom: "0.25rem"
-                  }}>
+                  <div className="text-lg sm:text-xl font-bold mb-1">
                     {date.getDate()}
                   </div>
-                  <div style={{ fontSize: "0.8rem" }}>
+                  <div className="text-xs sm:text-sm">
                     {getDayName(date)}
                   </div>
                 </button>
@@ -373,45 +280,23 @@ const ScheduleTime: React.FC = () => {
           </div>
 
           {/* Time Slots */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: "0.75rem"
-          }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
             {loadingSlots ? (
-              <div style={{ 
-                gridColumn: "1 / -1", 
-                textAlign: "center", 
-                padding: "2rem",
-                color: "#4a5568"
-              }}>
+              <div className="col-span-full text-center py-8 text-gray-600">
                 Cargando horarios disponibles...
               </div>
             ) : availableSlots.length === 0 ? (
-              // ✅ AGREGAR: Mensaje cuando no hay horarios
-              <div style={{ 
-                gridColumn: "1 / -1", 
-                textAlign: "center", 
-                padding: "2rem",
-                color: "#4a5568",
-                background: "#f8f9fa",
-                borderRadius: "8px",
-                border: "2px dashed #e0e0e0"
-              }}>
-                <div style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>
-                  📅 No hay horarios disponibles
-                </div>
-                <div style={{ fontSize: "0.9rem" }}>
+              <div className="col-span-full text-center py-8 px-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <div className="text-lg mb-2">📅 No hay horarios disponibles</div>
+                <div className="text-sm text-gray-600">
                   El profesional no trabaja este día o no hay horarios libres
                 </div>
               </div>
             ) : (
-              // ✅ ACTUALIZAR: Renderizar slots con más logs
               availableSlots.map((slot, index) => {
                 const isSelected = selectedTime === slot.time;
                 const isAvailable = slot.available;
                 
-                // Log cada slot para debug
                 if (index === 0) {
                   console.log(`🔍 Renderizando ${availableSlots.length} slots para ${selectedDate}`);
                 }
@@ -426,17 +311,13 @@ const ScheduleTime: React.FC = () => {
                       }
                     }}
                     disabled={!isAvailable}
-                    style={{
-                      background: isSelected ? "#667eea" : isAvailable ? "white" : "#f5f5f5",
-                      border: isSelected ? "2px solid #667eea" : isAvailable ? "1px solid #e0e0e0" : "1px solid #ccc",
-                      borderRadius: "8px",
-                      padding: "1rem",
-                      cursor: isAvailable ? "pointer" : "not-allowed",
-                      color: isSelected ? "white" : isAvailable ? "#2d3a4a" : "#999",
-                      fontSize: "1rem",
-                      fontWeight: "500",
-                      opacity: isAvailable ? 1 : 0.5
-                    }}
+                    className={`rounded-lg p-3 text-sm sm:text-base font-medium transition ${
+                      isSelected 
+                        ? "bg-indigo-500 border-2 border-indigo-500 text-white"
+                        : isAvailable
+                        ? "bg-white border border-gray-300 text-gray-800 hover:border-gray-400 cursor-pointer"
+                        : "bg-gray-100 border border-gray-300 text-gray-400 cursor-not-allowed opacity-50"
+                    }`}
                   >
                     {slot.time}
                   </button>
@@ -447,36 +328,17 @@ const ScheduleTime: React.FC = () => {
         </div>
 
         {/* Summary Sidebar */}
-        <div style={{
-          background: "white",
-          borderRadius: "8px",
-          padding: "1.5rem",
-          height: "fit-content",
-          position: "sticky",
-          top: "1rem"
-        }}>
+        <div className="lg:col-span-1 bg-white rounded-lg p-4 sm:p-6 h-fit sticky top-4">
           {/* Professional Info */}
-          <div style={{ display: "flex", alignItems: "center", marginBottom: "1.5rem" }}>
-            <div style={{
-              width: "60px",
-              height: "60px",
-              borderRadius: "50%",
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "white",
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              marginRight: "1rem"
-            }}>
+          <div className="flex items-center mb-4 sm:mb-6">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl sm:text-2xl font-bold mr-4 flex-shrink-0">
               {professional.name.charAt(0).toUpperCase()}
             </div>
-            <div>
-              <div style={{ fontWeight: "600", color: "#2d3a4a" }}>
+            <div className="min-w-0">
+              <div className="font-semibold text-gray-800 truncate">
                 {professional.name}
               </div>
-              <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
+              <div className="text-sm text-gray-600 truncate">
                 {professional.city}
               </div>
             </div>
@@ -484,17 +346,10 @@ const ScheduleTime: React.FC = () => {
 
           {/* Selected Date and Time */}
           {selectedDate && (
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              marginBottom: "1rem",
-              paddingBottom: "1rem",
-              borderBottom: "1px solid #f0f0f0"
-            }}>
-              <span style={{ fontSize: "1.2rem" }}>📅</span>
-              <div>
-                <div style={{ color: "#2d3a4a" }}>
+            <div className="flex items-start gap-2 mb-4 pb-4 border-b border-gray-100">
+              <span className="text-lg flex-shrink-0">📅</span>
+              <div className="min-w-0">
+                <div className="text-gray-800">
                   {new Date(selectedDate + 'T00:00:00').toLocaleDateString('es-ES', {
                     weekday: 'long',
                     day: 'numeric',
@@ -502,13 +357,13 @@ const ScheduleTime: React.FC = () => {
                   })}
                 </div>
                 {selectedTime && (
-                  <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
+                  <div className="text-xs sm:text-sm text-gray-600">
                     🕐 {selectedTime}-{(() => {
                       const [hours, minutes] = selectedTime.split(':').map(Number);
                       const endTime = new Date();
                       endTime.setHours(hours, minutes + getTotalDuration());
                       return `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
-                    })()} ({getTotalDuration()} min de duración)
+                    })()} ({getTotalDuration()} min)
                   </div>
                 )}
               </div>
@@ -517,40 +372,23 @@ const ScheduleTime: React.FC = () => {
 
           {/* Selected Services */}
           {selectedServices.map((service) => (
-            <div key={service.id} style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "1rem",
-              paddingBottom: "1rem",
-              borderBottom: "1px solid #f0f0f0"
-            }}>
-              <div>
-                <div style={{ fontWeight: "500", color: "#2d3a4a" }}>
+            <div key={service.id} className="flex justify-between items-start gap-2 mb-4 pb-4 border-b border-gray-100 last:border-b-0">
+              <div className="min-w-0">
+                <div className="font-medium text-gray-800 truncate">
                   {service.name}
                 </div>
-                <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
-                  {service.duration} min con cualquier profesional
+                <div className="text-xs sm:text-sm text-gray-600">
+                  {service.duration} min
                 </div>
               </div>
-              <div style={{ fontWeight: "600", color: "#2d3a4a" }}>
+              <div className="font-semibold text-gray-800 flex-shrink-0">
                 {service.price} ARS
               </div>
             </div>
           ))}
 
           {/* Total */}
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            fontSize: "1.1rem",
-            fontWeight: "bold",
-            color: "#2d3a4a",
-            marginTop: "1rem",
-            paddingTop: "1rem",
-            borderTop: "2px solid #f0f0f0"
-          }}>
+          <div className="flex justify-between items-center text-base sm:text-lg font-bold text-gray-800 mt-4 pt-4 border-t-2 border-gray-100">
             <span>Total</span>
             <span>{getTotalPrice()} ARS</span>
           </div>
@@ -559,18 +397,11 @@ const ScheduleTime: React.FC = () => {
           <button
             onClick={handleContinue}
             disabled={!selectedDate || !selectedTime}
-            style={{
-              width: "100%",
-              background: (selectedDate && selectedTime) ? "#2d3a4a" : "#ccc",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              padding: "1rem",
-              fontSize: "1rem",
-              fontWeight: "600",
-              cursor: (selectedDate && selectedTime) ? "pointer" : "not-allowed",
-              marginTop: "1.5rem"
-            }}
+            className={`w-full rounded-lg p-3 sm:p-4 text-base font-semibold mt-4 sm:mt-6 transition ${
+              (selectedDate && selectedTime)
+                ? "bg-gray-800 text-white hover:bg-gray-900 cursor-pointer" 
+                : "bg-gray-300 text-gray-600 cursor-not-allowed"
+            }`}
           >
             Continuar
           </button>

@@ -185,14 +185,8 @@ const ServicesSelection: React.FC = () => {
 
   if (loading || servicesLoading) {
     return (
-      <div style={{ 
-        minHeight: "100vh", 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "center",
-        background: "#f8f9fa"
-      }}>
-        <div style={{ fontSize: "1.2rem", color: "#4a5568" }}>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-lg text-gray-700">
           Cargando servicios del profesional...
         </div>
       </div>
@@ -201,27 +195,13 @@ const ServicesSelection: React.FC = () => {
 
   if (!professional) {
     return (
-      <div style={{ 
-        minHeight: "100vh", 
-        display: "flex", 
-        flexDirection: "column",
-        alignItems: "center", 
-        justifyContent: "center",
-        background: "#f8f9fa"
-      }}>
-        <div style={{ fontSize: "1.2rem", marginBottom: "1rem", color: "#4a5568" }}>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <div className="text-lg mb-4 text-gray-700">
           Profesional no encontrado
         </div>
         <button
           onClick={() => navigate("/")}
-          style={{
-            background: "#667eea",
-            border: "none",
-            color: "white",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "8px",
-            cursor: "pointer"
-          }}
+          className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg cursor-pointer transition"
         >
           Volver al inicio
         </button>
@@ -232,82 +212,40 @@ const ServicesSelection: React.FC = () => {
   const services = getDisplayServices();
 
   return (
-    <div style={{ 
-      minHeight: "100vh",
-      background: "#f8f9fa",
-      padding: "1rem"
-    }}>
+    <div className="min-h-screen bg-gray-50 px-4 sm:px-6">
       {/* Header */}
-      <div style={{
-        maxWidth: "800px",
-        margin: "0 auto",
-        marginBottom: "2rem"
-      }}>
-        <div style={{ 
-          display: "flex", 
-          alignItems: "center", 
-          marginBottom: "1rem"
-        }}>
+      <div className="max-w-4xl mx-auto mb-6 sm:mb-8">
+        <div className="flex items-center mb-4 sm:mb-6">
           <button
             onClick={() => navigate(`/profesional/${id}`)}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: "1.5rem",
-              cursor: "pointer",
-              marginRight: "1rem",
-              color: "#4a5568"
-            }}
+            className="text-2xl bg-none border-none cursor-pointer mr-4 text-gray-600 hover:text-gray-800"
           >
             ←
           </button>
-          <div style={{ fontSize: "0.9rem", color: "#667eea" }}>
+          <div className="text-xs sm:text-sm text-indigo-500">
             Servicios &gt; Hora &gt; Confirmar
           </div>
           <button
             onClick={() => navigate(`/profesional/${id}`)}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: "1.5rem",
-              cursor: "pointer",
-              marginLeft: "auto",
-              color: "#4a5568"
-            }}
+            className="text-2xl bg-none border-none cursor-pointer ml-auto text-gray-600 hover:text-gray-800"
           >
             ✕
           </button>
         </div>
         
-        <h1 style={{ 
-          fontSize: "2rem", 
-          fontWeight: "bold", 
-          color: "#2d3a4a",
-          margin: 0 
-        }}>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 m-0">
           Servicios
         </h1>
       </div>
 
-      <div style={{
-        maxWidth: "800px",
-        margin: "0 auto",
-        display: "grid",
-        gridTemplateColumns: "1fr 300px",
-        gap: "2rem"
-      }}>
+      <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
         {/* Services List */}
-        <div>
-          <h2 style={{ 
-            fontSize: "1.5rem", 
-            fontWeight: "600", 
-            color: "#2d3a4a",
-            marginBottom: "1.5rem" 
-          }}>
+        <div className="lg:col-span-3">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">
             Hair & styling
           </h2>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div className="flex flex-col gap-4 sm:gap-6">
             {services.map((service) => {
               const isSelected = selectedServices.some(s => s.id === service.id);
               
@@ -315,84 +253,37 @@ const ServicesSelection: React.FC = () => {
                 <div
                   key={service.id}
                   onClick={() => toggleService(service)}
-                  style={{
-                    background: "white",
-                    border: isSelected ? "2px solid #667eea" : "1px solid #e0e0e0",
-                    borderRadius: "8px",
-                    padding: "1.5rem",
-                    cursor: "pointer",
-                    position: "relative",
-                    transition: "all 0.2s"
-                  }}
+                  className={`bg-white rounded-lg p-4 sm:p-6 cursor-pointer relative transition-all ${
+                    isSelected ? "border-2 border-indigo-500" : "border border-gray-200"
+                  }`}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <div style={{ flex: 1 }}>
-                      <h3 style={{ 
-                        margin: "0 0 0.5rem 0", 
-                        fontSize: "1.1rem", 
-                        fontWeight: "600",
-                        color: "#2d3a4a"
-                      }}>
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1">
+                      <h3 className="m-0 mb-2 text-base sm:text-lg font-semibold text-gray-800">
                         {service.name}
                       </h3>
-                      <p style={{ 
-                        margin: "0 0 0.5rem 0", 
-                        color: "#4a5568",
-                        fontSize: "0.95rem",
-                        lineHeight: "1.4"
-                      }}>
+                      <p className="m-0 mb-2 text-gray-600 text-sm sm:text-base leading-relaxed">
                         {service.description}
                       </p>
-                      <div style={{ 
-                        fontSize: "0.9rem", 
-                        color: "#4a5568" 
-                      }}>
+                      <div className="text-sm sm:text-base text-gray-600">
                         {service.duration} min
                       </div>
-                      <div style={{ 
-                        fontSize: "1rem", 
-                        fontWeight: "600",
-                        color: "#2d3a4a",
-                        marginTop: "0.5rem"
-                      }}>
+                      <div className="text-base sm:text-lg font-semibold text-gray-800 mt-2">
                         {service.price} ARS
                       </div>
                     </div>
                     
-                    <div style={{
-                      width: "24px",
-                      height: "24px",
-                      borderRadius: "50%",
-                      border: isSelected ? "2px solid #667eea" : "2px solid #ccc",
-                      background: isSelected ? "#667eea" : "white",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginLeft: "1rem"
-                    }}>
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      isSelected ? "border-indigo-500 bg-indigo-500" : "border-gray-300 bg-white"
+                    }`}>
                       {isSelected && (
-                        <div style={{
-                          width: "8px",
-                          height: "8px",
-                          borderRadius: "50%",
-                          background: "white"
-                        }} />
+                        <div className="w-2 h-2 rounded-full bg-white" />
                       )}
                     </div>
 
                     {!isSelected && (
                       <button
-                        style={{
-                          position: "absolute",
-                          right: "1rem",
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          background: "none",
-                          border: "none",
-                          fontSize: "1.5rem",
-                          color: "#ccc",
-                          cursor: "pointer"
-                        }}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-none border-none text-2xl text-gray-300 cursor-pointer"
                       >
                         +
                       </button>
@@ -405,36 +296,17 @@ const ServicesSelection: React.FC = () => {
         </div>
 
         {/* Summary Sidebar */}
-        <div style={{
-          background: "white",
-          borderRadius: "8px",
-          padding: "1.5rem",
-          height: "fit-content",
-          position: "sticky",
-          top: "1rem"
-        }}>
+        <div className="lg:col-span-1 bg-white rounded-lg p-4 sm:p-6 h-fit sticky top-4">
           {/* Professional Info */}
-          <div style={{ display: "flex", alignItems: "center", marginBottom: "1.5rem" }}>
-            <div style={{
-              width: "60px",
-              height: "60px",
-              borderRadius: "50%",
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "white",
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              marginRight: "1rem"
-            }}>
+          <div className="flex items-center mb-4 sm:mb-6">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl sm:text-2xl font-bold mr-4 flex-shrink-0">
               {professional.name.charAt(0).toUpperCase()}
             </div>
-            <div>
-              <div style={{ fontWeight: "600", color: "#2d3a4a" }}>
+            <div className="min-w-0">
+              <div className="font-semibold text-gray-800 truncate">
                 {professional.name}
               </div>
-              <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
+              <div className="text-sm text-gray-600 truncate">
                 {professional.city}
               </div>
             </div>
@@ -442,40 +314,23 @@ const ServicesSelection: React.FC = () => {
 
           {/* Selected Services */}
           {selectedServices.map((service) => (
-            <div key={service.id} style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "1rem",
-              paddingBottom: "1rem",
-              borderBottom: "1px solid #f0f0f0"
-            }}>
-              <div>
-                <div style={{ fontWeight: "500", color: "#2d3a4a" }}>
+            <div key={service.id} className="flex justify-between items-start gap-2 mb-4 pb-4 border-b border-gray-100 last:border-b-0">
+              <div className="min-w-0">
+                <div className="font-medium text-gray-800 truncate">
                   {service.name}
                 </div>
-                <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
-                  {service.duration} min con cualquier profesional
+                <div className="text-xs sm:text-sm text-gray-600">
+                  {service.duration} min
                 </div>
               </div>
-              <div style={{ fontWeight: "600", color: "#2d3a4a" }}>
+              <div className="font-semibold text-gray-800 flex-shrink-0">
                 {service.price} ARS
               </div>
             </div>
           ))}
 
           {/* Total */}
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            fontSize: "1.1rem",
-            fontWeight: "bold",
-            color: "#2d3a4a",
-            marginTop: "1rem",
-            paddingTop: "1rem",
-            borderTop: "2px solid #f0f0f0"
-          }}>
+          <div className="flex justify-between items-center text-base sm:text-lg font-bold text-gray-800 mt-4 pt-4 border-t-2 border-gray-100">
             <span>Total</span>
             <span>{getTotalPrice()} ARS</span>
           </div>
@@ -484,18 +339,11 @@ const ServicesSelection: React.FC = () => {
           <button
             onClick={handleContinue}
             disabled={selectedServices.length === 0}
-            style={{
-              width: "100%",
-              background: selectedServices.length > 0 ? "#2d3a4a" : "#ccc",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              padding: "1rem",
-              fontSize: "1rem",
-              fontWeight: "600",
-              cursor: selectedServices.length > 0 ? "pointer" : "not-allowed",
-              marginTop: "1.5rem"
-            }}
+            className={`w-full rounded-lg p-3 sm:p-4 text-base font-semibold mt-4 sm:mt-6 transition ${
+              selectedServices.length > 0 
+                ? "bg-gray-800 text-white hover:bg-gray-900 cursor-pointer" 
+                : "bg-gray-300 text-gray-600 cursor-not-allowed"
+            }`}
           >
             Continuar
           </button>

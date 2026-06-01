@@ -179,91 +179,32 @@ const ProfessionalRegisterPage = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      }}
-    >
-      <div
-        style={{
-          flex: 1,
-          padding: "2rem",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          maxWidth: "500px",
-          margin: "0 auto",
-        }}
-      >
+    <div className="flex min-h-screen flex-col lg:flex-row font-system">
+      <div className="flex-1 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 flex flex-col justify-center w-full max-w-2xl lg:max-w-none mx-auto lg:mx-0">
         <div
           onClick={() => navigate("/login")}
-          style={{
-            position: "absolute",
-            top: "2rem",
-            left: "2rem",
-            display: "flex",
-            alignItems: "center",
-            cursor: "pointer",
-            color: "#4a5568",
-          }}
+          className="absolute top-6 sm:top-8 left-4 sm:left-6 lg:left-8 flex items-center cursor-pointer text-gray-600 hover:text-gray-800"
         >
-          <span style={{ fontSize: "1.5rem", marginRight: "0.5rem" }}>←</span>
+          <span className="text-xl sm:text-2xl mr-2">←</span>
         </div>
 
-        <h1
-          style={{
-            fontSize: "2rem",
-            fontWeight: "bold",
-            color: "#2d3748",
-            marginBottom: "1rem",
-            textAlign: "center",
-          }}
-        >
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 sm:mb-4 lg:mb-6 text-center">
           Registro de Profesional
         </h1>
 
-        <p
-          style={{
-            textAlign: "center",
-            color: "#718096",
-            marginBottom: "2rem",
-          }}
-        >
+        <p className="text-center text-gray-500 text-sm sm:text-base mb-6 sm:mb-8 lg:mb-10">
           Únete a nuestra plataforma y haz crecer tu negocio
         </p>
 
         {error && (
-          <div
-            style={{
-              background: "#fed7d7",
-              border: "1px solid #feb2b2",
-              color: "#c53030",
-              padding: "0.75rem",
-              borderRadius: "8px",
-              marginBottom: "1rem",
-              textAlign: "center",
-            }}
-          >
+          <div className="bg-red-100 border border-red-400 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 text-sm sm:text-base text-center">
             {error}
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
-        >
+        <form className="flex flex-col gap-4 sm:gap-6" onSubmit={handleSubmit}>
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Nombre completo
             </label>
             <input
@@ -272,29 +213,14 @@ const ProfessionalRegisterPage = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg text-sm sm:text-base outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+              onFocus={(e) => e.currentTarget.classList.add('border-indigo-600')}
+              onBlur={(e) => e.currentTarget.classList.remove('border-indigo-600')}
               placeholder="Tu nombre completo"
             />
           </div>
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Email
             </label>
             <input
@@ -303,29 +229,14 @@ const ProfessionalRegisterPage = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg text-sm sm:text-base outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+              onFocus={(e) => e.currentTarget.classList.add('border-indigo-600')}
+              onBlur={(e) => e.currentTarget.classList.remove('border-indigo-600')}
               placeholder="tu@email.com"
             />
           </div>
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Contraseña
             </label>
             <input
@@ -334,29 +245,14 @@ const ProfessionalRegisterPage = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg text-sm sm:text-base outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+              onFocus={(e) => e.currentTarget.classList.add('border-indigo-600')}
+              onBlur={(e) => e.currentTarget.classList.remove('border-indigo-600')}
               placeholder="Mínimo 6 caracteres"
             />
           </div>
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Teléfono
             </label>
             <input
@@ -365,29 +261,14 @@ const ProfessionalRegisterPage = () => {
               value={formData.phone}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg text-sm sm:text-base outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+              onFocus={(e) => e.currentTarget.classList.add('border-indigo-600')}
+              onBlur={(e) => e.currentTarget.classList.remove('border-indigo-600')}
               placeholder="+54 11 1234-5678"
             />
           </div>
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Ciudad
             </label>
             <input
@@ -396,29 +277,14 @@ const ProfessionalRegisterPage = () => {
               value={formData.city}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg text-sm sm:text-base outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+              onFocus={(e) => e.currentTarget.classList.add('border-indigo-600')}
+              onBlur={(e) => e.currentTarget.classList.remove('border-indigo-600')}
               placeholder="Tu ciudad"
             />
           </div>
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Especialidad
             </label>
             <select
@@ -426,18 +292,9 @@ const ProfessionalRegisterPage = () => {
               value={formData.specialty}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-                backgroundColor: "white",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg text-sm sm:text-base outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 bg-white"
+              onFocus={(e) => e.currentTarget.classList.add('border-indigo-600')}
+              onBlur={(e) => e.currentTarget.classList.remove('border-indigo-600')}
             >
               <option value="">Selecciona tu especialidad</option>
               {specialties.map((specialty) => (
@@ -448,44 +305,16 @@ const ProfessionalRegisterPage = () => {
             </select>
           </div>
 
-          {/* ✅ AÑADIDO: Modalidad de servicios ofrecidos */}
-          <div
-            style={{
-              background: "#f7fafc",
-              border: "1px solid #e2e8f0",
-              borderRadius: "12px",
-              padding: "1rem",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "1rem",
-              }}
-            >
-              <h2
-                style={{
-                  margin: 0,
-                  fontSize: "1.1rem",
-                  color: "#2d3748",
-                }}
-              >
+          {/* Servicios que ofreces */}
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 mb-4 sm:mb-6">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800 m-0">
                 Servicios que ofreces
               </h2>
               <button
                 type="button"
                 onClick={addService}
-                style={{
-                  background: "#667eea",
-                  color: "white",
-                  border: "none",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                }}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white border-0 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg cursor-pointer font-semibold text-sm sm:text-base transition-colors whitespace-nowrap"
               >
                 + Agregar servicio
               </button>
@@ -494,40 +323,18 @@ const ProfessionalRegisterPage = () => {
             {services.map((service, index) => (
               <div
                 key={`service-${index}`}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "1rem",
-                  marginBottom: "1rem",
-                  padding: "1rem",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: "10px",
-                  background: "white",
-                }}
+                className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6 p-4 sm:p-5 border border-gray-200 rounded-lg bg-white"
               >
-                <div style={{ gridColumn: "1 / -1" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    <strong style={{ color: "#2d3748" }}>
+                <div className="sm:col-span-2">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3 sm:mb-4">
+                    <strong className="text-gray-800 text-sm sm:text-base">
                       Servicio {index + 1}
                     </strong>
                     {services.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeService(index)}
-                        style={{
-                          background: "transparent",
-                          color: "#e53e3e",
-                          border: "none",
-                          cursor: "pointer",
-                          fontWeight: "700",
-                        }}
+                        className="bg-transparent text-red-600 border-0 cursor-pointer font-bold text-sm hover:text-red-700 transition-colors"
                       >
                         Eliminar
                       </button>
@@ -536,7 +343,7 @@ const ProfessionalRegisterPage = () => {
                 </div>
 
                 <div>
-                  <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                  <label className="block mb-2 text-gray-700 text-sm font-medium">
                     Nombre del servicio
                   </label>
                   <input
@@ -546,19 +353,13 @@ const ProfessionalRegisterPage = () => {
                       updateServiceField(index, "name", e.target.value)
                     }
                     required
-                    style={{
-                      width: "100%",
-                      padding: "0.75rem",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                    }}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none transition-colors focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                     placeholder="Ej: Corte clásico"
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                  <label className="block mb-2 text-gray-700 text-sm font-medium">
                     Categoría
                   </label>
                   <select
@@ -567,14 +368,7 @@ const ProfessionalRegisterPage = () => {
                       updateServiceField(index, "category", e.target.value)
                     }
                     required
-                    style={{
-                      width: "100%",
-                      padding: "0.75rem",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                      background: "white",
-                    }}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none transition-colors focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 bg-white"
                   >
                     <option value="">Selecciona categoría</option>
                     {specialties.map((specialty) => (
@@ -586,7 +380,7 @@ const ProfessionalRegisterPage = () => {
                 </div>
 
                 <div>
-                  <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                  <label className="block mb-2 text-gray-700 text-sm font-medium">
                     Precio
                   </label>
                   <input
@@ -597,19 +391,13 @@ const ProfessionalRegisterPage = () => {
                       updateServiceField(index, "price", e.target.value)
                     }
                     required
-                    style={{
-                      width: "100%",
-                      padding: "0.75rem",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                    }}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none transition-colors focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                     placeholder="Ej: 4500"
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                  <label className="block mb-2 text-gray-700 text-sm font-medium">
                     Duración (minutos)
                   </label>
                   <input
@@ -620,19 +408,13 @@ const ProfessionalRegisterPage = () => {
                       updateServiceField(index, "duration", e.target.value)
                     }
                     required
-                    style={{
-                      width: "100%",
-                      padding: "0.75rem",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                    }}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none transition-colors focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
                     placeholder="Ej: 45"
                   />
                 </div>
 
-                <div style={{ gridColumn: "1 / -1" }}>
-                  <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                <div className="sm:col-span-2">
+                  <label className="block mb-2 text-gray-700 text-sm font-medium">
                     Descripción
                   </label>
                   <textarea
@@ -642,14 +424,7 @@ const ProfessionalRegisterPage = () => {
                     }
                     required
                     rows={3}
-                    style={{
-                      width: "100%",
-                      padding: "0.75rem",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                      resize: "vertical",
-                    }}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none transition-colors focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 resize-vertical"
                     placeholder="Describe brevemente este servicio"
                   />
                 </div>
@@ -657,16 +432,9 @@ const ProfessionalRegisterPage = () => {
             ))}
           </div>
 
-          {/* ✅ AÑADIDO: El componente de mapa con buscador */}
+          {/* Ubicación */}
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Busca y selecciona la dirección de tu local
             </label>
             <LocationPickerWithSearch
@@ -682,19 +450,9 @@ const ProfessionalRegisterPage = () => {
             />
           </div>
 
-          {/* ✅ AÑADIDO: Confirmación visual de la dirección seleccionada */}
+          {/* Confirmación de ubicación */}
           {locations.length > 0 && (
-            <div
-              style={{
-                background: "#e6fffa",
-                border: "1px solid #b2f5ea",
-                color: "#237a6b",
-                padding: "0.75rem",
-                borderRadius: "8px",
-                fontSize: "0.9rem",
-                textAlign: "center",
-              }}
-            >
+            <div className="bg-teal-50 border border-teal-300 text-teal-800 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-xs sm:text-sm text-center">
               <strong>Ubicación seleccionada:</strong> {locations[0].address}
             </div>
           )}
@@ -702,52 +460,26 @@ const ProfessionalRegisterPage = () => {
           <button
             type="submit"
             disabled={loading}
-            style={{
-              background: loading ? "#a0aec0" : "#667eea",
-              color: "white",
-              border: "none",
-              padding: "0.875rem",
-              borderRadius: "8px",
-              fontSize: "1rem",
-              fontWeight: "bold",
-              cursor: loading ? "not-allowed" : "pointer",
-              marginTop: "1rem",
-              transition: "background-color 0.2s",
-            }}
-            onMouseOver={(e) =>
-              !loading &&
-              ((e.target as HTMLButtonElement).style.backgroundColor =
-                "#5a67d8")
-            }
-            onMouseOut={(e) =>
-              !loading &&
-              ((e.target as HTMLButtonElement).style.backgroundColor =
-                "#667eea")
-            }
+            className={`w-full px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-white transition-colors duration-200 text-sm sm:text-base ${
+              loading 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-indigo-600 hover:bg-indigo-700 cursor-pointer'
+            }`}
           >
             {loading ? "Creando cuenta..." : "Crear cuenta profesional"}
           </button>
         </form>
       </div>
 
+      {/* Right Side - Image (hidden on mobile and tablet) */}
       <div
+        className="hidden lg:flex lg:flex-1 relative bg-cover bg-center"
         style={{
-          flex: 1,
           backgroundImage:
             'url("https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          position: "relative",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: "0",
-            background:
-              "linear-gradient(45deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2))",
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20" />
       </div>
     </div>
   );

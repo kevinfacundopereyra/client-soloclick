@@ -372,31 +372,13 @@ const BookingConfirmation: React.FC = () => {
 
   if (!bookingData) {
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#f8f9fa",
-        }}
-      >
-        <div
-          style={{ fontSize: "1.2rem", marginBottom: "1rem", color: "#4a5568" }}
-        >
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <div className="text-lg mb-4 text-gray-700">
           No hay datos de reserva
         </div>
         <button
           onClick={() => navigate("/")}
-          style={{
-            background: "#667eea",
-            border: "none",
-            color: "white",
-            padding: "0.75rem 1.5rem",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
+          className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg cursor-pointer transition"
         >
           Volver al inicio
         </button>
@@ -405,91 +387,37 @@ const BookingConfirmation: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#f8f9fa",
-        padding: "1rem",
-      }}
-    >
+    <div className="min-h-screen bg-gray-50 px-4 sm:px-6">
       {/* Header */}
-      <div
-        style={{
-          maxWidth: "800px",
-          margin: "0 auto",
-          marginBottom: "2rem",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginBottom: "1rem",
-          }}
-        >
+      <div className="max-w-5xl mx-auto mb-6 sm:mb-8">
+        <div className="flex items-center mb-4 sm:mb-6">
           <button
             onClick={() => navigate(`/reservar/horario/${id}`)}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: "1.5rem",
-              cursor: "pointer",
-              marginRight: "1rem",
-              color: "#4a5568",
-            }}
+            className="text-2xl bg-none border-none cursor-pointer mr-4 text-gray-600 hover:text-gray-800"
           >
             ←
           </button>
-          <div style={{ fontSize: "0.9rem", color: "#667eea" }}>
+          <div className="text-xs sm:text-sm text-indigo-500">
             Servicios &gt; Hora &gt; Confirmar
           </div>
           <button
             onClick={() => navigate(`/profesional/${id}`)}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: "1.5rem",
-              cursor: "pointer",
-              marginLeft: "auto",
-              color: "#4a5568",
-            }}
+            className="text-2xl bg-none border-none cursor-pointer ml-auto text-gray-600 hover:text-gray-800"
           >
             ✕
           </button>
         </div>
 
-        <h1
-          style={{
-            fontSize: "2rem",
-            fontWeight: "bold",
-            color: "#2d3a4a",
-            margin: 0,
-          }}
-        >
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 m-0">
           Revisar y confirmar
         </h1>
       </div>
 
-      <div
-        style={{
-          maxWidth: "800px",
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "1fr 300px",
-          gap: "2rem",
-        }}
-      >
+      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         {/* Main Content */}
-        <div>
+        <div className="lg:col-span-2">
           {/* Payment Method */}
-          <div
-            style={{
-              background: "white",
-              borderRadius: "8px",
-              padding: "1.5rem",
-              marginBottom: "1.5rem",
-            }}
-          >
+          <div className="bg-white rounded-lg p-4 sm:p-6 mb-6">
             <h2
               style={{
                 fontSize: "1.3rem",
@@ -574,6 +502,7 @@ const BookingConfirmation: React.FC = () => {
                       <div
                         style={{
                           display: "flex",
+                          flexDirection: "row",
                           alignItems: "center",
                           gap: "0.75rem",
                           flex: 1,
@@ -612,7 +541,7 @@ const BookingConfirmation: React.FC = () => {
                         color: "white",
                         padding: "0.25rem 0.5rem",
                         borderRadius: "12px",
-                        fontSize: "0.75rem",
+                        fontSize: "0.7rem",
                         fontWeight: "500",
                       }}
                     >
@@ -660,46 +589,11 @@ const BookingConfirmation: React.FC = () => {
               >
                 + Agregar tarjeta de crédito
               </button>
-
-              {/* Save Payment Method Checkbox */}
-              {showPaymentModal && (
-                <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <input
-                    type="checkbox"
-                    id="savePaymentCheckbox"
-                    checked={savePaymentMethod}
-                    onChange={(e) => setSavePaymentMethod(e.target.checked)}
-                    style={{
-                      width: "18px",
-                      height: "18px",
-                      cursor: "pointer",
-                    }}
-                  />
-                  <label
-                    htmlFor="savePaymentCheckbox"
-                    style={{
-                      fontSize: "0.95rem",
-                      color: "#4a5568",
-                      cursor: "pointer",
-                      userSelect: "none",
-                    }}
-                  >
-                    Guardar este método de pago para futuras compras
-                  </label>
-                </div>
-              )}
             </div>
           </div>
 
           {/* Cancellation Policy */}
-          <div
-            style={{
-              background: "white",
-              borderRadius: "8px",
-              padding: "1.5rem",
-              marginBottom: "1.5rem",
-            }}
-          >
+          <div className="bg-white rounded-lg p-4 sm:p-6 mb-6">
             <h2
               style={{
                 fontSize: "1.3rem",
@@ -722,13 +616,7 @@ const BookingConfirmation: React.FC = () => {
           </div>
 
           {/* Booking Notes */}
-          <div
-            style={{
-              background: "white",
-              borderRadius: "8px",
-              padding: "1.5rem",
-            }}
-          >
+          <div className="bg-white rounded-lg p-4 sm:p-6">
             <h2
               style={{
                 fontSize: "1.3rem",
@@ -760,164 +648,76 @@ const BookingConfirmation: React.FC = () => {
         </div>
 
         {/* Summary Sidebar */}
-        <div
-          style={{
-            background: "white",
-            borderRadius: "8px",
-            padding: "1.5rem",
-            height: "fit-content",
-            position: "sticky",
-            top: "1rem",
-          }}
-        >
+        <div className="lg:col-span-1 bg-white rounded-lg p-4 sm:p-6 h-fit sticky top-4">
           {/* Professional Info */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "1.5rem",
-            }}
-          >
-            <div
-              style={{
-                width: "60px",
-                height: "60px",
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "white",
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginRight: "1rem",
-              }}
-            >
+          <div className="flex items-center mb-4 sm:mb-6">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl sm:text-2xl font-bold mr-4 flex-shrink-0">
               {bookingData.professional.name.charAt(0).toUpperCase()}
             </div>
-            <div>
-              <div style={{ fontWeight: "600", color: "#2d3a4a" }}>
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-gray-800 leading-tight">
                 {bookingData.professional.name}
               </div>
-              <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
-                Padre Vázquez 1440, {bookingData.professional.city}
+              <div className="text-xs sm:text-sm text-gray-600">
+                {bookingData.professional.city}
               </div>
             </div>
           </div>
 
           {/* Date and Time */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              marginBottom: "1rem",
-              paddingBottom: "1rem",
-              borderBottom: "1px solid #f0f0f0",
-            }}
-          >
-            <span style={{ fontSize: "1.2rem" }}>📅</span>
-            <div>
-              <div style={{ color: "#2d3a4a" }}>
+          <div className="flex items-start gap-2 mb-4 pb-4 border-b border-gray-100">
+            <span className="text-lg flex-shrink-0">📅</span>
+            <div className="min-w-0">
+              <div className="text-gray-800">
                 {formatDate(bookingData.date)}
               </div>
-              <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
+              <div className="text-xs sm:text-sm text-gray-600">
                 🕐 {bookingData.time}-
                 {calculateEndTime(bookingData.time, bookingData.totalDuration)}{" "}
-                ({bookingData.totalDuration} min de duración)
+                ({bookingData.totalDuration} min)
               </div>
             </div>
           </div>
 
           {/* Selected Services */}
           {bookingData.services.map((service) => (
-            <div
-              key={service.id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "1rem",
-                paddingBottom: "1rem",
-                borderBottom: "1px solid #f0f0f0",
-              }}
-            >
-              <div>
-                <div style={{ fontWeight: "500", color: "#2d3a4a" }}>
+            <div key={service.id} className="flex justify-between items-start gap-2 mb-4 pb-4 border-b border-gray-100 last:border-b-0">
+              <div className="flex-1 min-w-0">
+                <div className="font-medium text-gray-800">
                   {service.name}
                 </div>
-                <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
-                  {service.duration} min con cualquier profesional
+                <div className="text-xs sm:text-sm text-gray-600">
+                  {service.duration} min
                 </div>
               </div>
-              <div style={{ fontWeight: "600", color: "#2d3a4a" }}>
+              <div className="font-semibold text-gray-800 flex-shrink-0">
                 {service.price} ARS
               </div>
             </div>
           ))}
 
           {/* Subtotal */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "0.5rem",
-              color: "#4a5568",
-            }}
-          >
+          <div className="flex justify-between items-center mb-2 text-gray-600">
             <span>Subtotal</span>
             <span>{bookingData.totalPrice} ARS</span>
           </div>
 
           {/* Total */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-              color: "#2d3a4a",
-              marginBottom: "0.5rem",
-            }}
-          >
+          <div className="flex justify-between items-center text-base sm:text-lg font-bold text-gray-800 mb-2">
             <span>Total</span>
             <span>{bookingData.totalPrice} ARS</span>
           </div>
 
           {/* Payment Info */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              fontSize: "0.9rem",
-              color: "#22c55e",
-              fontWeight: "600",
-              marginBottom: "1.5rem",
-            }}
-          >
+          <div className="flex justify-between items-center text-xs sm:text-sm text-green-600 font-semibold mb-4 sm:mb-6">
             <span>Pagar ahora</span>
             <span>0 ARS</span>
           </div>
 
-
-
           {/* Confirm Button */}
           <button
             onClick={handleConfirm}
-            style={{
-              width: "100%",
-              background: "#2d3a4a",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              padding: "1rem",
-              fontSize: "1rem",
-              fontWeight: "600",
-              cursor: "pointer",
-            }}
+            className="w-full bg-gray-800 text-white border-none rounded-lg p-3 sm:p-4 text-base font-semibold cursor-pointer hover:bg-gray-900 transition"
           >
             Confirmar
           </button>
@@ -927,76 +727,30 @@ const BookingConfirmation: React.FC = () => {
       {/* Payment Modal */}
       {showPaymentModal && (
         <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
           onClick={() => setShowPaymentModal(false)}
         >
           <div
-            style={{
-              background: "white",
-              borderRadius: "12px",
-              padding: "2rem",
-              maxWidth: "500px",
-              width: "90%",
-              boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
-            }}
+            className="bg-white rounded-xl p-6 sm:p-8 max-w-sm w-full shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "1.5rem",
-              }}
-            >
-              <h2
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: "700",
-                  color: "#2d3a4a",
-                  margin: 0,
-                }}
-              >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 m-0">
                 Agregar tarjeta de crédito
               </h2>
               <button
                 onClick={() => setShowPaymentModal(false)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  fontSize: "1.5rem",
-                  cursor: "pointer",
-                  color: "#4a5568",
-                }}
+                className="bg-none border-none text-2xl cursor-pointer text-gray-600 hover:text-gray-800"
               >
                 ✕
               </button>
             </div>
 
             {/* Payment Form */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div className="flex flex-col gap-4">
               {/* Card Number */}
               <div>
-                <label
-                  style={{
-                    display: "block",
-                    fontSize: "0.9rem",
-                    fontWeight: "600",
-                    color: "#2d3a4a",
-                    marginBottom: "0.5rem",
-                  }}
-                >
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   Número de tarjeta
                 </label>
                 <input
@@ -1010,30 +764,14 @@ const BookingConfirmation: React.FC = () => {
                       cardNumber: cleaned,
                     });
                   }}
-                  style={{
-                    width: "100%",
-                    padding: "0.75rem",
-                    border: "1px solid #e0e0e0",
-                    borderRadius: "8px",
-                    fontSize: "1rem",
-                    fontFamily: "monospace",
-                    boxSizing: "border-box",
-                  }}
+                  className="w-full p-3 border border-gray-300 rounded-lg text-base font-mono"
                   maxLength={19}
                 />
               </div>
 
               {/* Cardholder Name */}
               <div>
-                <label
-                  style={{
-                    display: "block",
-                    fontSize: "0.9rem",
-                    fontWeight: "600",
-                    color: "#2d3a4a",
-                    marginBottom: "0.5rem",
-                  }}
-                >
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   Nombre del titular
                 </label>
                 <input
@@ -1046,29 +784,14 @@ const BookingConfirmation: React.FC = () => {
                       cardholderName: e.target.value,
                     })
                   }
-                  style={{
-                    width: "100%",
-                    padding: "0.75rem",
-                    border: "1px solid #e0e0e0",
-                    borderRadius: "8px",
-                    fontSize: "1rem",
-                    boxSizing: "border-box",
-                  }}
+                  className="w-full p-3 border border-gray-300 rounded-lg text-base"
                 />
               </div>
 
               {/* Expiry Date and CVV */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "0.9rem",
-                      fontWeight: "600",
-                      color: "#2d3a4a",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
                     Expiración
                   </label>
                   <input
@@ -1082,29 +805,13 @@ const BookingConfirmation: React.FC = () => {
                         expiryDate: cleaned,
                       });
                     }}
-                    style={{
-                      width: "100%",
-                      padding: "0.75rem",
-                      border: "1px solid #e0e0e0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                      fontFamily: "monospace",
-                      boxSizing: "border-box",
-                    }}
+                    className="w-full p-3 border border-gray-300 rounded-lg text-base font-mono"
                     maxLength={5}
                   />
                 </div>
 
                 <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "0.9rem",
-                      fontWeight: "600",
-                      color: "#2d3a4a",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
                     CVV
                   </label>
                   <input
@@ -1118,108 +825,50 @@ const BookingConfirmation: React.FC = () => {
                         cvv: cleaned,
                       });
                     }}
-                    style={{
-                      width: "100%",
-                      padding: "0.75rem",
-                      border: "1px solid #e0e0e0",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                      fontFamily: "monospace",
-                      boxSizing: "border-box",
-                    }}
+                    className="w-full p-3 border border-gray-300 rounded-lg text-base font-mono"
                     maxLength={3}
                   />
                 </div>
               </div>
 
               {/* Save Payment Method Checkbox */}
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem" }}>
+              <div className="flex items-center gap-2 mt-2">
                 <input
                   type="checkbox"
                   id="savePaymentModal"
                   checked={savePaymentMethod}
                   onChange={(e) => setSavePaymentMethod(e.target.checked)}
-                  style={{
-                    width: "18px",
-                    height: "18px",
-                    cursor: "pointer",
-                  }}
+                  className="w-5 h-5 cursor-pointer"
                 />
                 <label
                   htmlFor="savePaymentModal"
-                  style={{
-                    fontSize: "0.95rem",
-                    color: "#4a5568",
-                    cursor: "pointer",
-                    userSelect: "none",
-                  }}
+                  className="text-sm text-gray-600 cursor-pointer select-none"
                 >
                   Guardar este método de pago
                 </label>
               </div>
 
               {/* Info Text */}
-              <div
-                style={{
-                  background: "#f0f4ff",
-                  padding: "0.75rem",
-                  borderRadius: "8px",
-                  fontSize: "0.85rem",
-                  color: "#4a5568",
-                  marginTop: "0.5rem",
-                }}
-              >
+              <div className="bg-blue-50 p-3 rounded-lg text-xs text-gray-600 mt-2">
                 ℹ️ Esto es un ejemplo. No usaremos datos reales de tarjetas.
               </div>
 
               {/* Action Buttons */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1rem" }}>
+              <div className="grid grid-cols-2 gap-4 mt-4">
                 <button
                   onClick={() => setShowPaymentModal(false)}
-                  style={{
-                    padding: "0.75rem 1rem",
-                    border: "1px solid #e0e0e0",
-                    borderRadius: "8px",
-                    background: "white",
-                    color: "#4a5568",
-                    fontSize: "1rem",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseOver={(e) => {
-                    (e.target as HTMLButtonElement).style.background = "#f8f9fa";
-                  }}
-                  onMouseOut={(e) => {
-                    (e.target as HTMLButtonElement).style.background = "white";
-                  }}
+                  className="py-2 px-4 border border-gray-300 rounded-lg bg-white text-gray-600 text-base font-semibold cursor-pointer transition hover:bg-gray-50"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={handleSavePaymentMethod}
                   disabled={savingPayment}
-                  style={{
-                    padding: "0.75rem 1rem",
-                    border: "none",
-                    borderRadius: "8px",
-                    background: savePaymentMethod ? "#667eea" : "#ccc",
-                    color: "white",
-                    fontSize: "1rem",
-                    fontWeight: "600",
-                    cursor: savePaymentMethod ? "pointer" : "not-allowed",
-                    opacity: savingPayment ? 0.7 : 1,
-                  }}
-                  onMouseOver={(e) => {
-                    if (savePaymentMethod && !savingPayment) {
-                      (e.target as HTMLButtonElement).style.background = "#5568d3";
-                    }
-                  }}
-                  onMouseOut={(e) => {
-                    if (savePaymentMethod && !savingPayment) {
-                      (e.target as HTMLButtonElement).style.background = "#667eea";
-                    }
-                  }}
+                  className={`py-2 px-4 border-none rounded-lg text-white text-base font-semibold transition ${
+                    savePaymentMethod
+                      ? "bg-indigo-500 hover:bg-indigo-600 cursor-pointer"
+                      : "bg-gray-300 cursor-not-allowed"
+                  } ${savingPayment ? "opacity-70" : ""}`}
                 >
                   {savingPayment ? "Guardando..." : savePaymentMethod ? "Guardar" : "Usar sin guardar"}
                 </button>

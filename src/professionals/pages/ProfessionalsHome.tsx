@@ -1,4 +1,4 @@
-﻿import { useSearchParams, Link } from "react-router-dom";
+﻿﻿import { useSearchParams, Link } from "react-router-dom";
 import { useProfessionals } from "../hooks/useProfessionals";
 import ProfessionalCard from "../components/ProfessionalCard";
 import { useFavorites } from "../hooks/useFavorites";
@@ -29,17 +29,8 @@ function ProfessionalsHome() {
 
   if (loading) {
     return (
-      <div
-        style={{
-          padding: "2rem",
-          textAlign: "center",
-          minHeight: "50vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div style={{ color: "white", fontSize: "1.2rem" }}>
+      <div className="px-4 sm:px-6 py-8 sm:py-12 min-h-screen flex items-center justify-center">
+        <div className="text-white text-base sm:text-lg">
           Cargando profesionales...
         </div>
       </div>
@@ -48,43 +39,16 @@ function ProfessionalsHome() {
 
   if (error) {
     return (
-      <div
-        style={{
-          padding: "2rem",
-          textAlign: "center",
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        }}
-      >
-        <div
-          style={{
-            color: "white",
-            fontSize: "1.2rem",
-            background: "rgba(255, 255, 255, 0.1)",
-            padding: "2rem",
-            borderRadius: "12px",
-            textAlign: "center",
-          }}
-        >
-          <h2 style={{ marginBottom: "1rem", color: "#ff6b6b" }}>⚠️ Error</h2>
-          <p>
+      <div className="px-4 sm:px-6 py-8 sm:py-12 min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-purple-800">
+        <div className="bg-white/10 text-white px-6 sm:px-8 py-6 sm:py-8 rounded-2xl text-center max-w-md">
+          <h2 className="text-xl sm:text-2xl font-bold text-red-400 mb-4">⚠️ Error</h2>
+          <p className="text-sm sm:text-base mb-4">
             Error cargando profesionales:{" "}
             {error?.toString() || "Error desconocido"}
           </p>
           <button
             onClick={() => window.location.reload()}
-            style={{
-              background: "rgba(255, 255, 255, 0.2)",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
-              color: "white",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "8px",
-              cursor: "pointer",
-              marginTop: "1rem",
-            }}
+            className="bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition cursor-pointer text-sm sm:text-base"
           >
             🔄 Reintentar
           </button>
@@ -197,14 +161,14 @@ const getFilteredProfessionals = () => {
     });
   }; */
 
-  const filteredProfessionals = getFilteredProfessionals();
-
   const sortByRating = (list: Professional[], desc = true) =>
     [...list].sort((a, b) =>
       desc
         ? (b.rating ?? 0) - (a.rating ?? 0)
         : (a.rating ?? 0) - (b.rating ?? 0)
     );
+
+  const filteredProfessionals = getFilteredProfessionals();
 
   const favoriteProfessionals: Professional[] = [];
   const allProfessionals: Professional[] = [];
@@ -223,12 +187,13 @@ const getFilteredProfessionals = () => {
       : sort === "rating_desc"
       ? sortByRating(favoriteProfessionals, true)
       : favoriteProfessionals;
-/*   const sortedProfessionals =
+
+  const sortedProfessionals =
     sort === "rating_asc"
-      ? sortByRating(allProfessionals, false)
+      ? sortByRating(filteredProfessionals, false)
       : sort === "rating_desc"
-      ? sortByRating(allProfessionals, true)
-      : allProfessionals; */
+      ? sortByRating(filteredProfessionals, true)
+      : filteredProfessionals;
 
   const getPageTitle = () => {
     const activeFilters = Object.entries(filters).filter(([_, value]) => value);
@@ -249,26 +214,13 @@ const getFilteredProfessionals = () => {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        padding: "2rem 0",
-      }}
-    >
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 2rem" }}>
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <h1
-            style={{
-              fontSize: "2.5rem",
-              fontWeight: "bold",
-              color: "white",
-              marginBottom: "1rem",
-            }}
-          >
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-purple-800 px-4 sm:px-6 py-6 sm:py-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-4">
             {getPageTitle()}
           </h1>
-          <p style={{ color: "rgba(255, 255, 255, 0.8)", fontSize: "1.1rem" }}>
+          <p className="text-white/80 text-sm sm:text-base">
             {filteredProfessionals.length} profesionales encontrados
           </p>
         </div>
@@ -276,63 +228,33 @@ const getFilteredProfessionals = () => {
        <FilterBar isHomePage={false} />
 
         {locationFilter.lat && locationFilter.lng && (
-          <div
-            style={{
-              marginTop: "2rem",
-              marginBottom: "3rem",
-              borderRadius: "12px",
-              overflow: "hidden",
-              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            {/* ✅ MODIFICADO: Usamos el componente correcto que espera una lista. */}
+          <div className="mt-6 sm:mt-8 mb-8 sm:mb-12 rounded-2xl overflow-hidden shadow-xl">
             {filteredProfessionals.length > 0 && (
               <ProfessionalsListMap
-                  professionals={filteredProfessionals}
-                  selectedLocation={locationFilter}
-                />
+                professionals={filteredProfessionals}
+                selectedLocation={locationFilter}
+              />
             )}
-        </div>
+          </div>
         )}
 
         {filteredProfessionals.length === 0 && (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "3rem",
-              background: "rgba(255, 255, 255, 0.1)",
-              borderRadius: "12px",
-              marginBottom: "2rem",
-            }}
-          >
-            <h3 style={{ color: "white", marginBottom: "1rem" }}>
+          <div className="text-center px-4 sm:px-6 py-8 sm:py-12 bg-white/10 rounded-2xl mb-6 sm:mb-8">
+            <h3 className="text-white text-lg sm:text-xl font-semibold mb-2 sm:mb-4">
               No se encontraron profesionales
             </h3>
-            <p style={{ color: "rgba(255, 255, 255, 0.8)" }}>
+            <p className="text-white/80 text-sm sm:text-base">
               Intenta ajustar los filtros para encontrar más resultados
             </p>
           </div>
         )}
 
         {favoriteProfessionals.length > 0 && (
-          <div style={{ marginBottom: "3rem" }}>
-            <h2
-              style={{
-                fontSize: "1.8rem",
-                fontWeight: "bold",
-                color: "white",
-                marginBottom: "1.5rem",
-              }}
-            >
+          <div className="mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6">
               ⭐ Tus Favoritos
             </h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-                gap: "1.5rem",
-              }}
-            >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {sortedFavorites.map((professional) => (
                 <ProfessionalCard
                   key={professional._id || professional.id}
@@ -345,24 +267,11 @@ const getFilteredProfessionals = () => {
 
         {filteredProfessionals.length > 0 && (
           <div>
-            <h2
-              style={{
-                fontSize: "1.8rem",
-                fontWeight: "bold",
-                color: "white",
-                marginBottom: "1.5rem",
-              }}
-            >
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6">
               {getSectionTitle()}
             </h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-                gap: "1.5rem",
-              }}
-            >
-              {filteredProfessionals.map((professional) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {sortedProfessionals.map((professional) => (
                 <ProfessionalCard
                   key={professional._id || professional.id}
                   professional={professional}
@@ -372,18 +281,10 @@ const getFilteredProfessionals = () => {
           </div>
         )}
 
-        <div style={{ textAlign: "center", marginTop: "3rem" }}>
+        <div className="text-center mt-8 sm:mt-12">
           <Link
             to="/"
-            style={{
-              background: "rgba(255, 255, 255, 0.2)",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
-              color: "white",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "25px",
-              textDecoration: "none",
-              fontSize: "1rem",
-            }}
+            className="inline-block bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full no-underline text-sm sm:text-base font-medium transition"
           >
             ← Volver al inicio
           </Link>

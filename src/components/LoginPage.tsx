@@ -3,87 +3,38 @@ import { useNavigate } from "react-router-dom";
 const LoginPage = () => {
   const navigate = useNavigate();
   return (
-    <div style={{ 
-      display: 'flex', 
-      minHeight: '100vh',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    }}>
+    <div className="flex min-h-screen flex-col lg:flex-row font-system">
       {/* Left Side - Login Options */}
-      <div style={{
-        flex: 1,
-        padding: '2rem',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        maxWidth: '500px',
-        margin: '0 auto'
-      }}>
+      <div className="flex-1 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 flex flex-col justify-center w-full max-w-2xl lg:max-w-none mx-auto lg:mx-0">
         {/* Header with back arrow */}
         <div 
           onClick={() => navigate('/')}
-          style={{
-            position: 'absolute',
-            top: '2rem',
-            left: '2rem',
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-            color: '#4a5568'
-          }}
+          className="absolute top-6 sm:top-8 left-4 sm:left-6 lg:left-8 flex items-center cursor-pointer text-gray-500 hover:text-gray-700"
         >
-          <span style={{ fontSize: '1.5rem', marginRight: '0.5rem' }}>←</span>
+          <span className="text-xl sm:text-2xl mr-2">←</span>
         </div>
 
         {/* Title */}
-        <h1 style={{
-          fontSize: '2rem',
-          fontWeight: 'bold',
-          color: '#2d3748',
-          marginBottom: '3rem',
-          textAlign: 'center'
-        }}>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-8 sm:mb-10 lg:mb-12 text-center">
           Regístrate/inicia sesión
         </h1>
 
         {/* Login Options */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="flex flex-col gap-4 sm:gap-6">
           {/* Client Option */}
           <div 
             onClick={() => navigate('/register/user')}
-            style={{
-              border: '1px solid #e2e8f0',
-              borderRadius: '12px',
-              padding: '1.5rem',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-            }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
+            className="border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-indigo-400 bg-white">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
               <div>
-                <h3 style={{
-                  fontSize: '1.2rem',
-                  fontWeight: 'bold',
-                  color: '#2d3748',
-                  margin: '0 0 0.5rem 0'
-                }}>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1 sm:mb-2">
                   Soloclick para clientes
                 </h3>
-                <p style={{
-                  color: '#718096',
-                  margin: 0,
-                  fontSize: '0.95rem'
-                }}>
+                <p className="text-gray-500 text-sm sm:text-base">
                   Reserva en centros de belleza y spas cerca de ti
                 </p>
               </div>
-              <span style={{ 
-                fontSize: '1.5rem', 
-                color: '#667eea' 
-              }}>
+              <span className="text-xl sm:text-2xl text-indigo-600 flex-shrink-0">
                 →
               </span>
             </div>
@@ -92,39 +43,17 @@ const LoginPage = () => {
           {/* Professional Option */}
           <div 
             onClick={() => navigate('/register/professional')}
-            style={{
-              border: '1px solid #e2e8f0',
-              borderRadius: '12px',
-              padding: '1.5rem',
-              cursor: 'pointer',
-              transition: 'all 0.2s'
-            }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
+            className="border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-indigo-400 bg-white">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
               <div>
-                <h3 style={{
-                  fontSize: '1.2rem',
-                  fontWeight: 'bold',
-                  color: '#2d3748',
-                  margin: '0 0 0.5rem 0'
-                }}>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1 sm:mb-2">
                   Soloclick para profesionales
                 </h3>
-                <p style={{
-                  color: '#718096',
-                  margin: 0,
-                  fontSize: '0.95rem'
-                }}>
+                <p className="text-gray-500 text-sm sm:text-base">
                   Gestiona tu negocio y hazlo crecer
                 </p>
               </div>
-              <span style={{ 
-                fontSize: '1.5rem', 
-                color: '#667eea' 
-              }}>
+              <span className="text-xl sm:text-2xl text-indigo-600 flex-shrink-0">
                 →
               </span>
             </div>
@@ -132,50 +61,26 @@ const LoginPage = () => {
         </div>
 
         {/* Footer */}
-        <div style={{
-          position: 'absolute',
-          bottom: '2rem',
-          left: '2rem',
-          right: '50%',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '1rem'
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1rem',
-            fontSize: '0.9rem',
-            color: '#667eea'
-          }}>
+        <div className="hidden lg:flex absolute bottom-6 sm:bottom-8 left-4 sm:left-6 lg:left-8 flex-col gap-3 sm:gap-4 text-xs sm:text-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-indigo-600">
             <span>🌐 español (ES)</span>
-            <span>❓ Ayuda y servicio al cliente</span>
+            <span className="hidden sm:inline">❓ Ayuda y servicio al cliente</span>
           </div>
-          <div style={{
-            fontSize: '0.8rem',
-            color: '#a0aec0'
-          }}>
-            <a href="#" style={{ color: '#667eea', textDecoration: 'none' }}>
+          <div className="text-gray-400 text-xs">
+            <a href="#" className="text-indigo-600 no-underline hover:underline">
               https://partner.fresha.com/es/signup?app=seller&src=55&utm_source=fresha
             </a>
           </div>
         </div>
       </div>
 
-      {/* Right Side - Image */}
-      <div style={{
-        flex: 1,
-        backgroundImage: 'url("https://www.ole.com.ar/images/2023/12/22/lSQI8IpKE_720x0__1.jpg")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        position: 'relative'
-      }}>
+      {/* Right Side - Image (hidden on mobile and tablet) */}
+      <div className="hidden lg:flex lg:flex-1 relative bg-cover bg-center"
+        style={{
+          backgroundImage: 'url("https://www.ole.com.ar/images/2023/12/22/lSQI8IpKE_720x0__1.jpg")'
+        }}>
         {/* Overlay to make image look more professional */}
-        <div style={{
-          position: 'absolute',
-          inset: '0',
-          background: 'linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1))'
-        }} />
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10" />
       </div>
     </div>
   );

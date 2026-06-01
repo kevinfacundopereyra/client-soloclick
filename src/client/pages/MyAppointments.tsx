@@ -279,18 +279,8 @@ const MyAppointments: React.FC = () => {
 
   if (loading) {
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{ color: "white", fontSize: "1.2rem", textAlign: "center" }}
-        >
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center px-4">
+        <div className="text-white text-base sm:text-lg text-center">
           Cargando tus citas...
         </div>
       </div>
@@ -298,81 +288,37 @@ const MyAppointments: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        padding: "2rem 0",
-      }}
-    >
-      <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "0 2rem" }}>
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-purple-800 px-4 sm:px-6 py-6 sm:py-8">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: "2rem",
-          }}
-        >
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-0 mb-6 sm:mb-8">
+          <div className="w-full">
             <button
               onClick={() => navigate(-1)}
-              style={{
-                background: "rgba(255, 255, 255, 0.2)",
-                border: "1px solid rgba(255, 255, 255, 0.3)",
-                color: "white",
-                padding: "0.5rem 1rem",
-                borderRadius: "6px",
-                cursor: "pointer",
-                fontSize: "0.9rem",
-                marginBottom: "1rem",
-              }}
+              className="bg-white/20 hover:bg-white/30 border border-white/30 text-white px-3 sm:px-4 py-2 rounded text-sm font-medium mb-3 sm:mb-4 transition"
             >
               ← Volver
             </button>
 
-            <h1
-              style={{
-                fontSize: "2.5rem",
-                fontWeight: "bold",
-                margin: "0",
-                color: "white",
-              }}
-            >
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
               Mis Reservas
             </h1>
 
-            <p
-              style={{
-                color: "rgba(255, 255, 255, 0.8)",
-                margin: "0.5rem 0 0 0",
-                fontSize: "1.1rem",
-              }}
-            >
+            <p className="text-white/80 text-sm sm:text-base">
               {appointments.length} citas en total
             </p>
           </div>
 
           <button
             onClick={() => navigate("/")}
-            style={{
-              background: "rgba(255, 255, 255, 0.2)",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
-              color: "white",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "25px",
-              cursor: "pointer",
-              fontSize: "1rem",
-              fontWeight: "500",
-            }}
+            className="w-full sm:w-auto bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-medium text-sm sm:text-base transition"
           >
             + Nueva Reserva
           </button>
         </div>
 
         {/* Filters */}
-        <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}>
+        <div className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8">
           {[
             { key: "all", label: "Todas", count: appointments.length },
             {
@@ -393,20 +339,11 @@ const MyAppointments: React.FC = () => {
             <button
               key={filterOption.key}
               onClick={() => setFilter(filterOption.key as any)}
-              style={{
-                background:
-                  filter === filterOption.key
-                    ? "white"
-                    : "rgba(255, 255, 255, 0.2)",
-                border: "1px solid rgba(255, 255, 255, 0.3)",
-                color: filter === filterOption.key ? "#667eea" : "white",
-                padding: "0.75rem 1.5rem",
-                borderRadius: "25px",
-                cursor: "pointer",
-                fontSize: "1rem",
-                fontWeight: "500",
-                transition: "all 0.2s",
-              }}
+              className={`px-3 sm:px-4 py-2 rounded-full text-sm sm:text-base font-medium transition ${
+                filter === filterOption.key
+                  ? "bg-white text-purple-600"
+                  : "bg-white/20 text-white border border-white/30 hover:bg-white/30"
+              }`}
             >
               {filterOption.label} ({filterOption.count})
             </button>
@@ -415,37 +352,16 @@ const MyAppointments: React.FC = () => {
 
         {/* Error State */}
         {error && (
-          <div
-            style={{
-              background: "rgba(239, 68, 68, 0.1)",
-              border: "1px solid rgba(239, 68, 68, 0.3)",
-              borderRadius: "12px",
-              padding: "2rem",
-              textAlign: "center",
-              marginBottom: "2rem",
-            }}
-          >
-            <h3 style={{ color: "white", margin: "0 0 1rem 0" }}>
+          <div className="bg-red-500/10 border border-red-500/30 rounded-2xl px-4 sm:px-6 py-6 sm:py-8 text-center mb-6 sm:mb-8">
+            <h3 className="text-white text-lg sm:text-xl font-semibold mb-2 sm:mb-4">
               Error al cargar las citas
             </h3>
-            <p
-              style={{
-                color: "rgba(255, 255, 255, 0.8)",
-                margin: "0 0 1.5rem 0",
-              }}
-            >
+            <p className="text-white/80 text-sm sm:text-base mb-4">
               {error}
             </p>
             <button
               onClick={loadMyAppointments}
-              style={{
-                background: "rgba(239, 68, 68, 0.8)",
-                border: "none",
-                color: "white",
-                padding: "0.75rem 1.5rem",
-                borderRadius: "25px",
-                cursor: "pointer",
-              }}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-medium transition text-sm sm:text-base"
             >
               Reintentar
             </button>
@@ -454,36 +370,16 @@ const MyAppointments: React.FC = () => {
 
         {/* Empty State */}
         {!error && filteredAppointments.length === 0 && (
-          <div
-            style={{
-              background: "white",
-              borderRadius: "20px",
-              padding: "4rem 2rem",
-              textAlign: "center",
-              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>📅</div>
-            <h3
-              style={{
-                color: "#2d3748",
-                margin: "0 0 1rem 0",
-                fontSize: "1.5rem",
-              }}
-            >
+          <div className="bg-white rounded-3xl px-6 sm:px-8 py-12 sm:py-16 text-center shadow-xl">
+            <div className="text-4xl sm:text-5xl mb-4">📅</div>
+            <h3 className="text-2xl sm:text-3xl text-gray-800 font-bold mb-2 sm:mb-4">
               {filter === "all"
                 ? "No tienes citas reservadas"
                 : filter === "upcoming"
                 ? "No tienes citas próximas"
                 : "No tienes citas pasadas"}
             </h3>
-            <p
-              style={{
-                color: "#4a5568",
-                margin: "0 0 2rem 0",
-                fontSize: "1.1rem",
-              }}
-            >
+            <p className="text-gray-600 text-base sm:text-lg mb-6 sm:mb-8">
               {filter === "all"
                 ? "Comienza reservando tu primera cita con nuestros profesionales"
                 : filter === "upcoming"
@@ -492,16 +388,7 @@ const MyAppointments: React.FC = () => {
             </p>
             <button
               onClick={() => navigate("/")}
-              style={{
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                border: "none",
-                color: "white",
-                padding: "1rem 2rem",
-                borderRadius: "25px",
-                cursor: "pointer",
-                fontSize: "1.1rem",
-                fontWeight: "600",
-              }}
+              className="bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-full font-semibold text-base sm:text-lg transition"
             >
               {filter === "all" ? "Reservar Primera Cita" : "Nueva Reserva"}
             </button>
