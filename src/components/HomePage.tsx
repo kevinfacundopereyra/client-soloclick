@@ -323,7 +323,7 @@ const HomePage = () => {
         <ProfessionalsSpecialtySection
           specialty="Manicura"
           title="Manicure"
-          maxItems={4}
+          maxItems={3}
           professionals={locationFilteredProfessionals}
           showViewMoreButton={specialtyCounts.Manicura > 4}
           totalSpecialtyCount={specialtyCounts.Manicura}
@@ -331,9 +331,9 @@ const HomePage = () => {
         <ProfessionalsSpecialtySection
           specialty="Peluquería"
           title="Peluquerías"
-          maxItems={4}
+          maxItems={3}
           professionals={locationFilteredProfessionals}
-          showViewMoreButton={specialtyCounts.Peluqueria > 4}
+          showViewMoreButton={specialtyCounts.Peluqueria > 3}
           totalSpecialtyCount={specialtyCounts.Peluqueria}
         />
 
