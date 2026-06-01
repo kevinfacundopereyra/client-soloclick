@@ -1,4 +1,4 @@
-import { useSearchParams, Link } from "react-router-dom";
+﻿import { useSearchParams, Link } from "react-router-dom";
 import { useProfessionals } from "../hooks/useProfessionals";
 import ProfessionalCard from "../components/ProfessionalCard";
 import { useFavorites } from "../hooks/useFavorites";
@@ -20,6 +20,11 @@ function ProfessionalsHome() {
     modality: searchParams.get("modality"),
     city: searchParams.get("city"),
     date: searchParams.get("date"),
+  };
+
+  const locationFilter = {
+    lat: searchParams.get("lat"),
+    lng: searchParams.get("lng"),
   };
 
   if (loading) {
@@ -284,6 +289,7 @@ const getFilteredProfessionals = () => {
             <ProfessionalsListMap professionals={sortedProfessionals} />
           )}
         </div>
+        )}
 
         {filteredProfessionals.length === 0 && (
           <div

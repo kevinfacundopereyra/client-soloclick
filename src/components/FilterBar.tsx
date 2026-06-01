@@ -62,15 +62,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
   const handleFilterChange = (key: string, value: string) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
-
-    if (!isHomePage) {
-      const newSearchParams = new URLSearchParams();
-      Object.entries(newFilters).forEach(([k, v]) => {
-        if (v) newSearchParams.set(k, v);
-      });
-      setSearchParams(newSearchParams);
-      onFiltersChange?.(newFilters);
-    }
   };
 
   const handleSearch = () => {
@@ -84,7 +75,11 @@ const FilterBar: React.FC<FilterBarProps> = ({
       searchParamsString.set("lng", searchParams.get("lng")!);
     }
 
-    navigate(`/professionals?${searchParamsString.toString()}`);
+    if (isHomePage) {
+      navigate(`/professionals?${searchParamsString.toString()}`);
+    } else {
+      setSearchParams(searchParamsString);
+    }
   };
 
   const clearFilters = () => {
@@ -463,6 +458,23 @@ const FilterBar: React.FC<FilterBarProps> = ({
               }}
             >
               Limpiar
+            </button>
+          </div>
+          <div>
+            <button
+              onClick={handleSearch}
+              style={{
+                width: "100%",
+                background: "#6ee7b7",
+                border: "1px solid #5dd3a0",
+                color: "#065f46",
+                padding: "0.75rem",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              Buscar
             </button>
           </div>
         </div>
