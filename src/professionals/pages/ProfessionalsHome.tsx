@@ -275,19 +275,23 @@ const getFilteredProfessionals = () => {
 
        <FilterBar isHomePage={false} />
 
-        <div
-          style={{
-            marginTop: "2rem",
-            marginBottom: "3rem",
-            borderRadius: "12px",
-            overflow: "hidden",
-            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
-          }}
-        >
-          {sortedProfessionals.length > 0 && (
-            // ✅ MODIFICADO: Usamos el componente correcto que espera una lista.
-            <ProfessionalsListMap professionals={sortedProfessionals} />
-          )}
+        {locationFilter.lat && locationFilter.lng && (
+          <div
+            style={{
+              marginTop: "2rem",
+              marginBottom: "3rem",
+              borderRadius: "12px",
+              overflow: "hidden",
+              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+            }}
+          >
+            {/* ✅ MODIFICADO: Usamos el componente correcto que espera una lista. */}
+            {filteredProfessionals.length > 0 && (
+              <ProfessionalsListMap
+                  professionals={filteredProfessionals}
+                  selectedLocation={locationFilter}
+                />
+            )}
         </div>
         )}
 
