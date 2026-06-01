@@ -256,179 +256,63 @@ const PaymentsHistoryPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          color: "white",
-          fontSize: "1.2rem",
-        }}
-      >
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-700 text-white text-lg">
         Cargando historial de pagos...
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        padding: "2rem",
-      }}
-    >
+    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-700 px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          marginBottom: "2rem",
-          color: "white",
-        }}
-      >
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8 text-white">
         <button
           onClick={() => navigate("/profile")}
-          style={{
-            background: "rgba(255, 255, 255, 0.2)",
-            border: "1px solid rgba(255, 255, 255, 0.3)",
-            color: "white",
-            padding: "0.5rem 1rem",
-            borderRadius: "6px",
-            cursor: "pointer",
-            marginRight: "1rem",
-          }}
+          className="bg-white/20 border border-white/30 text-white px-4 py-2 rounded-lg hover:bg-white/30 transition-colors text-sm sm:text-base"
         >
           ← Volver al Perfil
         </button>
-        <h1 style={{ color: "white", margin: 0 }}>💰 Historial de Pagos</h1>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold">💰 Historial de Pagos</h1>
       </div>
 
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <div className="max-w-6xl mx-auto">
         {/* Stats Cards */}
         {stats && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-              gap: "1rem",
-              marginBottom: "2rem",
-            }}
-          >
-            <div
-              style={{
-                background: "rgba(255, 255, 255, 0.95)",
-                padding: "1.5rem",
-                borderRadius: "12px",
-                textAlign: "center",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "2rem",
-                  color: "#10b981",
-                  fontWeight: "bold",
-                }}
-              >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+            <div className="bg-white/95 p-6 rounded-xl shadow-lg text-center">
+              <div className="text-2xl sm:text-3xl font-bold text-emerald-500">
                 {formatCurrency(stats.thisMonth)}
               </div>
-              <div style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-                Ingresos este mes
-              </div>
+              <div className="text-gray-500 text-sm mt-2">Ingresos este mes</div>
             </div>
 
-            <div
-              style={{
-                background: "rgba(255, 255, 255, 0.95)",
-                padding: "1.5rem",
-                borderRadius: "12px",
-                textAlign: "center",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "2rem",
-                  color: "#f59e0b",
-                  fontWeight: "bold",
-                }}
-              >
+            <div className="bg-white/95 p-6 rounded-xl shadow-lg text-center">
+              <div className="text-2xl sm:text-3xl font-bold text-amber-500">
                 {stats.completedPayments}
               </div>
-              <div style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-                Pagos completados
-              </div>
+              <div className="text-gray-500 text-sm mt-2">Pagos completados</div>
             </div>
 
-            <div
-              style={{
-                background: "rgba(255, 255, 255, 0.95)",
-                padding: "1.5rem",
-                borderRadius: "12px",
-                textAlign: "center",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "2rem",
-                  color: "#8b5cf6",
-                  fontWeight: "bold",
-                }}
-              >
+            <div className="bg-white/95 p-6 rounded-xl shadow-lg text-center">
+              <div className="text-2xl sm:text-3xl font-bold text-violet-500">
                 {formatCurrency(stats.averageService)}
               </div>
-              <div style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-                Promedio por servicio
-              </div>
+              <div className="text-gray-500 text-sm mt-2">Promedio por servicio</div>
             </div>
 
-            <div
-              style={{
-                background: "rgba(255, 255, 255, 0.95)",
-                padding: "1.5rem",
-                borderRadius: "12px",
-                textAlign: "center",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "2rem",
-                  color: "#ef4444",
-                  fontWeight: "bold",
-                }}
-              >
+            <div className="bg-white/95 p-6 rounded-xl shadow-lg text-center">
+              <div className="text-2xl sm:text-3xl font-bold text-red-500">
                 {stats.pendingPayments}
               </div>
-              <div style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-                Pagos pendientes
-              </div>
+              <div className="text-gray-500 text-sm mt-2">Pagos pendientes</div>
             </div>
           </div>
         )}
 
         {/* Filters */}
-        <div
-          style={{
-            background: "rgba(255, 255, 255, 0.95)",
-            padding: "1.5rem",
-            borderRadius: "12px",
-            marginBottom: "2rem",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <h3 style={{ margin: "0 0 1rem 0", color: "#2d3748" }}>🔍 Filtros</h3>
-          <div
-            style={{
-              display: "flex",
-              gap: "0.5rem",
-              flexWrap: "wrap",
-            }}
-          >
+        <div className="bg-white/95 p-4 sm:p-6 rounded-xl mb-8 shadow-lg">
+          <h3 className="mb-4 text-slate-800 font-semibold">🔍 Filtros</h3>
+          <div className="flex flex-wrap gap-2 sm:gap-3 mb-4">
             {[
               { key: "all", label: "Todos" },
               { key: "completed", label: "Completados" },
@@ -440,178 +324,94 @@ const PaymentsHistoryPage: React.FC = () => {
               <button
                 key={key}
                 onClick={() => setFilter(key as any)}
-                style={{
-                  background: filter === key ? "#667eea" : "transparent",
-                  color: filter === key ? "white" : "#4a5568",
-                  border: `1px solid ${filter === key ? "#667eea" : "#d1d5db"}`,
-                  padding: "0.5rem 1rem",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  fontSize: "0.9rem",
-                }}
+                className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  filter === key
+                    ? "bg-indigo-600 text-white"
+                    : "bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200"
+                }`}
               >
                 {label}
               </button>
             ))}
           </div>
-          <div
-            style={{
-              marginTop: "0.5rem",
-              fontSize: "0.9rem",
-              color: "#6b7280",
-            }}
-          >
+          <div className="text-gray-500 text-sm">
             Mostrando {filteredPayments.length} de {payments.length} pagos
           </div>
         </div>
 
         {/* Payments List */}
-        <div
-          style={{
-            background: "rgba(255, 255, 255, 0.95)",
-            borderRadius: "12px",
-            overflow: "hidden",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <div
-            style={{
-              background: "#f8f9fa",
-              padding: "1rem 1.5rem",
-              borderBottom: "1px solid #e9ecef",
-              fontWeight: "bold",
-              color: "#2d3748",
-            }}
-          >
+        <div className="bg-white/95 rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-gray-50 px-4 sm:px-6 py-4 border-b border-gray-200 font-bold text-slate-800">
             📋 Historial de Transacciones
           </div>
 
           {filteredPayments.length === 0 ? (
-            <div
-              style={{
-                padding: "3rem",
-                textAlign: "center",
-                color: "#6b7280",
-              }}
-            >
-              <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>💸</div>
+            <div className="p-8 sm:p-12 text-center text-gray-500">
+              <div className="text-5xl mb-4">💸</div>
               <div>No hay pagos para mostrar con los filtros seleccionados</div>
             </div>
           ) : (
-            <div>
+            <div className="divide-y divide-gray-100">
               {filteredPayments.map((payment) => (
                 <div
                   key={payment._id}
-                  style={{
-                    padding: "1.5rem",
-                    borderBottom: "1px solid #f1f5f9",
-                    display: "grid",
-                    gridTemplateColumns: "1fr auto",
-                    gap: "1rem",
-                    alignItems: "center",
-                  }}
+                  className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6"
                 >
-                  <div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.75rem",
-                        marginBottom: "0.5rem",
-                      }}
-                    >
-                      <span style={{ fontSize: "1.5rem" }}>
+                  <div className="lg:col-span-2">
+                    <div className="flex flex-wrap items-start gap-2 sm:gap-3 mb-4">
+                      <span className="text-2xl">
                         {getPaymentIcon(payment.paymentMethod)}
                       </span>
-                      <div>
-                        <div
-                          style={{
-                            fontWeight: "bold",
-                            color: "#2d3748",
-                            fontSize: "1.1rem",
-                          }}
-                        >
+                      <div className="flex-1">
+                        <div className="font-bold text-slate-800 text-base sm:text-lg">
                           {payment.serviceName}
                         </div>
-                        <div style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-                          Cliente:{" "}
-                          {getClientName(payment.clientId, payment.clientName)}
+                        <div className="text-gray-600 text-sm">
+                          Cliente: {getClientName(payment.clientId, payment.clientName)}
                         </div>
                       </div>
                       <span
                         style={{
-                          background: getStatusColor(payment.status),
-                          color: "white",
-                          padding: "0.25rem 0.75rem",
-                          borderRadius: "15px",
-                          fontSize: "0.8rem",
-                          fontWeight: "bold",
+                          backgroundColor: getStatusColor(payment.status),
                         }}
+                        className="text-white px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap"
                       >
                         {getStatusText(payment.status)}
                       </span>
                     </div>
 
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns:
-                          "repeat(auto-fit, minmax(150px, 1fr))",
-                        gap: "1rem",
-                        fontSize: "0.9rem",
-                        color: "#6b7280",
-                      }}
-                    >
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-gray-600 mb-4">
                       <div>
                         <strong>Fecha del servicio:</strong>
-                        <br />
-                        {formatDate(payment.serviceDate)}
+                        <div>{formatDate(payment.serviceDate)}</div>
                       </div>
                       <div>
                         <strong>Fecha de pago:</strong>
-                        <br />
-                        {formatDate(payment.paymentDate)}
+                        <div>{formatDate(payment.paymentDate)}</div>
                       </div>
                       {payment.city && (
                         <div>
                           <strong>Ciudad:</strong>
-                          <br />
-                          {payment.city}
+                          <div>{payment.city}</div>
                         </div>
                       )}
                     </div>
 
                     {payment.notes && (
-                      <div
-                        style={{
-                          marginTop: "0.5rem",
-                          padding: "0.5rem",
-                          background: "#f8f9fa",
-                          borderRadius: "6px",
-                          fontSize: "0.9rem",
-                          color: "#6b7280",
-                        }}
-                      >
+                      <div className="p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
                         💬 {payment.notes}
                       </div>
                     )}
                   </div>
 
-                  <div style={{ textAlign: "right" }}>
-                    <div
-                      style={{
-                        fontSize: "1.3rem",
-                        fontWeight: "bold",
-                        color: "#10b981",
-                        marginBottom: "0.25rem",
-                      }}
-                    >
+                  <div className="text-right lg:border-l lg:border-gray-200 lg:pl-6">
+                    <div className="text-xl sm:text-2xl font-bold text-emerald-500 mb-1">
                       {formatCurrency(payment.netAmount)}
                     </div>
-                    <div style={{ fontSize: "0.8rem", color: "#6b7280" }}>
+                    <div className="text-xs sm:text-sm text-gray-600">
                       Bruto: {formatCurrency(payment.amount)}
                     </div>
-                    <div style={{ fontSize: "0.8rem", color: "#ef4444" }}>
+                    <div className="text-xs sm:text-sm text-red-500">
                       Comisión: -{formatCurrency(payment.commission)}
                     </div>
                   </div>

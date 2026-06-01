@@ -211,198 +211,109 @@ const ServicesManagementPage: React.FC = () => {
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh',
-      backgroundColor: '#f7fafc',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    }}>
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div style={{
-        backgroundColor: 'white',
-        borderBottom: '1px solid #e2e8f0',
-        padding: '1rem 2rem',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <div>
+      <div className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div>
+            <button
+              onClick={() => navigate("/profile")}
+              className="flex items-center text-gray-600 hover:text-gray-900 text-sm sm:text-base mb-2 transition-colors"
+            >
+              ← Volver al perfil
+            </button>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900">
+              Gestión de Servicios
+            </h1>
+          </div>
+
           <button
-            onClick={() => navigate('/profile')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              background: 'none',
-              border: 'none',
-              color: '#4a5568',
-              cursor: 'pointer',
-              fontSize: '1rem',
-              marginBottom: '0.5rem'
+            onClick={() => {
+              setShowForm(true);
+              setEditingService(null);
+              setFormData({
+                name: "",
+                description: "",
+                price: "",
+                duration: "60",
+                category: "",
+                isActive: true,
+              });
             }}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 py-2.5 rounded-lg font-semibold transition-colors text-sm sm:text-base whitespace-nowrap"
           >
-            ← Volver al perfil
+            + Agregar Servicio
           </button>
-          <h1 style={{ margin: 0, color: '#2d3748', fontSize: '1.5rem' }}>
-            Gestión de Servicios
-          </h1>
         </div>
-        
-        <button
-          onClick={() => {
-            setShowForm(true);
-            setEditingService(null);
-            setFormData({
-              name: '',
-              description: '',
-              price: '',
-              duration: '60',
-              category: '',
-              isActive: true
-            });
-          }}
-          style={{
-            backgroundColor: '#667eea',
-            color: 'white',
-            border: 'none',
-            padding: '0.75rem 1.5rem',
-            borderRadius: '8px',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            fontWeight: 'bold'
-          }}
-        >
-          + Agregar Servicio
-        </button>
       </div>
 
-      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+      <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-7xl mx-auto">
         {/* Error Message */}
         {error && (
-          <div style={{
-            background: '#fed7d7',
-            border: '1px solid #feb2b2',
-            color: '#c53030',
-            padding: '1rem',
-            borderRadius: '8px',
-            marginBottom: '1rem'
-          }}>
+          <div className="bg-red-50 border border-red-200 text-red-800 px-4 sm:px-6 py-4 rounded-lg mb-6">
             {error}
           </div>
         )}
 
         {/* Services Grid */}
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <div className="text-center py-8 text-gray-600">
             Cargando servicios...
           </div>
         ) : (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-            gap: '1.5rem'
-          }}>
-            {services.map(service => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service) => (
               <div
                 key={service.id}
-                style={{
-                  backgroundColor: 'white',
-                  borderRadius: '12px',
-                  padding: '1.5rem',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                  border: '1px solid #e2e8f0',
-                  opacity: service.isActive ? 1 : 0.6
-                }}
+                className={`bg-white rounded-xl p-5 sm:p-6 shadow-md border border-gray-200 transition-opacity ${
+                  service.isActive ? "opacity-100" : "opacity-60"
+                }`}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ flex: 1 }}>
-                    <h3 style={{ 
-                      margin: '0 0 0.5rem 0', 
-                      color: '#2d3748',
-                      fontSize: '1.25rem'
-                    }}>
+                <div className="flex justify-between items-start gap-4 mb-4">
+                  <div className="flex-1">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2">
                       {service.name}
                     </h3>
-                    <p style={{ 
-                      color: '#4a5568', 
-                      margin: '0.5rem 0',
-                      fontSize: '0.9rem'
-                    }}>
+                    <p className="text-gray-700 text-sm mb-3">
                       {service.description}
                     </p>
-                    <div style={{ 
-                      display: 'flex', 
-                      gap: '1rem', 
-                      margin: '1rem 0',
-                      fontSize: '0.9rem'
-                    }}>
-                      <span style={{ color: '#059669', fontWeight: 'bold' }}>
+                    <div className="flex flex-wrap gap-2 text-sm">
+                      <span className="font-semibold text-emerald-600">
                         ${service.price.toLocaleString()}
                       </span>
-                      <span style={{ color: '#6b7280' }}>
+                      <span className="text-gray-600">
                         {service.duration} min
                       </span>
-                      <span style={{ 
-                        backgroundColor: '#e0e7ff',
-                        color: '#4338ca',
-                        padding: '0.25rem 0.5rem',
-                        borderRadius: '4px',
-                        fontSize: '0.8rem'
-                      }}>
+                      <span className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs font-medium">
                         {service.category}
                       </span>
                     </div>
                   </div>
-                  
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+
+                  <div className="flex flex-col gap-2">
                     <button
                       onClick={() => toggleServiceStatus(service.id!)}
-                      style={{
-                        backgroundColor: service.isActive ? '#059669' : '#dc2626',
-                        color: 'white',
-                        border: 'none',
-                        padding: '0.25rem 0.75rem',
-                        borderRadius: '4px',
-                        fontSize: '0.8rem',
-                        cursor: 'pointer'
-                      }}
+                      className={`px-3 py-1.5 rounded text-sm font-semibold text-white whitespace-nowrap transition-colors ${
+                        service.isActive
+                          ? "bg-emerald-600 hover:bg-emerald-700"
+                          : "bg-red-600 hover:bg-red-700"
+                      }`}
                     >
-                      {service.isActive ? 'Activo' : 'Inactivo'}
+                      {service.isActive ? "Activo" : "Inactivo"}
                     </button>
                   </div>
                 </div>
 
-                <div style={{ 
-                  display: 'flex', 
-                  gap: '0.5rem', 
-                  marginTop: '1rem',
-                  borderTop: '1px solid #e2e8f0',
-                  paddingTop: '1rem'
-                }}>
+                <div className="flex gap-3 border-t border-gray-200 pt-4">
                   <button
                     onClick={() => handleEdit(service)}
-                    style={{
-                      backgroundColor: '#3b82f6',
-                      color: 'white',
-                      border: 'none',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '6px',
-                      fontSize: '0.9rem',
-                      cursor: 'pointer',
-                      flex: 1
-                    }}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium transition-colors text-sm"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => handleDelete(service.id!)}
-                    style={{
-                      backgroundColor: '#dc2626',
-                      color: 'white',
-                      border: 'none',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '6px',
-                      fontSize: '0.9rem',
-                      cursor: 'pointer'
-                    }}
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg font-medium transition-colors text-sm"
                   >
                     Eliminar
                   </button>
@@ -414,31 +325,16 @@ const ServicesManagementPage: React.FC = () => {
 
         {/* No services message */}
         {!loading && services.length === 0 && (
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            padding: '3rem',
-            textAlign: 'center',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-          }}>
-            <h3 style={{ color: '#4a5568', marginBottom: '1rem' }}>
+          <div className="bg-white rounded-xl p-8 sm:p-12 text-center shadow-md">
+            <h3 className="text-gray-700 mb-3 text-lg sm:text-xl">
               No tienes servicios configurados
             </h3>
-            <p style={{ color: '#718096', marginBottom: '2rem' }}>
+            <p className="text-gray-600 mb-6 text-sm sm:text-base">
               Agrega servicios para que los clientes puedan reservar contigo
             </p>
             <button
               onClick={() => setShowForm(true)}
-              style={{
-                backgroundColor: '#667eea',
-                color: 'white',
-                border: 'none',
-                padding: '0.75rem 2rem',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                cursor: 'pointer',
-                fontWeight: 'bold'
-              }}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold transition-colors"
             >
               Crear tu primer servicio
             </button>
@@ -448,192 +344,137 @@ const ServicesManagementPage: React.FC = () => {
 
       {/* Service Form Modal */}
       {showForm && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            padding: '2rem',
-            width: '90%',
-            maxWidth: '500px',
-            maxHeight: '90vh',
-            overflowY: 'auto'
-          }}>
-            <h2 style={{ margin: '0 0 1.5rem 0', color: '#2d3748' }}>
-              {editingService ? 'Editar Servicio' : 'Nuevo Servicio'}
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 sm:p-8 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6">
+              {editingService ? "Editar Servicio" : "Nuevo Servicio"}
             </h2>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-5"
+            >
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', color: '#4a5568', fontWeight: 'bold' }}>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Nombre del servicio
                 </label>
                 <input
                   type="text"
                   value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
                   required
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '1rem'
-                  }}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
                   placeholder="ej: Corte de cabello"
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', color: '#4a5568', fontWeight: 'bold' }}>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Categoría
                 </label>
                 <select
                   value={formData.category}
-                  onChange={(e) => handleInputChange('category', e.target.value)}
+                  onChange={(e) => handleInputChange("category", e.target.value)}
                   required
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    backgroundColor: 'white'
-                  }}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition bg-white"
                 >
                   <option value="">Selecciona una categoría</option>
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', color: '#4a5568', fontWeight: 'bold' }}>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Descripción
                 </label>
                 <textarea
                   value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   required
                   rows={3}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    resize: 'vertical'
-                  }}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition resize-vertical"
                   placeholder="Describe tu servicio..."
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#4a5568', fontWeight: 'bold' }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Precio ($)
                   </label>
                   <input
                     type="number"
                     value={formData.price}
-                    onChange={(e) => handleInputChange('price', e.target.value)}
+                    onChange={(e) => handleInputChange("price", e.target.value)}
                     required
                     min="0"
                     step="100"
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '8px',
-                      fontSize: '1rem'
-                    }}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
                     placeholder="5000"
                   />
                 </div>
 
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#4a5568', fontWeight: 'bold' }}>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Duración (min)
                   </label>
                   <input
                     type="number"
                     value={formData.duration}
-                    onChange={(e) => handleInputChange('duration', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("duration", e.target.value)
+                    }
                     required
                     min="15"
                     step="15"
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '8px',
-                      fontSize: '1rem'
-                    }}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
                     placeholder="60"
                   />
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
                   id="isActive"
                   checked={formData.isActive}
-                  onChange={(e) => handleInputChange('isActive', e.target.checked)}
-                  style={{ transform: 'scale(1.2)' }}
+                  onChange={(e) =>
+                    handleInputChange("isActive", e.target.checked)
+                  }
+                  className="w-5 h-5 rounded"
                 />
-                <label htmlFor="isActive" style={{ color: '#4a5568' }}>
+                <label htmlFor="isActive" className="text-gray-700 text-sm">
                   Servicio activo (disponible para reservas)
                 </label>
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+              <div className="flex gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => {
                     setShowForm(false);
                     setEditingService(null);
                   }}
-                  style={{
-                    flex: 1,
-                    padding: '0.75rem',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    cursor: 'pointer',
-                    backgroundColor: 'white',
-                    color: '#4a5568'
-                  }}
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  style={{
-                    flex: 1,
-                    padding: '0.75rem',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    backgroundColor: loading ? '#a0aec0' : '#667eea',
-                    color: 'white',
-                    fontWeight: 'bold'
-                  }}
+                  className="flex-1 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white font-semibold rounded-lg transition"
                 >
-                  {loading ? 'Guardando...' : (editingService ? 'Actualizar' : 'Crear Servicio')}
+                  {loading
+                    ? "Guardando..."
+                    : editingService
+                    ? "Actualizar"
+                    : "Crear Servicio"}
                 </button>
               </div>
             </form>

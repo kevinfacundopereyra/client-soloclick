@@ -130,40 +130,18 @@ const HomePage = () => {
           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
     >
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "1rem 3rem",
-          background: "rgba(255, 255, 255, 0.95)",
-          backdropFilter: "blur(10px)",
-        }}
-      >
-        <div
-          style={{ fontSize: "1.8rem", fontWeight: "bold", color: "#2d3748" }}
-        >
-          soloclick
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+      <header className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-8 py-3 sm:py-4 bg-white/95 backdrop-blur-md gap-4 sm:gap-0">
+        <div className="text-2xl sm:text-3xl font-bold text-gray-800">soloclick</div>
+        <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-center sm:justify-end">
           {isAuthenticated && user ? (
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-center">
               <UserProfile
                 name={user.name || "Usuario"}
-                /* role={user.userType || "user"} */
                 avatarUrl={user.avatarUrl}
               />
               <button
                 onClick={handleLogout}
-                style={{
-                  background: "transparent",
-                  border: "1px solid #e53e3e",
-                  color: "#e53e3e",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "6px",
-                  fontSize: "0.9rem",
-                  cursor: "pointer",
-                }}
+                className="text-red-600 border border-red-600 hover:bg-red-50 px-3 sm:px-4 py-2 rounded text-sm font-medium transition whitespace-nowrap"
               >
                 Cerrar sesión
               </button>
@@ -172,29 +150,13 @@ const HomePage = () => {
             <>
               <button
                 onClick={() => navigate("/login")}
-                style={{
-                  background: "transparent",
-                  border: "1px solid #4a5568",
-                  color: "#4a5568",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "6px",
-                  fontSize: "0.9rem",
-                  cursor: "pointer",
-                }}
+                className="text-gray-600 border border-gray-600 hover:bg-gray-100 px-3 sm:px-4 py-2 rounded text-sm font-medium transition whitespace-nowrap"
               >
                 Registrarse
               </button>
               <button
                 onClick={() => navigate("/signin")}
-                style={{
-                  background: "transparent",
-                  border: "1px solid #4a5568",
-                  color: "#4a5568",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "6px",
-                  fontSize: "0.9rem",
-                  cursor: "pointer",
-                }}
+                className="text-gray-600 border border-gray-600 hover:bg-gray-100 px-3 sm:px-4 py-2 rounded text-sm font-medium transition whitespace-nowrap"
               >
                 Iniciar sesión
               </button>
@@ -202,106 +164,40 @@ const HomePage = () => {
           )}
         </div>
       </header>
-      <main
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: "4rem 2rem",
-          textAlign: "center",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: "3.5rem",
-            fontWeight: "bold",
-            color: "white",
-            marginBottom: "3rem",
-            lineHeight: "1.2",
-            maxWidth: "800px",
-          }}
-        >
+      <main className="flex flex-col items-center px-4 sm:px-6 py-8 sm:py-12 lg:py-16 text-center">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 sm:mb-8 lg:mb-12 leading-tight max-w-3xl">
           Reserva servicios como turista
           <br />
           desde cualquier lugar
         </h1>
         <FilterBar isHomePage={true} />
-        <div
-          style={{
-            color: "white",
-            fontSize: "1.1rem",
-            marginBottom: "4rem",
-            fontWeight: "500",
-          }}
-        >
-          <span style={{ fontWeight: "bold", fontSize: "1.3rem" }}>12.050</span>{" "}
-          citas reservadas hoy
+        <div className="text-white text-base sm:text-lg font-medium mt-6 sm:mt-8">
+          <span className="font-bold text-lg sm:text-xl">12.050</span> citas
+          reservadas hoy
         </div>
       </main>
 
       {locationFilter.lat && locationFilter.lng && (
-        <div
-          style={{
-            maxWidth: "1200px",
-            margin: "0 auto 4rem auto",
-            padding: "0 2rem",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "1.8rem",
-              fontWeight: "bold",
-              color: "white",
-              marginBottom: "1.5rem",
-              textAlign: "center",
-            }}
-          >
+        <div className="w-full max-w-6xl mx-auto mb-8 sm:mb-12 px-4 sm:px-6 lg:px-0">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6 text-center">
             Profesionales Cerca de Ti
           </h2>
-          <div
-            style={{
-              borderRadius: "16px",
-              overflow: "hidden",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
-            }}
-          >
+          <div className="rounded-2xl overflow-hidden shadow-xl">
             <ProfessionalsListMap
               professionals={locationFilteredProfessionals}
-              // ✅ MODIFICADO: Le pasamos la ubicación seleccionada al mapa para que sepa dónde centrarse.
               selectedLocation={locationFilter}
             />
           </div>
         </div>
       )}
 
-      <div
-        style={{
-          width: "100%",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        }}
-      >
+      <div className="w-full bg-gradient-to-b from-purple-600 to-purple-800">
         {isAuthenticated && favoriteProfessionals.length > 0 && (
-          <div style={{ padding: "2rem", marginBottom: "2rem" }}>
-            <h2
-              style={{
-                fontSize: "1.8rem",
-                fontWeight: "bold",
-                color: "white",
-                marginBottom: "1.5rem",
-                textAlign: "center",
-              }}
-            >
+          <div className="px-4 sm:px-6 py-8 sm:py-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 sm:mb-8 text-center">
               Tus Favoritos
             </h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-                gap: "1rem",
-                maxWidth: "1200px",
-                margin: "0 auto",
-              }}
-            >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
               {favoriteProfessionals.map((professional) => (
                 <ProfessionalCard
                   key={professional._id || professional.id}
@@ -337,32 +233,11 @@ const HomePage = () => {
           totalSpecialtyCount={specialtyCounts.Peluqueria}
         />
 
-        <div style={{ padding: "4rem 2rem", textAlign: "center" }}>
-          <button
-            style={{
-              background: "rgba(255, 255, 255, 0.2)",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
-              color: "white",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "25px",
-              fontSize: "1rem",
-              cursor: "pointer",
-              backdropFilter: "blur(10px)",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              margin: "0 auto",
-            }}
-          >
+        <div className="px-4 sm:px-6 py-12 sm:py-16 text-center">
+          <button className="bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full text-base sm:text-lg font-medium backdrop-blur-md inline-flex items-center gap-2 transition cursor-pointer">
             Obtener la app 📱
           </button>
-          <footer
-            style={{
-              marginTop: "4rem",
-              color: "rgba(255, 255, 255, 0.7)",
-              fontSize: "0.9rem",
-            }}
-          >
+          <footer className="mt-8 sm:mt-12 text-white/70 text-sm">
             &copy; 2024 soloclick. Todos los derechos reservados.
           </footer>
         </div>

@@ -64,78 +64,29 @@ const UserRegisterPage = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      }}
-    >
+    <div className="flex min-h-screen flex-col lg:flex-row font-system">
       {/* Left Side - Register Form */}
-      <div
-        style={{
-          flex: 1,
-          padding: "2rem",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          maxWidth: "500px",
-          margin: "0 auto",
-        }}
-      >
+      <div className="flex-1 px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 flex flex-col justify-center w-full max-w-2xl lg:max-w-none mx-auto lg:mx-0">
         {/* Header with back arrow */}
         <div
           onClick={() => navigate("/login")}
-          style={{
-            position: "absolute",
-            top: "2rem",
-            left: "2rem",
-            display: "flex",
-            alignItems: "center",
-            cursor: "pointer",
-            color: "#4a5568",
-          }}
+          className="absolute top-6 sm:top-8 left-4 sm:left-6 lg:left-8 flex items-center cursor-pointer text-gray-600 hover:text-gray-800"
         >
-          <span style={{ fontSize: "1.5rem", marginRight: "0.5rem" }}>←</span>
+          <span className="text-xl sm:text-2xl mr-2">←</span>
         </div>
 
         {/* Title */}
-        <h1
-          style={{
-            fontSize: "2rem",
-            fontWeight: "bold",
-            color: "#2d3748",
-            marginBottom: "1rem",
-            textAlign: "center",
-          }}
-        >
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 sm:mb-4 lg:mb-6 text-center">
           Registro de Cliente
         </h1>
 
-        <p
-          style={{
-            textAlign: "center",
-            color: "#718096",
-            marginBottom: "2rem",
-          }}
-        >
+        <p className="text-center text-gray-500 text-sm sm:text-base mb-6 sm:mb-8 lg:mb-10">
           Crea tu cuenta para reservar servicios de belleza
         </p>
 
         {/* Error Message */}
         {error && (
-          <div
-            style={{
-              background: "#fed7d7",
-              border: "1px solid #feb2b2",
-              color: "#c53030",
-              padding: "0.75rem",
-              borderRadius: "8px",
-              marginBottom: "1rem",
-              textAlign: "center",
-            }}
-          >
+          <div className="bg-red-100 border border-red-400 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 text-sm sm:text-base text-center">
             {error}
           </div>
         )}
@@ -143,17 +94,10 @@ const UserRegisterPage = () => {
         {/* Register Form */}
         <form
           onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+          className="flex flex-col gap-4 sm:gap-6"
         >
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Nombre completo
             </label>
             <input
@@ -162,30 +106,15 @@ const UserRegisterPage = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg text-sm sm:text-base outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+              onFocus={(e) => e.currentTarget.classList.add('border-indigo-600')}
+              onBlur={(e) => e.currentTarget.classList.remove('border-indigo-600')}
               placeholder="Tu nombre completo"
             />
           </div>
 
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Email
             </label>
             <input
@@ -194,30 +123,15 @@ const UserRegisterPage = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg text-sm sm:text-base outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+              onFocus={(e) => e.currentTarget.classList.add('border-indigo-600')}
+              onBlur={(e) => e.currentTarget.classList.remove('border-indigo-600')}
               placeholder="tu@email.com"
             />
           </div>
 
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Contraseña
             </label>
             <input
@@ -226,30 +140,15 @@ const UserRegisterPage = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg text-sm sm:text-base outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+              onFocus={(e) => e.currentTarget.classList.add('border-indigo-600')}
+              onBlur={(e) => e.currentTarget.classList.remove('border-indigo-600')}
               placeholder="Mínimo 6 caracteres"
             />
           </div>
 
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Teléfono
             </label>
             <input
@@ -258,30 +157,15 @@ const UserRegisterPage = () => {
               value={formData.phone}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg text-sm sm:text-base outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+              onFocus={(e) => e.currentTarget.classList.add('border-indigo-600')}
+              onBlur={(e) => e.currentTarget.classList.remove('border-indigo-600')}
               placeholder="+54 11 1234-5678"
             />
           </div>
 
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "#2d3748",
-                fontWeight: "500",
-              }}
-            >
+            <label className="block mb-2 sm:mb-3 text-gray-800 font-medium text-sm sm:text-base">
               Ciudad
             </label>
             <input
@@ -290,17 +174,9 @@ const UserRegisterPage = () => {
               value={formData.city}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-              onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg text-sm sm:text-base outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+              onFocus={(e) => e.currentTarget.classList.add('border-indigo-600')}
+              onBlur={(e) => e.currentTarget.classList.remove('border-indigo-600')}
               placeholder="Tu ciudad"
             />
           </div>
@@ -308,53 +184,26 @@ const UserRegisterPage = () => {
           <button
             type="submit"
             disabled={loading}
-            style={{
-              background: loading ? "#a0aec0" : "#667eea",
-              color: "white",
-              border: "none",
-              padding: "0.875rem",
-              borderRadius: "8px",
-              fontSize: "1rem",
-              fontWeight: "bold",
-              cursor: loading ? "not-allowed" : "pointer",
-              marginTop: "1rem",
-              transition: "background-color 0.2s",
-            }}
-            onMouseOver={(e) =>
-              !loading &&
-              ((e.target as HTMLButtonElement).style.backgroundColor =
-                "#5a67d8")
-            }
-            onMouseOut={(e) =>
-              !loading &&
-              ((e.target as HTMLButtonElement).style.backgroundColor =
-                "#667eea")
-            }
+            className={`w-full px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-white transition-colors duration-200 text-sm sm:text-base ${
+              loading 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-indigo-600 hover:bg-indigo-700 cursor-pointer'
+            }`}
           >
             {loading ? "Creando cuenta..." : "Crear cuenta"}
           </button>
         </form>
       </div>
 
-      {/* Right Side - Image */}
+      {/* Right Side - Image (hidden on mobile and tablet) */}
       <div
+        className="hidden lg:flex lg:flex-1 relative bg-cover bg-center"
         style={{
-          flex: 1,
           backgroundImage:
             'url("https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          position: "relative",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: "0",
-            background:
-              "linear-gradient(45deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2))",
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20" />
       </div>
     </div>
   );
