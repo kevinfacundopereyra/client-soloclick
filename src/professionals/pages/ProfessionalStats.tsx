@@ -1,5 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { API_CONFIG } from '../../config/api';
+
+const api = axios.create({ baseURL: API_CONFIG.BASE_URL });
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 interface StatCardProps {
   title: string;
@@ -83,26 +95,127 @@ const ChartBar: React.FC<ChartBarProps> = ({ label, value, maxValue, color }) =>
 
 const ProfessionalStats: React.FC = () => {
   const navigate = useNavigate();
-  // Datos ficticios para las estadísticas
-  const monthlyStats = {
-    totalAppointments: 45,
-    completedAppointments: 42,
-    cancelledAppointments: 3,
-    totalRevenue: 450000,
-    averageRating: 4.8,
-    newClients: 15,
-    returnClients: 27
-  };
+  const [monthlyStats, setMonthlyStats] = useState({
+    totalAppointments: 0,
+    completedAppointments: 0,
+    cancelledAppointments: 0,
+    totalRevenue: 0,
+    averageRating: 0,
+    newClients: 0,
+    returnClients: 0
+  });
 
-  const weeklyData = [
-    { day: 'Lunes', appointments: 8 },
-    { day: 'Martes', appointments: 12 },
-    { day: 'Miércoles', appointments: 10 },
-    { day: 'Jueves', appointments: 15 },
-    { day: 'Viernes', appointments: 14 },
-    { day: 'Sábado', appointments: 8 },
+  const [weeklyData, setWeeklyData] = useState([
+    { day: 'Lunes', appointments: 0 },
+    { day: 'Martes', appointments: 0 },
+    { day: 'Miércoles', appointments: 0 },
+    { day: 'Jueves', appointments: 0 },
+    { day: 'Viernes', appointments: 0 },
+    { day: 'Sábado', appointments: 0 },
     { day: 'Domingo', appointments: 0 }
-  ];
+  ]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const userStr = localStorage.getItem('user');
+        if (!userStr) return;
+        const user = JSON.parse(userStr);
+        const professionalId = user.id || user._id;
+
+        if (!professionalId) return;
+
+        const now = new Date();
+        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        // Fetch appointments del profesional
+        const appointmentsRes = await api.get(`/appointments/professional/${professionalId}`);
+        const allAppointments = appointmentsRes.data || [];
+        
+        // Filtrar citas del mes actual
+        const appointments = allAppointments.filter((a: any) => new Date(a.date) >= firstDayOfMonth);
+
+        // Fetch perfil del profesional para obtener el rating
+        let avgRating = 0;
+        try {
+          const profRes = await api.get(`/professionals/${professionalId}`);
+          const rawRating = profRes.data?.rating || profRes.data?.professional?.rating || 0;
+          avgRating = Number(Number(rawRating).toFixed(1));
+        } catch (e) {
+          console.warn("No se pudo cargar el perfil del profesional", e);
+        }
+
+        // Calcular estadísticas mensuales
+        const completed = appointments.filter((a: any) => a.status === 'completed').length;
+        const cancelled = appointments.filter((a: any) => a.status === 'cancelled').length;
+        // Calcular ingresos a partir del totalPrice de las citas completadas
+        const totalRevenue = appointments
+          .filter((a: any) => a.status === 'completed')
+          .reduce((sum: number, a: any) => sum + (a.totalPrice || 0), 0);
+
+        // Calcular clientes nuevos vs recurrentes
+        const clientCounts: { [key: string]: number } = {};
+        appointments.forEach((apt: any) => {
+          const clientId = apt.client?._id || apt.client?.id || apt.clientId || apt.user?._id || apt.user;
+          if (clientId) {
+            const idStr = typeof clientId === 'object' ? clientId._id || clientId.id : clientId;
+            clientCounts[idStr] = (clientCounts[idStr] || 0) + 1;
+          }
+        });
+        const newClients = Object.values(clientCounts).filter(count => count === 1).length;
+        const returnClients = Math.max(0, appointments.length - newClients);
+
+        setMonthlyStats({
+          totalAppointments: appointments.length,
+          completedAppointments: completed,
+          cancelledAppointments: cancelled,
+          totalRevenue: totalRevenue,
+          averageRating: avgRating,
+          newClients,
+          returnClients
+        });
+
+        // Calcular citas por día de la semana
+        const appointmentsByDay = { Lunes: 0, Martes: 0, Miércoles: 0, Jueves: 0, Viernes: 0, Sábado: 0, Domingo: 0 };
+        const daysMap: { [key: number]: string } = {
+          0: 'Domingo',
+          1: 'Lunes',
+          2: 'Martes',
+          3: 'Miércoles',
+          4: 'Jueves',
+          5: 'Viernes',
+          6: 'Sábado'
+        };
+
+        appointments.forEach((apt: any) => {
+          const date = new Date(apt.date);
+          // Ajustar zona horaria si la fecha viene en formato YYYY-MM-DD (para evitar que un día pase a ser el día anterior por el UTC)
+          if (apt.date && apt.date.length === 10) {
+            date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+          }
+          const dayName = daysMap[date.getDay()];
+          if (dayName in appointmentsByDay) {
+            appointmentsByDay[dayName as keyof typeof appointmentsByDay]++;
+          }
+        });
+
+        const newWeeklyData = [
+          { day: 'Lunes', appointments: appointmentsByDay.Lunes },
+          { day: 'Martes', appointments: appointmentsByDay.Martes },
+          { day: 'Miércoles', appointments: appointmentsByDay.Miércoles },
+          { day: 'Jueves', appointments: appointmentsByDay.Jueves },
+          { day: 'Viernes', appointments: appointmentsByDay.Viernes },
+          { day: 'Sábado', appointments: appointmentsByDay.Sábado },
+          { day: 'Domingo', appointments: appointmentsByDay.Domingo }
+        ];
+        setWeeklyData(newWeeklyData);
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const maxAppointments = Math.max(...weeklyData.map(d => d.appointments));
 

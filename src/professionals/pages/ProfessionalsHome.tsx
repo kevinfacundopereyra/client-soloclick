@@ -1,4 +1,4 @@
-import { useSearchParams, Link } from "react-router-dom";
+﻿import { useSearchParams, Link } from "react-router-dom";
 import { useProfessionals } from "../hooks/useProfessionals";
 import ProfessionalCard from "../components/ProfessionalCard";
 import { useFavorites } from "../hooks/useFavorites";
@@ -19,6 +19,11 @@ function ProfessionalsHome() {
     modality: searchParams.get("modality"),
     city: searchParams.get("city"),
     date: searchParams.get("date"),
+  };
+
+  const locationFilter = {
+    lat: searchParams.get("lat"),
+    lng: searchParams.get("lng"),
   };
 
   if (loading) {
@@ -249,20 +254,25 @@ const getFilteredProfessionals = () => {
 
        <FilterBar isHomePage={false} />
 
-        <div
-          style={{
-            marginTop: "2rem",
-            marginBottom: "3rem",
-            borderRadius: "12px",
-            overflow: "hidden",
-            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
-          }}
-        >
-          {filteredProfessionals.length > 0 && (
-            // ✅ MODIFICADO: Usamos el componente correcto que espera una lista.
-            <ProfessionalsListMap professionals={filteredProfessionals} />
-          )}
+        {locationFilter.lat && locationFilter.lng && (
+          <div
+            style={{
+              marginTop: "2rem",
+              marginBottom: "3rem",
+              borderRadius: "12px",
+              overflow: "hidden",
+              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+            }}
+          >
+            {filteredProfessionals.length > 0 && (
+              // ✅ MODIFICADO: Usamos el componente correcto que espera una lista.
+              <ProfessionalsListMap
+                  professionals={filteredProfessionals}
+                  selectedLocation={locationFilter}
+                />
+            )}
         </div>
+        )}
 
         {filteredProfessionals.length === 0 && (
           <div
