@@ -7,8 +7,6 @@ import {
 import paymentsService from "../../services/paymentsService";
 import useFeaturedPayments from "../../hooks/useFeaturedPayments";
 import paymentMethodsService from "../../services/paymentMethodsService";
-import emailService from "../../services/emailService";
-import { API_CONFIG } from "../../config/api"; // Importación de configuración de API
 
 interface Service {
   id: string;
@@ -103,8 +101,8 @@ const BookingConfirmation: React.FC = () => {
         return;
       }
 
-      const apiUrl = API_CONFIG.BASE_URL; // Usar configuración centralizada
-      const endpoint = `${apiUrl}/professionals/${professionalId}`;
+      const apiUrl = "http://localhost:3000"; // Usar puerto 3000 directamente
+      const endpoint = `${apiUrl}/users/profile`;
       
       console.log("📤 Enviando solicitud de guardar método de pago:");
       console.log("URL:", endpoint);
@@ -236,29 +234,6 @@ const BookingConfirmation: React.FC = () => {
       );
       console.log("� Respuesta del backend:", response);
       if (response.success) {
-        // Enviar email de confirmación
-        const userStr = localStorage.getItem("user");
-        const user = userStr ? JSON.parse(userStr) : null;
-        
-        if (user && user.email) {
-          try {
-            await emailService.sendAppointmentConfirmation({
-              appointmentId: response.appointment?._id || response.appointment?.id,
-              clientEmail: user.email,
-              professionalEmail: bookingData.professional.email || "",
-              clientName: user.name || "Cliente",
-              professionalName: bookingData.professional.name,
-              serviceNames: bookingData.services.map((s) => s.name),
-              date: bookingData.date,
-              time: bookingData.time,
-              totalPrice: bookingData.totalPrice,
-            });
-          } catch (emailErr) {
-            console.error("Error enviando email:", emailErr);
-            // No fallar si hay error de email
-          }
-        }
-
         // Si el método de pago es online, crear el pago y redirigir
         if (paymentMethod !== "establishment") {
           try {
@@ -287,27 +262,9 @@ const BookingConfirmation: React.FC = () => {
             console.log("📥 Respuesta de la API de pago:", paymentResponse);
 
             if (paymentResponse?.preference_url) {
-              // Abrir Mercado Pago en nueva pestaña
-              window.open(paymentResponse.preference_url, "_blank");
-
-              // Limpiar localStorage
-              localStorage.removeItem("selectedServices");
-              localStorage.removeItem("professionalData");
-              localStorage.removeItem("bookingData");
-
-              alert(
-                `Reserva confirmada!\n\nDetalles:\n• Profesional: ${
-                  bookingData.professional.name
-                }\n• Fecha: ${formatDate(bookingData.date)}\n• Hora: ${
-                  bookingData.time
-                }\n• Total: $${bookingData.totalPrice}\n\nSe abre Mercado Pago en una nueva ventana para completar el pago.`
-              );
-
-              // Redirigir después de 2 segundos
-              setTimeout(() => {
-                navigate("/mis-reservas");
-              }, 2000);
-              return;
+              console.log("🔗 Abriendo URL de Mercado Pago:", paymentResponse.preference_url);
+              window.open(paymentResponse.preference_url, '_blank');
+              return; // redirigimos al checkout y detenemos flujo
             }
 
             alert("No se recibió la URL de pago");

@@ -107,6 +107,7 @@ export const appointmentsService = {
 
       const backendData = {
         professionalId: appointmentData.professionalId,
+        clientId: appointmentData.clientId, // ✅ INCLUIR clientId
         services: appointmentData.services,
         date: appointmentData.date,
         time: appointmentData.time,
@@ -114,6 +115,8 @@ export const appointmentsService = {
         totalDuration: appointmentData.totalDuration,
         notes: appointmentData.notes || "",
       };
+
+      console.log("📤 Datos enviando al backend:", JSON.stringify(backendData, null, 2));
 
       const response = await api.post("/appointments", backendData);
       console.log("✅ Cita creada en backend:", response.data);
