@@ -45,6 +45,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
     modality: searchParams.get("modality") || "",
     city: searchParams.get("city") || "",
     date: searchParams.get("date") || "",
+    sort: searchParams.get("sort") || "",
   });
 
   const [isMapModalOpen, setMapModalOpen] = useState(false);
@@ -88,6 +89,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
       modality: "",
       city: "",
       date: "",
+      sort: "",
     };
     setFilters(clearedFilters);
     const newSearchParams = new URLSearchParams();
@@ -239,6 +241,27 @@ const FilterBar: React.FC<FilterBarProps> = ({
               >
                 {locationIsSet ? "Ubicación Activa" : "Ubicación"}
               </button>
+            </div>
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+            >
+              <span>⭐</span>
+              <select
+                value={filters.sort}
+                onChange={(e) => handleFilterChange("sort", e.target.value)}
+                style={{
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "8px",
+                  padding: "0.5rem",
+                  fontSize: "0.9rem",
+                  width: "100%",
+                  background: "white",
+                }}
+              >
+                <option value="">Ordenar</option>
+                <option value="rating_desc">Mejor puntuados</option>
+                <option value="rating_asc">Menos puntuados</option>
+              </select>
             </div>
           </div>
           <div

@@ -10,6 +10,7 @@ import ProfessionalsListMap from "../../components/ProfessionalsListMap";
 
 function ProfessionalsHome() {
   const [searchParams] = useSearchParams();
+  const sort = searchParams.get("sort") || "";
   const { professionals, loading, error } = useProfessionals();
   const { favorites } = useFavorites();
 
@@ -198,6 +199,13 @@ const getFilteredProfessionals = () => {
 
   const filteredProfessionals = getFilteredProfessionals();
 
+  const sortByRating = (list: Professional[], desc = true) =>
+    [...list].sort((a, b) =>
+      desc
+        ? (b.rating ?? 0) - (a.rating ?? 0)
+        : (a.rating ?? 0) - (b.rating ?? 0)
+    );
+
   const favoriteProfessionals: Professional[] = [];
   const allProfessionals: Professional[] = [];
 
@@ -208,6 +216,19 @@ const getFilteredProfessionals = () => {
     }
     allProfessionals.push(professional);
   });
+
+  const sortedFavorites =
+    sort === "rating_asc"
+      ? sortByRating(favoriteProfessionals, false)
+      : sort === "rating_desc"
+      ? sortByRating(favoriteProfessionals, true)
+      : favoriteProfessionals;
+  const sortedProfessionals =
+    sort === "rating_asc"
+      ? sortByRating(allProfessionals, false)
+      : sort === "rating_desc"
+      ? sortByRating(allProfessionals, true)
+      : allProfessionals;
 
   const getPageTitle = () => {
     const activeFilters = Object.entries(filters).filter(([_, value]) => value);
@@ -312,7 +333,7 @@ const getFilteredProfessionals = () => {
                 gap: "1.5rem",
               }}
             >
-              {favoriteProfessionals.map((professional) => (
+              {sortedFavorites.map((professional) => (
                 <ProfessionalCard
                   key={professional._id || professional.id}
                   professional={professional}

@@ -161,7 +161,11 @@ const ProfessionalCard: React.FC<ProfessionalCardProps> = ({
       </div>
       <div style={infoStyle}>
         <strong>Rating:</strong>{" "}
-        <span style={badgeStyle}>{professional.rating ?? "N/A"} ⭐</span>
+        <span style={badgeStyle}>
+          {professional.rating !== undefined && professional.rating !== null
+            ? `${professional.rating.toFixed(1)} ⭐`
+            : "N/A ⭐"}
+        </span>
       </div>
       <div style={infoStyle}>
         <strong>Duración de turno:</strong>{" "}
